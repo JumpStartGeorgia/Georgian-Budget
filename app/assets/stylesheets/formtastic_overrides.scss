@@ -1,0 +1,49 @@
+// Increase padding inside inputs
+.formtastic input {
+  padding: 6px 12px;
+}
+
+// Add breathing space below check box input
+div.field {
+  margin-bottom: 10px;
+}
+
+// Add breathing space below form
+form.formtastic {
+  margin-bottom: 15px;
+}
+
+.formtastic
+{
+  .input
+  {
+    overflow:visible;
+  }
+  .form-control
+  {
+    display:inline-block;
+  }
+  .control-label
+  {
+    display:block;
+    clear:both;
+    margin-bottom:3px;
+  }
+  .control-label, table th
+  {
+    abbr
+    {
+      font:12px 'sourcesans_pro', 'sans-serif';
+      color: #d95d6a;
+      width:10px;
+      display:inline-block;
+      border: 0;
+      margin:0;
+      padding:0;
+    }
+  }
+  .select select
+  {
+    max-width: 72%;
+  }
+}

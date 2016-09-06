@@ -1,0 +1,34 @@
+# The bundle service is based on the data volume container pattern. More info:
+# - https://docs.docker.com/engine/tutorials/dockervolumes/#/creating-and-mounting-a-data-volume-container
+# - http://www.offermann.us/2013/12/tiny-docker-pieces-loosely-joined.html
+
+version: '2'
+services:
+
+  db:
+    env_file: .env
+    image: postgres:9.4.1
+    ports:
+      - "5432:5432"
+    volumes:
+      - /etc/postgresql
+      - /var/log/postgresql
+      - /var/lib/postgresql
+
+  web:
+    build: .
+    command: /bin/sh -c "rm -f tmp/pids/server.pid; bundle exec rails server --port 3000 --binding 0.0.0.0"
+    ports:
+      - "3000:3000"
+    links:
+      - db
+    volumes:
+      - .:/myapp
+    volumes_from:
+      - bundle
+
+  bundle:
+    image: startertemplate_web
+    volumes:
+      - /bundle
+    command: echo "Loading up bundled gems!"

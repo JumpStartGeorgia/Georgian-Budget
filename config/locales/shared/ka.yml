@@ -1,0 +1,47 @@
+---
+ka:
+  shared:
+    actions:
+      change_my_password: პაროლის შეცვლა
+      destroy: წაშლა
+      edit: რედაქტირება
+      log_in: შესვლა
+      view: ნახვა
+      add: დამატება
+      with_obj:
+        cancel: "%{obj}-ის გაუქმება"
+        create: "%{obj}-ის შექმნა"
+        destroy: "%{obj}-ის წაშლა"
+        edit: "%{obj}-ის რედაქტირება"
+        new: "ახალი %{obj}"
+        update: "%{obj}-ის განახლება"
+        view: "%{obj}-ის ნახვა"
+        view_all: "ყველას %{obj}-ის ნახვა"
+    common:
+      account: ანგარიში
+      actions: მოქმედებები
+      jumpstart:
+        slogan: JumpStart Georgia - ჩვენ გაწვდით ინფორმაციას მონაცემებით და დიზაინით
+      name: Rails Starter Template
+      description: This is a description of the project that will appear in the meta tags.
+    links:
+      page_contents: გვერდის ტექსტის რედაქტირება
+      admin: ადმინის სექცია
+    labels:
+      translated_field: "%{field} (%{language})"
+    locale:
+      short:
+        en: En
+        ka: "ქა"
+      long:
+        en: English
+        ka: "ქართული"
+    msgs:
+      does_not_exist: თქვენ ცდილობთ ისეთ გვერდზე შეშვლას, რომელიც არ არსებობს.
+      not_authorized: თქვენ არ ხართ ავტორიზებული, რომ ნახოთ ეს გვერდი.
+      success_created: "%{obj} წარმატებით შეიქმნა."
+      success_destroyed: "%{obj} წარმატებით გაუქმდა."
+      success_updated: "%{obj} წარმატებით განახლდა."
+    prompts:
+      confirm: დარწმუნებული ხართ?
+      forgot_password: დაგავიწყდათ პაროლი?

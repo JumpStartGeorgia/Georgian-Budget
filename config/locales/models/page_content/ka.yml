@@ -1,0 +1,12 @@
+---
+ka:
+  activerecord:
+    attributes:
+      page_content:
+        content: შიგთავსი
+        name: უნიკალური სახელი
+        title: შინაარსის სექციის სათაური (ნებაყოფლობითია)
+    models:
+      page_content:
+        one: გვერდის შიგთავსი
+        other: გვერდის შიგთავსები

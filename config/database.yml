@@ -1,0 +1,33 @@
+default: &default
+    adapter: postgresql
+    encoding: unicode
+    host: localhost
+    port: 5432
+    reconnect: true
+    pool: 5
+
+development:
+    <<: *default
+    host: db
+    database: <%= ENV["DB_NAME"] %>
+    username: <%= ENV["DB_USER"] %>
+    password: <%= ENV["DB_PASSWORD"] %>
+
+staging:
+    <<: *default
+    database: <%= ENV["DB_NAME"] %>
+    username: <%= ENV["DB_USER"] %>
+    password: <%= ENV["DB_PASSWORD"] %>
+
+production:
+    <<: *default
+    database: <%= ENV["DB_NAME"] %>
+    username: <%= ENV["DB_USER"] %>
+    password: <%= ENV["DB_PASSWORD"] %>
+
+test:
+    <<: *default
+    host: db
+    database: <%= ENV["TEST_DB_NAME"] %>
+    username: <%= ENV["TEST_DB_USER"] %>
+    password: <%= ENV["TEST_DB_PASSWORD"] %>
