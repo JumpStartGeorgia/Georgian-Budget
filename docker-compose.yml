@@ -21,6 +21,7 @@ services:
 
   web:
     build: .
+    image: georgianbudget_web
     command: /bin/sh -c "rm -f tmp/pids/server.pid; bundle exec rails server --port 3000 --binding 0.0.0.0"
     ports:
       - "3000:3000"
@@ -35,7 +36,7 @@ services:
     stdin_open: true
 
   bundle:
-    image: startertemplate_web
+    image: georgianbudget_web
     volumes:
       - /bundle
     command: echo "Loading up bundled gems!"
