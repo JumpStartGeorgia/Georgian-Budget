@@ -21,6 +21,7 @@ Rails.application.routes.draw do
     end
 
     root 'root#index'
+    get '/explore' => 'root#explore'
     get '/about' => 'root#about'
 
     # handles /en/fake/path/whatever

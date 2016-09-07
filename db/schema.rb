@@ -10,10 +10,32 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160420110830) do
+ActiveRecord::Schema.define(version: 20160907081332) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "name_translations", force: :cascade do |t|
+    t.integer  "name_id",    null: false
+    t.string   "locale",     null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string   "text"
+    t.index ["locale"], name: "index_name_translations_on_locale", using: :btree
+    t.index ["name_id"], name: "index_name_translations_on_name_id", using: :btree
+  end
+
+  create_table "names", force: :cascade do |t|
+    t.date     "start_date"
+    t.date     "end_date"
+    t.string   "nameable_type"
+    t.integer  "nameable_id"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+    t.index ["end_date"], name: "index_names_on_end_date", using: :btree
+    t.index ["nameable_type", "nameable_id"], name: "index_names_on_nameable_type_and_nameable_id", using: :btree
+    t.index ["start_date"], name: "index_names_on_start_date", using: :btree
+  end
 
   create_table "page_content_translations", force: :cascade do |t|
     t.integer  "page_content_id", null: false
@@ -28,6 +50,11 @@ ActiveRecord::Schema.define(version: 20160420110830) do
 
   create_table "page_contents", force: :cascade do |t|
     t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "programs", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
