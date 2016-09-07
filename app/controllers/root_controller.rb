@@ -5,6 +5,7 @@ class RootController < ApplicationController
 
   def explore
     @programs = Program.all
+    @priorities = Priority.all
   end
 
   def about
