@@ -2,8 +2,8 @@
 # with its default values. The data can then be loaded with the rake db:seed
 # (or created alongside the db with db:setup).
 
-# To run seeds
-# bundle exec rake db:seed create_user_accounts=true
+# To run seeds with all options (including remove data and create test data):
+# bundle exec rake db:seed create_user_accounts=true create_test_data=true destroy_data=true
 
 puts 'BEGIN SEEDING DATABASE'
 
@@ -35,11 +35,13 @@ if ENV['create_user_accounts'].present? && !Rails.env.production?
     }
   ]
 
+  puts "\nCREATING USERS\n"
+
   test_users.each do |test_user_data|
     old_test_user = User.find_by_email(test_user_data[:email])
     old_test_user.destroy if old_test_user.present?
 
-    puts "\nCREATING USER (#{test_user_data[:role]})\nEmail: #{test_user_data[:email]}\nPassword: #{test_user_data[:password]}\n"
+    puts "\nCreating (#{test_user_data[:role]})\nEmail: #{test_user_data[:email]}\nPassword: #{test_user_data[:password]}\n"
 
     User.create(
       email: test_user_data[:email],
@@ -47,6 +49,31 @@ if ENV['create_user_accounts'].present? && !Rails.env.production?
       role: Role.find_by_name(test_user_data[:role])
     )
   end
+end
+
+if ENV['destroy_data'].present? && !Rails.env.production?
+  puts "\nDESTROYING DATA (except for users)\n"
+  Program.destroy_all
+  Name.destroy_all
+end
+
+if ENV['create_test_data'].present? && !Rails.env.production?
+  puts "\nCREATING PROGRAMS\n"
+  program1 = Program.create
+  Name.create(
+    text: 'Program #1',
+    start_date: Date.yesterday,
+    end_date: Date.today,
+    nameable: program1
+  )
+
+  program2 = Program.create
+  Name.create(
+    text: 'Program #2',
+    start_date: Date.yesterday,
+    end_date: Date.today,
+    nameable: program2
+  )
 end
 
 puts "\nEND SEEDING DATABASE"
