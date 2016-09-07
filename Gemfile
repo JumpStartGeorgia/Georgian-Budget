@@ -104,7 +104,7 @@ group :development do
   gem 'annotate', '~> 2.7'
 
   # Adds a console to application errors in browser
-  gem 'web-console', '~> 2.0'
+  gem 'web-console', '~> 3.3.1'
 
   # Useful performance profiling gems. Load a page with url param ?pp=help
   # for more info.
