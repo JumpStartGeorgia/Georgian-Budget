@@ -1,9 +1,14 @@
-# This file should contain all the record creation needed to seed the database
-# with its default values. The data can then be loaded with the rake db:seed
-# (or created alongside the db with db:setup).
+=begin
 
-# To run seeds with all options (including remove data and create test data):
-# bundle exec rake db:seed create_user_accounts=true create_test_data=true destroy_data=true
+This file should contain all the record creation needed to seed the database
+with its default values. The data can then be loaded with the rake db:seed
+(or created alongside the db with db:setup).
+
+To run seeds with all options (including remove data and create test data):
+
+bundle exec rake db:seed create_user_accounts=true create_test_data=true destroy_data=true
+
+=end
 
 puts 'BEGIN SEEDING DATABASE'
 
@@ -54,11 +59,13 @@ end
 if ENV['destroy_data'].present? && !Rails.env.production?
   puts "\nDESTROYING DATA (except for users)\n"
   Program.destroy_all
+  Priority.destroy_all
   Name.destroy_all
 end
 
 if ENV['create_test_data'].present? && !Rails.env.production?
   puts "\nCREATING PROGRAMS\n"
+
   program1 = Program.create
   Name.create(
     text: 'Program #1',
@@ -73,6 +80,24 @@ if ENV['create_test_data'].present? && !Rails.env.production?
     start_date: Date.yesterday,
     end_date: Date.today,
     nameable: program2
+  )
+
+  puts "\nCREATING PRIORITIES\n"
+
+  priority1 = Priority.create
+  Name.create(
+    text: 'Priority #1',
+    start_date: Date.yesterday,
+    end_date: Date.today,
+    nameable: priority1
+  )
+
+  priority2 = Priority.create
+  Name.create(
+    text: 'Priority #2',
+    start_date: Date.yesterday,
+    end_date: Date.today,
+    nameable: priority2
   )
 end
 
