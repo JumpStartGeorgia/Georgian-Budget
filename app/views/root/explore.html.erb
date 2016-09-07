@@ -15,3 +15,12 @@ Priorities:
     </li>
   <% end %>
 </ul>
+
+Spending Agencies:
+<ul>
+  <% @spending_agencies.each do |spending_agency| %>
+    <li>
+      <%= spending_agency.name %>
+    </li>
+  <% end %>
+</ul>

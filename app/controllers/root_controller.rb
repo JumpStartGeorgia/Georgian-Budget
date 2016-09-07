@@ -6,6 +6,7 @@ class RootController < ApplicationController
   def explore
     @programs = Program.all
     @priorities = Priority.all
+    @spending_agencies = SpendingAgency.all
   end
 
   def about

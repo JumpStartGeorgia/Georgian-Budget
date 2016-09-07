@@ -27,12 +27,26 @@ RSpec.describe 'Name', type: :feature do
         nameable: priority2
       )
 
+      spending_agency1 = FactoryGirl.create(:spending_agency)
+      FactoryGirl.create(
+        :name,
+        nameable: spending_agency1
+      )
+
+      spending_agency2 = FactoryGirl.create(:spending_agency)
+      FactoryGirl.create(
+        :name,
+        nameable: spending_agency2
+      )
+
       visit explore_path
 
       expect(page).to have_content(program1.name)
       expect(page).to have_content(program2.name)
       expect(page).to have_content(priority1.name)
       expect(page).to have_content(priority2.name)
+      expect(page).to have_content(spending_agency1.name)
+      expect(page).to have_content(spending_agency2.name)
     end
   end
 end
