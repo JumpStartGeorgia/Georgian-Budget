@@ -99,6 +99,24 @@ if ENV['create_test_data'].present? && !Rails.env.production?
     end_date: Date.today,
     nameable: priority2
   )
+
+  puts "\nCREATING SPENDING AGENCIES\n"
+
+  spending_agency1 = SpendingAgency.create
+  Name.create(
+    text: 'Spending Agency #1',
+    start_date: Date.yesterday,
+    end_date: Date.today,
+    nameable: spending_agency1
+  )
+
+  spending_agency2 = SpendingAgency.create
+  Name.create(
+    text: 'Spending Agency #2',
+    start_date: Date.yesterday,
+    end_date: Date.today,
+    nameable: spending_agency2
+  )
 end
 
 puts "\nEND SEEDING DATABASE"
