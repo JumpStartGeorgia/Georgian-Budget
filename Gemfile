@@ -39,9 +39,6 @@ gem 'formtastic', '~> 3.1.4'
 # JavaScript interpreter
 gem 'therubyracer', '~> 0.12.1'
 
-# Needed for twitter-bootstrap-rails gem
-gem 'less-rails', '~> 2.7', '>= 2.7.1'
-
 # Bootstrap JS and various bootstrap-related generators/helpers
 gem 'twitter-bootstrap-rails', '~> 3.2.0'
 
@@ -52,7 +49,7 @@ gem 'formtastic-bootstrap', '~> 3.1.0'
 gem 'devise', '~> 4.2.0'
 
 # Authorization
-gem 'cancancan', '~> 1.10.1'
+gem 'cancancan', '~> 1.15.0'
 
 # So that our SCSS can use bootstrap variables
 gem 'bootstrap-sass', '~> 3.3.5'
@@ -118,11 +115,14 @@ end
 
 group :test do
   # Specification testing
-  gem 'rspec-rails', '~> 3.1.0'
+  gem 'rspec-rails', '~> 3.5.2'
 
   # Adds syntax to check that a collection has a certain number of something
   # Ex: expect(new_user).to have(1).error_on(:role)
   gem 'rspec-collection_matchers', '~> 1.1.2'
+
+  # Brings back 'assigns' and 'assert_template' to controller specs in rails 5
+  gem 'rails-controller-testing', '~> 1.0.1'
 
   # Easy data creation in tests
   gem 'factory_girl_rails', '~> 4.5.0'
@@ -131,7 +131,7 @@ group :test do
   gem 'rack-test', '~> 0.6.3'
 
   # Feature testing
-  gem 'capybara', '~> 2.4.4'
+  gem 'capybara', '~> 2.8.1'
 
   # Can launch browser in case of feature spec errors
   gem 'launchy', '~> 2.4.3'
