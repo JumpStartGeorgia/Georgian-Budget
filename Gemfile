@@ -125,7 +125,7 @@ group :test do
   gem 'rails-controller-testing', '~> 1.0.1'
 
   # Easy data creation in tests
-  gem 'factory_girl_rails', '~> 4.5.0'
+  gem 'factory_girl_rails', '~> 4.7.0'
 
   # Testing API for Rack apps
   gem 'rack-test', '~> 0.6.3'
