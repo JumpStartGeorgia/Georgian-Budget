@@ -19,6 +19,8 @@ class MonthlyBudgetSheetItem
     )
   end
 
+  attr_accessor :rows
+
   private
 
   def name
@@ -32,6 +34,4 @@ class MonthlyBudgetSheetItem
   def header_row
     rows[0]
   end
-
-  attr_reader :rows
 end

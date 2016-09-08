@@ -3,8 +3,8 @@ class MonthlyBudgetSheetRow
     @row_data = row_data
   end
 
-  # if the first col is left aligned and the 3rd column is blank, this is a new item
-  def is_item?
+  # returns true if this is the header row of an item
+  def is_header?
     return false if cells.empty?
 
     code_is_left_aligned && third_cell_is_empty
