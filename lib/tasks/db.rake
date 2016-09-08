@@ -119,7 +119,7 @@ namespace :budget_data do
 end
 
 def stop_if_production
-  # if Rails.env.production?
+  if Rails.env.production?
     throw 'This task is not allowed on production'
-  # end
+  end
 end
