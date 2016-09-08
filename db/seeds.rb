@@ -5,12 +5,9 @@ with its default values. The data can then be loaded with the rake db:seed
 (or created alongside the db with db:setup).
 
 To seed database with default values:
-
 rake db:seed
 
-
 To view other data-related tasks:
-
 rake -T budget_data
 
 =end
