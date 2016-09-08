@@ -4,12 +4,12 @@ require_relative 'monthly_budget_sheet_row'
 class MonthlyBudgetSheet
   def initialize(spreadsheet_path)
     @spreadsheet_path = spreadsheet_path
+    @starting_row = 6
   end
 
   def save_data
     data = parse
     data_rows = data[0]
-    starting_row = 6
 
     data_rows[starting_row..data_rows.count].each_with_index do |row_data, index|
       row = MonthlyBudgetSheetRow.new(row_data)
@@ -17,7 +17,7 @@ class MonthlyBudgetSheet
       next unless row.is_item?
 
       budget_item = MonthlyBudgetSheetItem.new([row])
-      budget_item.save_data
+      budget_item.save
     end
   end
 
@@ -28,4 +28,5 @@ class MonthlyBudgetSheet
   end
 
   attr_reader :spreadsheet_path
+  attr_reader :starting_row
 end

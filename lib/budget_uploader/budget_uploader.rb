@@ -1,5 +1,5 @@
 require 'rubyXL'
-require_relative 'monthly_budget_sheet'
+require_relative 'monthly_budget_sheet/monthly_budget_sheet'
 
 class BudgetUploader
 
