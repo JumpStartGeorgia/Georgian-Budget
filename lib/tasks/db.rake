@@ -1,7 +1,5 @@
-
-
 namespace :db do
-  desc 'Create users for testing the app. Does not work on production'
+  desc 'Create users for testing the app. Not allowed on production'
   task create_test_users: :environment do
     if Rails.env.production?
       throw 'Creating test users not allowed on production'
@@ -41,5 +39,24 @@ namespace :db do
         role: Role.find_by_name(test_user_data[:role])
       )
     end
+  end
+
+  desc 'Destroy all data that are not users or roles. Not allowed on production'
+  task destroy_non_user_data: :environment do
+    if Rails.env.production?
+      throw 'Creating test users not allowed on production'
+    end
+
+    puts "\nDestroying Programs\n"
+    Program.destroy_all
+
+    puts "\nDestroying Priorities\n"
+    Priority.destroy_all
+
+    puts "\nDestroying Spending Agencies\n"
+    SpendingAgency.destroy_all
+
+    puts "\nDestroying Names\n"
+    Name.destroy_all
   end
 end
