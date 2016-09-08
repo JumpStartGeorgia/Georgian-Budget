@@ -11,11 +11,19 @@ class MonthlyBudgetSheetRow
   end
 
   def code
-    cells[0].value
+    cells[0].value.strip
   end
 
   def name
-    cells[1].value
+    cells[1].value.strip
+  end
+
+  def planned_finance
+    cells[2].value.to_i
+  end
+
+  def spent_finance
+    cells[6].value.to_i
   end
 
   private
