@@ -1,3 +1,4 @@
+require_relative 'monthly_budget_sheet_item'
 require_relative 'monthly_budget_sheet_row'
 
 class MonthlyBudgetSheet
@@ -10,14 +11,13 @@ class MonthlyBudgetSheet
     data_rows = data[0]
     starting_row = 6
 
-    data_rows
-
     data_rows[starting_row..data_rows.count].each_with_index do |row_data, index|
       row = MonthlyBudgetSheetRow.new(row_data)
 
       next unless row.is_item?
 
-      row.save_data
+      budget_item = MonthlyBudgetSheetItem.new([row])
+      budget_item.save_data
     end
   end
 
