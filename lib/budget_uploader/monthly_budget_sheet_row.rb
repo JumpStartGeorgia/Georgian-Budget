@@ -4,7 +4,7 @@ class MonthlyBudgetSheetRow
   end
 
   def save_data
-    budget_item_class = budget_item_class_for_code(code)
+    budget_item_class = BudgetCodeMapper.class_for_code(code)
 
     return unless budget_item_class.present?
 
@@ -47,24 +47,6 @@ class MonthlyBudgetSheetRow
 
   def name
     cells[1].value
-  end
-
-  def budget_item_class_for_code(code)
-    if code.length == 2
-      return nil
-    elsif code.length == 5
-      if code.split(//).last(2).join == '00'
-        return SpendingAgency
-      else
-        return Program
-      end
-    elsif code.length == 8
-      return Program # 'sub-program'
-    elsif code.length == 11
-      return Program # 'sub-sub-program'
-    elsif code.length == 14
-      return Program # 'sub-sub-sub-program'
-    end
   end
 
   attr_reader :row_data
