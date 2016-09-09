@@ -167,3 +167,8 @@ end
 ########################## Project Gems #############################
 
 gem 'rubyXL', '~> 3.3.21', require: false
+
+group :test do
+  # Test the number of SQL queries are created by a model call
+  gem 'rspec-query-limit', '~> 0.1.2'
+end
