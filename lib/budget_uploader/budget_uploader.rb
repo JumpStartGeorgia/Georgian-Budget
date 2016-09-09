@@ -12,8 +12,7 @@ class BudgetUploader
     puts "\nBEGIN: Budget Uploader\n\n"
     puts "Uploading all budget data from files in #{folder} to database\n\n"
 
-    monthly_sheet_paths = Dir.glob(Pathname.new(folder).join('ShesBiu-*.xlsx'))
-    monthly_sheet_paths.each do |monthly_sheet_path|
+    MonthlyBudgetSheet.file_paths(folder).each do |monthly_sheet_path|
       monthly_sheet = MonthlyBudgetSheet.new(monthly_sheet_path)
       monthly_sheet.save_data
 
@@ -21,19 +20,24 @@ class BudgetUploader
     end
 
     puts "\nEND: Budget Uploader"
-    puts "Time elapsed: #{elapsed_since_start}"
+    puts "Time elapsed: #{pretty_time(total_elapsed_time)}"
     puts "Number of monthly budget sheets processed: #{num_monthly_sheets_processed}"
-    puts "Average time per monthly budget sheet: #{average_time_per_spreadsheet}"
+    puts "Average time per monthly budget sheet: #{pretty_time(average_time_per_spreadsheet)}"
   end
 
   private
+
+  def pretty_time(time = 0)
+    Time.at(time).utc.strftime("%H:%M:%S").to_s
+  end
 
   def elapsed_since_start
     Time.at(total_elapsed_time).utc.strftime("%H:%M:%S").to_s
   end
 
   def average_time_per_spreadsheet
-    Time.at(total_elapsed_time/num_monthly_sheets_processed).utc.strftime("%H:%M:%S").to_s
+    return 0 if num_monthly_sheets_processed == 0
+    total_elapsed_time/num_monthly_sheets_processed
   end
 
   def total_elapsed_time

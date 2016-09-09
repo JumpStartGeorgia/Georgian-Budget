@@ -2,6 +2,11 @@ require_relative 'monthly_budget_sheet_item'
 require_relative 'monthly_budget_sheet_row'
 
 class MonthlyBudgetSheet
+
+  def self.file_paths(folder)
+    Dir.glob(Pathname.new(folder).join(self.file_name_glob))
+  end
+
   def initialize(spreadsheet_path)
     @spreadsheet_path = spreadsheet_path
     @starting_row = 6
@@ -29,6 +34,10 @@ class MonthlyBudgetSheet
   end
 
   private
+
+  def self.file_name_glob
+    '*ShesBiu*.xlsx'
+  end
 
   def parse
     RubyXL::Parser.parse(spreadsheet_path)
