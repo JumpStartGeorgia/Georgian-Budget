@@ -4,9 +4,9 @@ class RootController < ApplicationController
   end
 
   def explore
-    @programs = Program.all
-    @priorities = Priority.all
-    @spending_agencies = SpendingAgency.all
+    @programs = Program.all.with_most_recent_names
+    @priorities = Priority.all.with_most_recent_names
+    @spending_agencies = SpendingAgency.all.with_most_recent_names
   end
 
   def about
