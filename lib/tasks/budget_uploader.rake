@@ -7,5 +7,11 @@ namespace :budget_data do
       uploader = BudgetUploader.new
       uploader.upload_folder(Rails.root.join('tmp', 'budget_files'))
     end
+
+    desc 'Upload one monthly spreadsheet'
+    task :monthly_sheet, [:path] do |t, args|
+      monthly_sheet = MonthlyBudgetSheet.new(args[:path])
+      monthly_sheet.save_data
+    end
   end
 end
