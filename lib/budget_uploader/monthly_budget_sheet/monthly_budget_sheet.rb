@@ -9,7 +9,6 @@ class MonthlyBudgetSheet
 
   def initialize(spreadsheet_path)
     @spreadsheet_path = spreadsheet_path
-    @starting_row = 6
   end
 
   def save_data
@@ -19,13 +18,16 @@ class MonthlyBudgetSheet
     data_rows = data[0]
     current_item = nil
 
-    data_rows[starting_row..data_rows.count].each_with_index do |row_data, index|
+    data_rows.each_with_index do |row_data, index|
       row = MonthlyBudgetSheetRow.new(row_data)
 
-      # If the row is a header, then save the previous item and replace
-      # it with the new item.
+      next unless row.contains_data?
+
       if row.is_header?
+        # save the previous budget item
         current_item.save unless current_item.nil?
+
+        # create a new budget item
         current_item = MonthlyBudgetSheetItem.new([row])
       else
         current_item.rows << row

@@ -5,17 +5,32 @@ class MonthlyBudgetSheetRow
 
   # returns true if this is the header row of an item
   def is_header?
-    return false if cells.empty?
+    return false unless contains_data?
 
     code_is_left_aligned && third_cell_is_empty
   end
 
+  # returns true if item has code and name
+  def contains_data?
+    return false if cells.empty?
+    return false if code.nil? || code.empty?
+    return false if name.nil? || name.empty?
+
+    true
+  end
+
   def code
-    cells[0].value.strip
+    value = cells[0].value
+
+    return nil if value.nil?
+    value.to_s.strip
   end
 
   def name
-    cells[1].value.strip
+    value = cells[1].value
+
+    return nil if value.nil?
+    value.to_s.strip
   end
 
   def planned_finance

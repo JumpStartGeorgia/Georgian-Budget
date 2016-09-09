@@ -12,11 +12,15 @@ class BudgetUploader
     puts "\nBEGIN: Budget Uploader\n\n"
     puts "Uploading all budget data from files in #{folder} to database\n\n"
 
-    MonthlyBudgetSheet.file_paths(folder).each do |monthly_sheet_path|
-      monthly_sheet = MonthlyBudgetSheet.new(monthly_sheet_path)
-      monthly_sheet.save_data
+    begin
+      MonthlyBudgetSheet.file_paths(folder).each do |monthly_sheet_path|
+        monthly_sheet = MonthlyBudgetSheet.new(monthly_sheet_path)
+        monthly_sheet.save_data
 
-      self.num_monthly_sheets_processed = num_monthly_sheets_processed + 1
+        self.num_monthly_sheets_processed = num_monthly_sheets_processed + 1
+      end
+    rescue StandardError => error
+      puts "\n\nStopping uploader due to error: #{error}"
     end
 
     puts "\nEND: Budget Uploader"
