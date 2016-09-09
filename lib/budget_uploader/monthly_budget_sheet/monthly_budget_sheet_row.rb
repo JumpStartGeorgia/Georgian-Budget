@@ -20,14 +20,22 @@ class MonthlyBudgetSheetRow
   end
 
   def code
-    value = cells[0].value
+    return nil if cells.empty?
+    code_cell = cells[0]
+
+    return nil if code_cell.nil?
+    value = code_cell.value
 
     return nil if value.nil?
     value.to_s.strip
   end
 
   def name
-    value = cells[1].value
+    return nil if cells.empty?
+    name_cell = cells[1]
+
+    return nil if name_cell.nil?
+    value = name_cell.value
 
     return nil if value.nil?
     value.to_s.strip

@@ -30,6 +30,7 @@ class MonthlyBudgetSheet
         # create a new budget item
         current_item = MonthlyBudgetSheetItem.new([row])
       else
+        next unless current_item.present?
         current_item.rows << row
       end
     end

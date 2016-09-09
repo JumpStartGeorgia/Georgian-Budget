@@ -20,7 +20,8 @@ class BudgetUploader
         self.num_monthly_sheets_processed = num_monthly_sheets_processed + 1
       end
     rescue StandardError => error
-      puts "\n\nStopping uploader due to error: #{error}"
+      puts "\n\nStopping uploader due to ERROR: #{error}"
+      puts error.backtrace
     end
 
     puts "\nEND: Budget Uploader"
