@@ -8,6 +8,8 @@ class MonthlyBudgetSheet
   end
 
   def save_data
+    puts "Saving data in monthly budget sheet: #{spreadsheet_path}"
+
     data = parse
     data_rows = data[0]
     current_item = nil
