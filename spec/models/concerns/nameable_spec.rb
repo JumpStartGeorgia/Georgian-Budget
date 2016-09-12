@@ -81,26 +81,15 @@ RSpec.shared_examples_for 'nameable' do
 
   describe '.with_most_recent_names' do
     it 'gets most recent names' do
-      # add less recent name to nameable1
-      name3 = FactoryGirl.create(
-        :name,
-        text: name_text2,
-        start_date: name1.start_date - 5,
-        nameable: nameable1
-      )
-
-      # add more recent name to nameable2
-      name4 = FactoryGirl.create(
-        :name,
-        text: name_text4,
-        start_date: name2.start_date + 5,
-        nameable: nameable2
-      )
+      name1.save!
+      name1b.save!
+      name2.save!
+      name2b.save!
 
       nameables_with_names = described_class.with_most_recent_names
 
-      expect(nameables_with_names.find(nameable1.id).name).to eq(name1.text)
-      expect(nameables_with_names.find(nameable2.id).name).to eq(name4.text)
+      expect(nameables_with_names.find(nameable1.id).name).to eq(name1b.text)
+      expect(nameables_with_names.find(nameable2.id).name).to eq(name2b.text)
     end
 
     it 'issues just 3 queries (with subsequent nameable.name calls)' do
