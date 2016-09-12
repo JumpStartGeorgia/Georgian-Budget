@@ -1,26 +1,32 @@
 class MonthlyBudgetSheetItem
-  def initialize(rows, start_date)
+  def initialize(rows)
     @rows = rows
-    @start_date = start_date
   end
 
-  def save
+  def save(start_date, end_date)
     budget_item_class = BudgetCodeMapper.class_for_code(primary_code)
 
     return unless budget_item_class.present?
-    return if budget_item_class.find_by_name(name).present?
 
-    budget_item = budget_item_class.create
+    budget_item = budget_item_class.find_by_name(name)[0]
 
-    Name.create(
-      nameable: budget_item,
-      text: name,
-      start_date: start_date
+    unless budget_item.present? # do not create new item and new name if budget item is present
+      budget_item = budget_item_class.create
+
+      Name.create(
+        nameable: budget_item,
+        text: name,
+        start_date: start_date
+      )
+    end
+
+
+    SpentFinance.create(
+      finance_spendable: budget_item,
+      start_date: start_date,
+      end_date: end_date,
+      amount: spent_finance_amount
     )
-
-    # SpentFinance.create(
-    #   amount: spent_finance_amount
-    # )
     #
     # PlannedFinance.create(
     #   amount: planned_finance_amount
@@ -30,8 +36,6 @@ class MonthlyBudgetSheetItem
   attr_accessor :rows
 
   private
-
-  attr_reader :start_date
 
   def spent_finance_amount
     totals_row.spent_finance

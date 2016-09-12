@@ -27,13 +27,10 @@ class MonthlyBudgetSheet
 
       if row.is_header?
         # save the previous budget item
-        current_item.save unless current_item.nil?
+        current_item.save(start_date, end_date) unless current_item.nil?
 
         # create a new budget item
-        current_item = MonthlyBudgetSheetItem.new(
-          [row],
-          start_date
-        )
+        current_item = MonthlyBudgetSheetItem.new([row])
       else
         next unless current_item.present?
         current_item.rows << row
@@ -49,7 +46,11 @@ class MonthlyBudgetSheet
               :year
 
   def start_date
-    Date.new(year, month, 1)
+    Date.new(year, month).beginning_of_month
+  end
+
+  def end_date
+    Date.new(year, month).end_of_month
   end
 
   def date_regex_match

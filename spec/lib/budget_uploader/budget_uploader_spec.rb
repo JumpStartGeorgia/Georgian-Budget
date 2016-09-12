@@ -17,8 +17,19 @@ RSpec.describe 'BudgetUploader' do
       spending_agency1_array = SpendingAgency.find_by_name('საქართველოს პარლამენტი და მასთან არსებული ორგანიზაციები')
       spending_agency1 = spending_agency1_array[0]
 
+      spending_agency1_spent_finance1 = spending_agency1.spent_finances[1]
+      spending_agency1_spent_finance2 = spending_agency1.spent_finances[0]
+
       expect(spending_agency1_array.length).to eq(1)
       expect(spending_agency1.name_object.start_date).to eq(monthly_budgets_start_date)
+
+      expect(spending_agency1_spent_finance1.amount).to eq(3532432) # actual amount: 3532432.91
+      expect(spending_agency1_spent_finance1.start_date).to eq(Date.new(2015, 1, 1))
+      expect(spending_agency1_spent_finance1.end_date).to eq(Date.new(2015, 1, 31))
+
+      expect(spending_agency1_spent_finance2.amount).to eq(7285516)
+      expect(spending_agency1_spent_finance2.start_date).to eq(Date.new(2015, 2, 1))
+      expect(spending_agency1_spent_finance2.end_date).to eq(Date.new(2015, 2, 28))
 
       ###
       program1_array = Program.find_by_name('საკანონმდებლო საქმიანობა')
