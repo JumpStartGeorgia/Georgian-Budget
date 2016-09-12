@@ -100,8 +100,17 @@ RSpec.shared_examples_for 'nameable' do
 
       expect do
         nameables_with_names = described_class.all.with_most_recent_names
-        nameables_with_names[0].name
-        nameables_with_names[1].name
+
+        nameable1_with_names = nameables_with_names.find do |nameable|
+          nameable.id = nameable1.id
+        end
+
+        nameable2_with_names = nameables_with_names.find do |nameable|
+          nameable.id = nameable2.id
+        end
+
+        nameable1_with_names.name
+        nameable2_with_names.name
       end.to query_limit_eq(3)
     end
 
