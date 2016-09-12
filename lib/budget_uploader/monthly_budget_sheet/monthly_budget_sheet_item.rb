@@ -1,6 +1,7 @@
 class MonthlyBudgetSheetItem
-  def initialize(rows)
+  def initialize(rows, start_date)
     @rows = rows
+    @start_date = start_date
   end
 
   def save
@@ -14,7 +15,7 @@ class MonthlyBudgetSheetItem
     Name.create(
       nameable: budget_item,
       text: name,
-      start_date: Date.today
+      start_date: start_date
     )
 
     # SpentFinance.create(
@@ -29,6 +30,8 @@ class MonthlyBudgetSheetItem
   attr_accessor :rows
 
   private
+
+  attr_reader :start_date
 
   def spent_finance_amount
     totals_row.spent_finance

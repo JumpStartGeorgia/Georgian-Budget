@@ -28,7 +28,10 @@ class MonthlyBudgetSheet
         current_item.save unless current_item.nil?
 
         # create a new budget item
-        current_item = MonthlyBudgetSheetItem.new([row])
+        current_item = MonthlyBudgetSheetItem.new(
+          [row],
+          start_date
+        )
       else
         next unless current_item.present?
         current_item.rows << row
@@ -37,6 +40,10 @@ class MonthlyBudgetSheet
   end
 
   private
+
+  def start_date
+    Date.new(2015, 1, 2)
+  end
 
   def self.file_name_glob
     '*ShesBiu*.xlsx'
