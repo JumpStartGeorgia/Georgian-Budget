@@ -20,6 +20,8 @@ Rails.application.routes.draw do
       resources :page_contents, constraints: { format: :html }
     end
 
+    resources :programs, only: [:show]
+
     root 'root#index'
     get '/explore' => 'root#explore'
     get '/about' => 'root#about'

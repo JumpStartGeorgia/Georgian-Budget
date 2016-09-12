@@ -1,0 +1,13 @@
+<%= @program.name %>
+
+<ul>
+  <% if @program.spent_finances.each do |spent_finance| %>
+    <li>
+      <%= "#{spent_finance.start_date} - #{spent_finance.end_date}: #{spent_finance.amount}" %>
+    </li>
+  <% end.empty? %>
+    <li>
+      No spent finances for this program :(
+    </li>
+  <% end %>
+</ul>
