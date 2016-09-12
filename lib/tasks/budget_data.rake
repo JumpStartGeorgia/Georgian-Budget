@@ -115,6 +115,9 @@ namespace :budget_data do
 
     puts "\nDestroying Names\n"
     Name.destroy_all
+
+    puts "\nDestroying Spent Finances\n"
+    SpentFinance.destroy_all
   end
 end
 
