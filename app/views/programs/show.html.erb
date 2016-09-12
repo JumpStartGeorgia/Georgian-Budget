@@ -24,9 +24,9 @@
   Spent Finances:
 </h2>
 <ul>
-  <% if @program.spent_finances.each do |spent_finance| %>
+  <% if @program.spent_finances.order(:start_date).each do |spent_finance| %>
     <li>
-      <%= "#{spent_finance.start_date} - #{spent_finance.end_date}: #{spent_finance.amount}" %>
+      <%= "#{spent_finance.start_date} - #{spent_finance.end_date}: #{spent_finance.amount_pretty}" %>
     </li>
   <% end.empty? %>
     <li>

@@ -16,4 +16,8 @@ class SpentFinance < ApplicationRecord
   def self.total
     calculate(:sum, :amount)
   end
+
+  def amount_pretty
+    ActionController::Base.helpers.number_with_delimiter(amount, delimiter: ',')
+  end
 end
