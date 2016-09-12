@@ -1,5 +1,5 @@
 # Create the users table
-class DeviseCreateUsers < ActiveRecord::Migration
+class DeviseCreateUsers < ActiveRecord::Migration[4.2]
   # rubocop:disable MethodLength
   def change
     # rubocop:enable MethodLength
