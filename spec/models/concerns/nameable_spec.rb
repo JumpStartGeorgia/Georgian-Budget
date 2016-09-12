@@ -7,9 +7,11 @@ RSpec.shared_examples_for 'nameable' do
   let(:name_text2) { 'Name #2' }
   let(:name_text3) { 'Name #3' }
   let(:name_text4) { 'Name #4' }
+  let(:name_text5) { 'Name #5' }
 
   let(:nameable1) { FactoryGirl.create(described_class_sym) }
   let(:nameable2) { FactoryGirl.create(described_class_sym) }
+  let(:nameable3) { FactoryGirl.create(described_class_sym) }
 
   let(:name1) do
     FactoryGirl.create(
@@ -26,6 +28,15 @@ RSpec.shared_examples_for 'nameable' do
       text: name_text2,
       start_date: Date.new(2014, 1, 1),
       nameable: nameable2
+    )
+  end
+
+  let(:name3) do
+    FactoryGirl.create(
+      :name,
+      text: name_text5,
+      start_date: Date.new(2014, 1, 1),
+      nameable: nameable3
     )
   end
 
@@ -49,42 +60,22 @@ RSpec.shared_examples_for 'nameable' do
 
   describe '#name' do
     it 'returns most recent name' do
-      FactoryGirl.create(
-        :name,
-        text: name_text1,
-        start_date: Date.new(2015, 5, 2),
-        end_date: Date.new(2015, 12, 31),
-        nameable: nameable1
-      )
+      nameable1.save!
+      name1.save!
+      name1b.save!
 
-      FactoryGirl.create(
-        :name,
-        text: name_text2,
-        start_date: Date.new(2015, 1, 1),
-        end_date: Date.new(2015, 5, 1),
-        nameable: nameable1
-      )
-
-      expect(nameable1.name).to eq(name_text1)
+      expect(nameable1.name).to eq(name1b.text)
     end
   end
 
   describe '.find_by_name' do
     it 'returns nameables with name' do
-      FactoryGirl.create(
-        :name,
-        text: name_text2,
-        start_date: name1.start_date + 5,
-        nameable: nameable1
-      )
+      name2.save!
 
-      nameable2 = FactoryGirl.create(described_class_sym)
-      FactoryGirl.create(:name, text: name_text2, nameable: nameable2)
+      name3.text = name1.text
+      name3.save!
 
-      nameable3 = FactoryGirl.create(described_class_sym)
-      FactoryGirl.create(:name, text: name_text1, nameable: nameable3)
-
-      expect(described_class.find_by_name(name_text1)).to eq([nameable1, nameable3])
+      expect(described_class.find_by_name(name_text1)).to match_array([nameable1, nameable3])
     end
   end
 
