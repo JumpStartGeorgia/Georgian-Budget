@@ -88,8 +88,16 @@ RSpec.shared_examples_for 'nameable' do
 
       nameables_with_names = described_class.with_most_recent_names
 
-      expect(nameables_with_names.find(nameable1.id).name).to eq(name1b.text)
-      expect(nameables_with_names.find(nameable2.id).name).to eq(name2b.text)
+      nameable1_with_names = nameables_with_names.find do |nameable|
+        nameable.id == nameable1.id
+      end
+
+      nameable2_with_names = nameables_with_names.find do |nameable|
+        nameable.id == nameable2.id
+      end
+
+      expect(nameable1_with_names.name).to eq(name1b.text)
+      expect(nameable2_with_names.name).to eq(name2b.text)
     end
 
     it 'issues just 3 queries (with subsequent nameable.name calls)' do
@@ -102,11 +110,11 @@ RSpec.shared_examples_for 'nameable' do
         nameables_with_names = described_class.all.with_most_recent_names
 
         nameable1_with_names = nameables_with_names.find do |nameable|
-          nameable.id = nameable1.id
+          nameable.id == nameable1.id
         end
 
         nameable2_with_names = nameables_with_names.find do |nameable|
-          nameable.id = nameable2.id
+          nameable.id == nameable2.id
         end
 
         nameable1_with_names.name
