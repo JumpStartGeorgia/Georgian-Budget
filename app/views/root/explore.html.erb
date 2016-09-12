@@ -2,7 +2,8 @@ Programs:
 <ul>
   <% @programs.each do |program| %>
     <li>
-      <%= program.name %>
+      <%= link_to program.name,
+                  program_path(program) %>
     </li>
   <% end %>
 </ul>
