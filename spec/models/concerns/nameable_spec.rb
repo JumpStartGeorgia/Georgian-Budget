@@ -59,12 +59,22 @@ RSpec.shared_examples_for 'nameable' do
   end
 
   describe '#name' do
-    it 'returns most recent name' do
+    it 'returns most recent name text' do
       nameable1.save!
       name1.save!
       name1b.save!
 
       expect(nameable1.name).to eq(name1b.text)
+    end
+  end
+
+  describe '#name_object' do
+    it 'returns the most recent name object' do
+      nameable1.save!
+      name1.save!
+      name1b.save!
+
+      expect(nameable1.name_object).to eq(name1b)
     end
   end
 

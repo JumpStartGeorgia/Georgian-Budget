@@ -9,6 +9,10 @@ module Nameable
     names.sort_by(&:start_date).last.text
   end
 
+  def name_object
+    names.sort_by(&:start_date).last
+  end
+
   module ClassMethods
     def find_by_name(name)
       joins(names: :translations)
