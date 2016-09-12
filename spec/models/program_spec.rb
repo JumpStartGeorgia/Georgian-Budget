@@ -1,6 +1,9 @@
 require 'rails_helper'
+require Rails.root.join('spec', 'models', 'concerns', 'nameable_spec')
 
-RSpec.describe 'Program', type: :model do
+RSpec.describe Program, type: :model do
+  it_behaves_like 'nameable'
+
   let(:name_text1) { 'Name #1' }
   let(:name_text2) { 'Name #2' }
   let(:name_text3) { 'Name #3' }
@@ -25,28 +28,6 @@ RSpec.describe 'Program', type: :model do
       start_date: Date.new(2014, 1, 1),
       nameable: program2
     )
-  end
-
-  describe '#name' do
-    it 'returns most recent name' do
-      FactoryGirl.create(
-        :name,
-        text: name_text1,
-        start_date: Date.new(2015, 5, 2),
-        end_date: Date.new(2015, 12, 31),
-        nameable: program1
-      )
-
-      FactoryGirl.create(
-        :name,
-        text: name_text2,
-        start_date: Date.new(2015, 1, 1),
-        end_date: Date.new(2015, 5, 1),
-        nameable: program1
-      )
-
-      expect(program1.name).to eq(name_text1)
-    end
   end
 
   describe '.find_by_name' do
