@@ -27,7 +27,7 @@ RSpec.describe 'BudgetUploader' do
       expect(spending_agency1_spent_finance1.start_date).to eq(Date.new(2015, 1, 1))
       expect(spending_agency1_spent_finance1.end_date).to eq(Date.new(2015, 1, 31))
 
-      expect(spending_agency1_spent_finance2.amount).to eq(7285516)
+      expect(spending_agency1_spent_finance2.amount).to eq(3753084)
       expect(spending_agency1_spent_finance2.start_date).to eq(Date.new(2015, 2, 1))
       expect(spending_agency1_spent_finance2.end_date).to eq(Date.new(2015, 2, 28))
 

@@ -20,12 +20,11 @@ class MonthlyBudgetSheetItem
       )
     end
 
-
     SpentFinance.create(
       finance_spendable: budget_item,
       start_date: start_date,
       end_date: end_date,
-      amount: spent_finance_amount
+      amount: spent_finance_amount(budget_item, start_date)
     )
     #
     # PlannedFinance.create(
@@ -37,7 +36,12 @@ class MonthlyBudgetSheetItem
 
   private
 
-  def spent_finance_amount
+  def spent_finance_amount(budget_item, start_date)
+    previously_spent = budget_item.spent_finances.year_cumulative_up_to(start_date)
+    cumulative_spent_finance_amount - previously_spent
+  end
+
+  def cumulative_spent_finance_amount
     totals_row.spent_finance
   end
 
