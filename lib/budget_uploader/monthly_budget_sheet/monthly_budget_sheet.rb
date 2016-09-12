@@ -9,6 +9,8 @@ class MonthlyBudgetSheet
 
   def initialize(spreadsheet_path)
     @spreadsheet_path = spreadsheet_path
+    @month = date_regex_match[1].to_i
+    @year = date_regex_match[2].to_i
   end
 
   def save_data
@@ -41,12 +43,17 @@ class MonthlyBudgetSheet
 
   private
 
-  def start_date
-    match = filename_date_regex.match(spreadsheet_path)
-    month = match[1].to_i
-    year = match[2].to_i
+  attr_reader :spreadsheet_path,
+              :starting_row,
+              :month,
+              :year
 
+  def start_date
     Date.new(year, month, 1)
+  end
+
+  def date_regex_match
+    filename_date_regex.match(spreadsheet_path)
   end
 
   def filename_date_regex
@@ -60,7 +67,4 @@ class MonthlyBudgetSheet
   def parse
     RubyXL::Parser.parse(spreadsheet_path)
   end
-
-  attr_reader :spreadsheet_path
-  attr_reader :starting_row
 end
