@@ -1,5 +1,28 @@
-<%= @program.name %>
+<h1>
+  <%= @program.name %>
+</h1>
 
+<h2>
+  Names:
+</h2>
+
+<ul>
+  <% if @program.names.each do |name| %>
+    <li>
+      <%= name.text %>
+    </li>
+  <% end.empty? %>
+    <li>
+      No names for this program :/
+    </li>
+  <% end %>
+</ul>
+
+<hr />
+
+<h2>
+  Spent Finances:
+</h2>
 <ul>
   <% if @program.spent_finances.each do |spent_finance| %>
     <li>
