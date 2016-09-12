@@ -5,10 +5,12 @@ module Nameable
     has_many :names, as: :nameable
   end
 
+  # text of most recent name
   def name
-    names.sort_by(&:start_date).last.text
+    name_object.text
   end
 
+  # most recent name
   def name_object
     names.sort_by(&:start_date).last
   end
