@@ -42,7 +42,15 @@ class MonthlyBudgetSheet
   private
 
   def start_date
-    Date.new(2015, 1, 2)
+    match = filename_date_regex.match(spreadsheet_path)
+    month = match[1].to_i
+    year = match[2].to_i
+
+    Date.new(year, month, 1)
+  end
+
+  def filename_date_regex
+    /ShesBiu.*?(\w+)\.(\w+).xlsx/
   end
 
   def self.file_name_glob
