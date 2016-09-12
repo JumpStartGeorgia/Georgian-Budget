@@ -29,6 +29,24 @@ RSpec.shared_examples_for 'nameable' do
     )
   end
 
+  let(:name1b) do
+    FactoryGirl.create(
+      :name,
+      text: name_text3,
+      start_date: name1.start_date + 1,
+      nameable: nameable1
+    )
+  end
+
+  let(:name2b) do
+    FactoryGirl.create(
+      :name,
+      text: name_text4,
+      start_date: name2.start_date + 1,
+      nameable: nameable2
+    )
+  end
+
   describe '#name' do
     it 'returns most recent name' do
       FactoryGirl.create(
@@ -106,5 +124,6 @@ RSpec.shared_examples_for 'nameable' do
         nameables_with_names[1].name
       end.to query_limit_eq(3)
     end
+
   end
 end
