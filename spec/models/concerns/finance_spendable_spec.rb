@@ -19,6 +19,19 @@ RSpec.shared_examples_for 'FinanceSpendable' do
     )
   end
 
+  describe '#destroy' do
+    it 'should destroy associated spent_finances' do
+      finance_spendable1.save!
+      spent_finance1.save!
+      spent_finance1b.save!
+
+      finance_spendable1.destroy
+
+      expect(SpentFinance.exists?(spent_finance1.id)).to eq(false)
+      expect(SpentFinance.exists?(spent_finance1b.id)).to eq(false)
+    end
+  end
+
   describe '#spent_finances' do
     it 'gets all spent finances for the finance_spendable' do
       expect(finance_spendable1.spent_finances).to match_array([spent_finance1, spent_finance1b])
