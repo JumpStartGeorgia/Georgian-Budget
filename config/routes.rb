@@ -20,7 +20,9 @@ Rails.application.routes.draw do
       resources :page_contents, constraints: { format: :html }
     end
 
-    resources :programs, only: [:show]
+    get '/explore/:nameable_type/:nameable_id',
+        to: 'root#temp_nameable_show',
+        as: 'nameable'
 
     root 'root#index'
     get '/explore' => 'root#explore'

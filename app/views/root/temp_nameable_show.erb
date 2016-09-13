@@ -1,5 +1,5 @@
 <h1>
-  <%= @program.name %>
+  <%= @nameable.name %>
 </h1>
 
 <h2>
@@ -7,7 +7,7 @@
 </h2>
 
 <ul>
-  <% if @program.names.each do |name| %>
+  <% if @nameable.names.each do |name| %>
     <li>
       <%= name.text %>
     </li>
@@ -24,7 +24,7 @@
   Spent Finances:
 </h2>
 <ul>
-  <% if @program.spent_finances.order(:start_date).each do |spent_finance| %>
+  <% if @nameable.spent_finances.order(:start_date).each do |spent_finance| %>
     <li>
       <%= "#{spent_finance.start_date} - #{spent_finance.end_date}: #{spent_finance.amount_pretty}" %>
     </li>
