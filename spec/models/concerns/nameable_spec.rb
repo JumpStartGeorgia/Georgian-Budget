@@ -58,6 +58,19 @@ RSpec.shared_examples_for 'nameable' do
     )
   end
 
+  describe '#destroy' do
+    it 'destroys associated names' do
+      nameable1.save!
+      name1.save!
+      name1b.save!
+
+      nameable1.destroy
+
+      expect(Name.exists?(name1.id)).to eq(false)
+      expect(Name.exists?(name1b.id)).to eq(false)
+    end
+  end
+
   describe '#name' do
     it 'returns most recent name text' do
       nameable1.save!

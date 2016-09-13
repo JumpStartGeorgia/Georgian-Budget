@@ -2,7 +2,7 @@ module Nameable
   extend ActiveSupport::Concern
 
   included do
-    has_many :names, as: :nameable
+    has_many :names, as: :nameable, dependent: :destroy
   end
 
   # text of most recent name
