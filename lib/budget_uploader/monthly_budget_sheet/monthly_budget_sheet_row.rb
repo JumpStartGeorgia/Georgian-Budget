@@ -42,11 +42,11 @@ class MonthlyBudgetSheetRow
   end
 
   def planned_finance
-    cells[2].value.to_i
+    cells[2].value.to_f
   end
 
   def spent_finance
-    cells[6].value.to_i
+    cells[6].value.to_f
   end
 
   private
