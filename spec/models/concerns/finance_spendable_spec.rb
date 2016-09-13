@@ -19,7 +19,7 @@ RSpec.shared_examples_for 'FinanceSpendable' do
     )
   end
 
-  context '#spent_finances' do
+  describe '#spent_finances' do
     it 'gets all spent finances for the finance_spendable' do
       expect(finance_spendable1.spent_finances).to match_array([spent_finance1, spent_finance1b])
     end
