@@ -38,14 +38,18 @@ class BudgetUploader
       MonthlyBudgetSheet.new(monthly_sheet_path)
     end
 
-    monthly_sheets_ordered = monthly_sheets.sort do |sheet1, sheet2|
-      sheet1.month <=> sheet2.month && sheet1.year <=> sheet2.year
-    end
+    monthly_sheets_ordered = order_monthly_sheets_by_start_date(monthly_sheets)
 
     monthly_sheets_ordered.each do |monthly_sheet|
       monthly_sheet.save_data
 
       self.num_monthly_sheets_processed = num_monthly_sheets_processed + 1
+    end
+  end
+
+  def order_monthly_sheets_by_start_date(sheets)
+    sheets.sort do |sheet1, sheet2|
+      sheet1.start_date <=> sheet2.start_date
     end
   end
 
