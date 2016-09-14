@@ -3,6 +3,10 @@ require_relative 'monthly_budget_sheet/monthly_budget_sheet'
 
 class BudgetUploader
 
+  def self.budget_files_dir
+    Rails.root.join('tmp', 'budget_files')
+  end
+
   def initialize
     @start_time = Time.now
     @num_monthly_sheets_processed = 0
