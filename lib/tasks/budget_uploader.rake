@@ -19,11 +19,14 @@ namespace :budget_data do
   task :sync_with_repo do
     require 'fileutils'
 
-    if File.directory?(BudgetUploader.budget_files_dir)
-      FileUtils.cd(BudgetUploader.budget_files_dir)
+    FileUtils::mkdir_p BudgetUploader.budget_files_dir
+    FileUtils.cd(BudgetUploader.budget_files_dir)
+
+    if File.directory?(BudgetUploader.budget_files_dir.join('.git'))
+      puts 'Budget files repo already exists; pulling in changes'
       `git pull`
     else
-      `git clone https://github.com/JumpStartGeorgia/Georgian-Budget-Files.git #{BudgetUploader.budget_files_dir}`
+      `git clone https://github.com/JumpStartGeorgia/Georgian-Budget-Files.git .`
     end
   end
 end

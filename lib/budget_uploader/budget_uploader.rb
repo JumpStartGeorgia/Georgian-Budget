@@ -4,7 +4,7 @@ require_relative 'monthly_budget_sheet/monthly_budget_sheet'
 class BudgetUploader
 
   def self.budget_files_dir
-    Rails.root.join('tmp', 'budget_files')
+    Rails.root.join('budget_files', 'repo')
   end
 
   def initialize
