@@ -23,7 +23,7 @@ ka:
       description: This is a description of the project that will appear in the meta tags.
       jumpstart:
         slogan: JumpStart Georgia - ჩვენ გაწვდით ინფორმაციას მონაცემებით და დიზაინით
-      name: Rails Starter Template
+      name: საქართველოს ბიუჯეტი
     labels:
       translated_field: "%{field} (%{language})"
     links:
