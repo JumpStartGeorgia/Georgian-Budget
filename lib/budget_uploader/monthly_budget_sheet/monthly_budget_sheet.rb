@@ -62,7 +62,7 @@ class MonthlyBudgetSheet
   end
 
   def self.file_name_glob
-    '*ShesBiu*.xlsx'
+    '**/*ShesBiu*.xlsx'
   end
 
   def parse
