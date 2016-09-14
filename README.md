@@ -51,6 +51,7 @@ NOTE: The below commands will only work if the container you are setting up to d
 
   ```
   eval "$(ssh-agent -s)"
+  eval ssh-agent
   ssh-add ~/.ssh/id_rsa
   ```
 
