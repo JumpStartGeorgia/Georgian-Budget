@@ -23,7 +23,7 @@ NOTE: The below commands will only work if the container you are setting up to d
 
 1. Copy your global gitignore into the `web` container:
   ```
-  COPY ~/.gitignore_global georgianbudget_web_1:/root/
+  docker cp ~/.gitignore_global georgianbudget_web_1:/root/
   ```
 
 2. Run these commands from within the `web` container:
