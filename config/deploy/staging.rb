@@ -6,4 +6,4 @@ set :repository, 'https://github.com/JumpStartGeorgia/Georgian-Budget'
 set :branch, 'master'
 set :web_url, ENV['STAGING_WEB_URL']
 set :visible_to_robots, false
-set :use_ssl, true
+set :use_ssl, false
