@@ -17,11 +17,8 @@ class BudgetUploader
     puts "Uploading all budget data from files in #{folder} to database\n\n"
 
     begin
-      MonthlyBudgetSheet.file_paths(folder).each do |monthly_sheet_path|
-        monthly_sheet = MonthlyBudgetSheet.new(monthly_sheet_path)
-        monthly_sheet.save_data
-
-        self.num_monthly_sheets_processed = num_monthly_sheets_processed + 1
+      ActiveRecord::Base.transaction do
+        upload_monthly_sheets(MonthlyBudgetSheet.file_paths(folder))
       end
     rescue StandardError => error
       puts "\n\nStopping uploader due to ERROR: #{error}"
@@ -35,6 +32,15 @@ class BudgetUploader
   end
 
   private
+
+  def upload_monthly_sheets(monthly_sheet_paths)
+    monthly_sheet_paths.each do |monthly_sheet_path|
+      monthly_sheet = MonthlyBudgetSheet.new(monthly_sheet_path)
+      monthly_sheet.save_data
+
+      self.num_monthly_sheets_processed = num_monthly_sheets_processed + 1
+    end
+  end
 
   def pretty_time(time = 0)
     Time.at(time).utc.strftime("%H:%M:%S").to_s
