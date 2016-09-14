@@ -1,13 +1,13 @@
 require_relative '../budget_uploader/budget_uploader'
 
 namespace :budget_data do
-  namespace :upload do
-    desc 'Upload all spreadsheets in tmp/budget_files'
-    task from_tmp_dir: :environment do
-      uploader = BudgetUploader.new
-      uploader.upload_folder(BudgetUploader.budget_files_dir)
-    end
+  desc 'Upload all spreadsheets in budget_files directory'
+  task upload: :environment do
+    uploader = BudgetUploader.new
+    uploader.upload_folder(BudgetUploader.budget_files_dir)
+  end
 
+  namespace :upload do
     desc 'Upload one monthly spreadsheet'
     task :monthly_sheet, [:path] do |t, args|
       monthly_sheet = MonthlyBudgetSheet.new(args[:path])
