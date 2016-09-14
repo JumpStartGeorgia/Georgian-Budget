@@ -22,36 +22,36 @@ Ideally, this is only a temporary solution until we figure out how to deploy wit
 NOTE: The below commands will only work if the container you are setting up to deploy from is named `georgianbudget_web_1`. If it has a different name, then use it below in the `docker cp` commands.
 
 1. Copy your global gitignore into the `web` container:
-```
-COPY ~/.gitignore_global georgianbudget_web_1:/root/
-```
+  ```
+  COPY ~/.gitignore_global georgianbudget_web_1:/root/
+  ```
 
 2. Run these commands from within the `web` container:
-```
-git config --global core.excludesfile /root/.gitignore_global
+  ```
+  git config --global core.excludesfile /root/.gitignore_global
 
-bundle_path=$(which bundle)
-sed -i -e "s/activate_bin_path/bin_path/g" $bundle_path
+  bundle_path=$(which bundle)
+  sed -i -e "s/activate_bin_path/bin_path/g" $bundle_path
 
-mkdir -p /root/.ssh
+  mkdir -p /root/.ssh
 
-apt-get -y install rsync
-```
+  apt-get -y install rsync
+  ```
 
-In order: configure git to use .gitignore_global; fix bundle issue described [here](https://github.com/bundler/bundler/issues/4602#issuecomment-233619696); create .ssh directory if it doesn't exist; install rsync, which is a dependency of the deploy process.
+  In order: configure git to use .gitignore_global; fix bundle issue described [here](https://github.com/bundler/bundler/issues/4602#issuecomment-233619696); create .ssh directory if it doesn't exist; install rsync, which is a dependency of the deploy process.
 
 3. Make sure your local user has an ssh key at ~/.ssh/id_rsa and ~/.ssh/id_rsa.pub.
-```
-docker cp ~/.ssh/id_rsa georgianbudget_web_1:/root/.ssh/
-docker cp ~/.ssh/id_rsa.pub georgianbudget_web_1:/root/.ssh/
-```
+  ```
+  docker cp ~/.ssh/id_rsa georgianbudget_web_1:/root/.ssh/
+  docker cp ~/.ssh/id_rsa.pub georgianbudget_web_1:/root/.ssh/
+  ```
 
 4. Add your ssh key to the container's ssh-agent so that it doesn't ask for your passphrase when you deploy. You will have to enter your ssh key's passphrase.
 
-```
-eval "$(ssh-agent -s)"
-ssh-add ~/.ssh/id_rsa
-```
+  ```
+  eval "$(ssh-agent -s)"
+  ssh-add ~/.ssh/id_rsa
+  ```
 
 ## Docker Cheat Sheet
 
