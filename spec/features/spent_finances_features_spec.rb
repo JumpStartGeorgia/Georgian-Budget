@@ -18,7 +18,7 @@ RSpec.describe 'ActualFinances' do
 
     visit nameable_path(program1.class.to_s.underscore, program1.id)
 
-    expect(page).to have_content("#{spent_finance1.start_date} - #{spent_finance1.end_date}: #{spent_finance1.amount}")
-    expect(page).to have_content("#{spent_finance2.start_date} - #{spent_finance2.end_date}: #{spent_finance2.amount}")
+    expect(page).to have_content("#{spent_finance1.start_date} - #{spent_finance1.end_date}: #{spent_finance1.amount_pretty}")
+    expect(page).to have_content("#{spent_finance2.start_date} - #{spent_finance2.end_date}: #{spent_finance2.amount_pretty}")
   end
 end
