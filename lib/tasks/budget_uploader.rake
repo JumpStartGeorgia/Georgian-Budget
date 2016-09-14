@@ -5,13 +5,25 @@ namespace :budget_data do
     desc 'Upload all spreadsheets in tmp/budget_files'
     task from_tmp_dir: :environment do
       uploader = BudgetUploader.new
-      uploader.upload_folder(Rails.root.join('tmp', 'budget_files'))
+      uploader.upload_folder(BudgetUploader.budget_files_dir)
     end
 
     desc 'Upload one monthly spreadsheet'
     task :monthly_sheet, [:path] do |t, args|
       monthly_sheet = MonthlyBudgetSheet.new(args[:path])
       monthly_sheet.save_data
+    end
+  end
+
+  desc 'Download all files from JumpStartGeorgia/Georgian-Budget-Files repo to tmp/budget_files'
+  task :sync_with_repo do
+    require 'fileutils'
+
+    if File.directory?(BudgetUploader.budget_files_dir)
+      FileUtils.cd(BudgetUploader.budget_files_dir)
+      `git pull`
+    else
+      `git clone https://github.com/JumpStartGeorgia/Georgian-Budget-Files.git #{BudgetUploader.budget_files_dir}`
     end
   end
 end
