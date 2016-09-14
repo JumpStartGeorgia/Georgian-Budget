@@ -34,8 +34,15 @@ class BudgetUploader
   private
 
   def upload_monthly_sheets(monthly_sheet_paths)
-    monthly_sheet_paths.each do |monthly_sheet_path|
-      monthly_sheet = MonthlyBudgetSheet.new(monthly_sheet_path)
+    monthly_sheets = monthly_sheet_paths.map do |monthly_sheet_path|
+      MonthlyBudgetSheet.new(monthly_sheet_path)
+    end
+
+    monthly_sheets_ordered = monthly_sheets.sort do |sheet1, sheet2|
+      sheet1.month <=> sheet2.month && sheet1.year <=> sheet2.year
+    end
+
+    monthly_sheets_ordered.each do |monthly_sheet|
       monthly_sheet.save_data
 
       self.num_monthly_sheets_processed = num_monthly_sheets_processed + 1

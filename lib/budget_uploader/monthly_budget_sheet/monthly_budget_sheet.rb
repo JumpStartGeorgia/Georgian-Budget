@@ -27,6 +27,7 @@ class MonthlyBudgetSheet
 
       if row.is_header?
         # save the previous budget item
+
         current_item.save(start_date, end_date) unless current_item.nil?
 
         # create a new budget item
@@ -38,12 +39,12 @@ class MonthlyBudgetSheet
     end
   end
 
-  private
-
   attr_reader :spreadsheet_path,
               :starting_row,
               :month,
               :year
+
+  private
 
   def start_date
     Date.new(year, month).beginning_of_month
