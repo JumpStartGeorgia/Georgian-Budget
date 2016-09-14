@@ -32,7 +32,7 @@ set :initial_directories, lambda {
   ]
 }
 
-set :shared_paths, %w(.env log public/system)
+set :shared_paths, %w(.env log public/system tmp/budget_files)
 set :forward_agent, true
 set :rails_env, -> { "#{stage}" }
 set :robots_path, -> { "#{full_current_path}/public/robots.txt" }
