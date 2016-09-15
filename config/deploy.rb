@@ -26,6 +26,7 @@ set :initial_directories, lambda {
   [
     "#{full_shared_path}/log",
     "#{full_shared_path}/config",
+    "#{full_shared_path}/budget_files",
     "#{full_shared_path}/public/system",
     "#{full_tmp_path}/puma/sockets",
     "#{full_tmp_path}/assets"
