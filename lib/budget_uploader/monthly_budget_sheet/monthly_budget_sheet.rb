@@ -9,8 +9,8 @@ class MonthlyBudgetSheet
 
   def initialize(spreadsheet_path)
     @spreadsheet_path = spreadsheet_path
-    @month = date_regex_match[1].to_i
-    @year = date_regex_match[2].to_i
+    @start_date = Date.new(year, month).beginning_of_month
+    @end_date = Date.new(year, month).end_of_month
   end
 
   def save_data
@@ -27,6 +27,7 @@ class MonthlyBudgetSheet
 
       if row.is_header?
         # save the previous budget item
+
         current_item.save(start_date, end_date) unless current_item.nil?
 
         # create a new budget item
@@ -38,19 +39,19 @@ class MonthlyBudgetSheet
     end
   end
 
-  private
-
   attr_reader :spreadsheet_path,
               :starting_row,
-              :month,
-              :year
+              :start_date,
+              :end_date
 
-  def start_date
-    Date.new(year, month).beginning_of_month
+  private
+
+  def month
+    date_regex_match[1].to_i
   end
 
-  def end_date
-    Date.new(year, month).end_of_month
+  def year
+    date_regex_match[2].to_i
   end
 
   def date_regex_match

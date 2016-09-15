@@ -16,6 +16,8 @@
 /.env
 /public/assets
 /public/system
+/budget_files/*
+!/budget_files/.keep
 
 # Temporary files often end with ~ character
 *~

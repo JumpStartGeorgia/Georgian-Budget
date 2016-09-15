@@ -14,7 +14,8 @@ This web application visualizes the national budget of the Republic of Georgia.
 5. `docker-compose run web rake db:create db:migrate`
 6. `docker-compose run web rake db:seed` (See db/seeds.rb for more seeding options)
 
-## Deploy from within web container
+## Deploy (or run any mina command) from within `web` container
+
 The web container is not configured by default to work for deploying, so you will have to do a little bit of configuration in order to do so. This section is intended to make that configuration easier.
 
 Ideally, this is only a temporary solution until we figure out how to deploy with docker.
@@ -50,8 +51,11 @@ NOTE: The below commands will only work if the container you are setting up to d
 
   ```
   eval "$(ssh-agent -s)"
+  eval ssh-agent
   ssh-add ~/.ssh/id_rsa
   ```
+
+5. Continue with deploy as usual
 
 ## Docker Cheat Sheet
 
