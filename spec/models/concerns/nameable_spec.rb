@@ -63,6 +63,7 @@ RSpec.shared_examples_for 'nameable' do
       nameable1.save!
       name1.save!
       name1b.save!
+      nameable1.reload
 
       nameable1.destroy
 
@@ -76,18 +77,20 @@ RSpec.shared_examples_for 'nameable' do
       nameable1.save!
       name1.save!
       name1b.save!
+      nameable1.reload
 
       expect(nameable1.name).to eq(name1b.text)
     end
   end
 
-  describe '#name_object' do
+  describe '#recent_name_object' do
     it 'returns the most recent name object' do
       nameable1.save!
       name1.save!
       name1b.save!
+      nameable1.reload
 
-      expect(nameable1.name_object).to eq(name1b)
+      expect(nameable1.recent_name_object).to eq(name1b)
     end
   end
 
@@ -103,7 +106,7 @@ RSpec.shared_examples_for 'nameable' do
   end
 
   describe '.with_most_recent_names' do
-    it 'gets most recent names' do
+    it 'loads each nameable with its most recent name object' do
       name1.save!
       name1b.save!
       name2.save!
@@ -119,11 +122,11 @@ RSpec.shared_examples_for 'nameable' do
         nameable.id == nameable2.id
       end
 
-      expect(nameable1_with_names.name).to eq(name1b.text)
-      expect(nameable2_with_names.name).to eq(name2b.text)
+      expect(nameable1_with_names.recent_name_object).to eq(name1b)
+      expect(nameable2_with_names.recent_name_object).to eq(name2b)
     end
 
-    it 'issues just 3 queries (with subsequent nameable.name calls)' do
+    it 'issues just 1 query (with subsequent nameable.name calls)' do
       nameable1.save!
       name1.save!
       nameable2.save!
@@ -142,8 +145,31 @@ RSpec.shared_examples_for 'nameable' do
 
         nameable1_with_names.name
         nameable2_with_names.name
-      end.to query_limit_eq(3)
+      end.to query_limit_eq(1)
     end
 
+    it 'preloads only one name for each nameable' do
+      nameable1.save!
+      name1.save!
+      name1b.save!
+
+      nameable2.save!
+      name2.save!
+      name2b.save!
+
+      nameables_with_names = described_class.all.with_most_recent_names
+
+      nameable1_with_names = nameables_with_names.find do |nameable|
+        nameable.id = nameable1.id
+      end
+
+      nameable2_with_names = nameables_with_names.find do |nameable|
+        nameable.id = nameable2.id
+      end
+
+
+      expect(nameable1_with_names.names.length).to eq(1)
+      expect(nameable2_with_names.names.length).to eq(1)
+    end
   end
 end
