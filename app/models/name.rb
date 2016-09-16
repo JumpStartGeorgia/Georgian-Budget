@@ -4,6 +4,8 @@ class Name < ApplicationRecord
   translates :text,
              fallbacks_for_empty_translations: true
 
+  validates :start_date, uniqueness: { scope: :nameable }, presence: true
+
   after_commit :set_nameable_is_most_recent
 
   def set_nameable_is_most_recent
@@ -12,7 +14,7 @@ class Name < ApplicationRecord
 
   def merge_more_recent_name(more_recent_name)
     return false if more_recent_name.nil?
-    update_column(:is_most_recent, more_recent_name.is_most_recent) 
+    update_column(:is_most_recent, more_recent_name.is_most_recent)
 
     more_recent_name.destroy
 

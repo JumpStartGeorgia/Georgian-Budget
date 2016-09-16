@@ -67,12 +67,17 @@ RSpec.describe Name, type: :model do
   end
 
   describe '#start_date' do
+    it 'is required' do
+      name1.start_date = nil
+      name1.valid?
+
+      expect(name1).to have(1).errors_on(:start_date)
+    end
+
     context 'when name has siblings' do
       it "cannot be the same as another sibling's start date" do
-        pending
-
         name1b.start_date = name1.start_date
-        name1b.save!
+        name1b.valid?
 
         expect(name1b).to have(1).errors_on(:start_date)
       end

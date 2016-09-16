@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160912133717) do
+ActiveRecord::Schema.define(version: 20160916112940) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,12 +27,11 @@ ActiveRecord::Schema.define(version: 20160912133717) do
 
   create_table "names", force: :cascade do |t|
     t.date     "start_date"
-    t.date     "end_date"
     t.string   "nameable_type"
     t.integer  "nameable_id"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
-    t.index ["end_date"], name: "index_names_on_end_date", using: :btree
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+    t.boolean  "is_most_recent", default: false, null: false
     t.index ["nameable_type", "nameable_id"], name: "index_names_on_nameable_type_and_nameable_id", using: :btree
     t.index ["start_date"], name: "index_names_on_start_date", using: :btree
   end
