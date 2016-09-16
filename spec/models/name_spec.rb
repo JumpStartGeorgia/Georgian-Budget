@@ -16,6 +16,14 @@ RSpec.describe Name, type: :model do
     )
   end
 
+  describe '#nameable' do
+    it 'is required' do
+      name1.nameable = nil
+
+      expect(name1).to have(1).error_on(:nameable)
+    end
+  end
+
   describe '#is_most_recent' do
     context 'when new name has no siblings' do
       it 'is true' do
