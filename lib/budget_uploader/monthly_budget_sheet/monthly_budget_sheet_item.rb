@@ -11,7 +11,7 @@ class MonthlyBudgetSheetItem
     budget_item = budget_item_class.find_by_name(name)[0]
 
     unless budget_item.present? # do not create new item and new name if budget item is present
-      budget_item = budget_item_class.create
+      budget_item = budget_item_class.create(code: primary_code)
 
       Name.create(
         nameable: budget_item,

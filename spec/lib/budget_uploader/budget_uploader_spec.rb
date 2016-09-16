@@ -21,6 +21,7 @@ RSpec.describe 'BudgetUploader' do
       spending_agency1_spent_finance2 = spending_agency1.spent_finances[0]
 
       expect(spending_agency1_array.length).to eq(1)
+      expect(spending_agency1.code).to eq('01 00')
       expect(spending_agency1.recent_name_object.start_date).to eq(monthly_budgets_start_date)
 
       expect(spending_agency1_spent_finance1.amount).to eq(3532432.91)
@@ -36,6 +37,7 @@ RSpec.describe 'BudgetUploader' do
       program1 = program1_array[0]
 
       expect(program1_array.length).to eq(1)
+      expect(program1.code).to eq('01 01')
       expect(program1.recent_name_object.start_date).to eq(monthly_budgets_start_date)
 
       ###
@@ -43,6 +45,7 @@ RSpec.describe 'BudgetUploader' do
       spending_agency2 = spending_agency2_array[0]
 
       expect(spending_agency2_array.length).to eq(1)
+      expect(spending_agency2.code).to eq('02 00')
       expect(spending_agency2.recent_name_object.start_date).to eq(monthly_budgets_start_date)
 
       ###
@@ -50,6 +53,7 @@ RSpec.describe 'BudgetUploader' do
       program2 = program2_array[0]
 
       expect(program2_array.length).to eq(1)
+      expect(program2.code).to eq('03 01')
       expect(program2.recent_name_object.start_date).to eq(monthly_budgets_start_date)
     end
   end

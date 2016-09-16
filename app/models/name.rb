@@ -6,7 +6,7 @@ class Name < ApplicationRecord
 
   validates :start_date, uniqueness: { scope: :nameable }, presence: true
   validates :nameable, presence: true
-  
+
   after_commit :set_nameable_is_most_recent
 
   def set_nameable_is_most_recent
