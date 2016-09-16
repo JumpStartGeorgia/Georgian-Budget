@@ -1,4 +1,6 @@
 class SpentFinance < ApplicationRecord
+  validates_with StartEndDateValidator
+
   belongs_to :finance_spendable, polymorphic: true
 
   validates :amount, presence: true

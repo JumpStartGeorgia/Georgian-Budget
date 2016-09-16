@@ -65,6 +65,25 @@ RSpec.describe SpentFinance do
 
       expect(new_spent_finance).to have(1).error_on(:end_date)
     end
+
+    it 'throws error if before start_date' do
+      new_spent_finance.end_date = new_spent_finance.start_date - 1
+      new_spent_finance.valid?
+
+      expect(new_spent_finance).to have(1).error_on(:end_date)
+    end
+
+    it 'is valid if same as start_date' do
+      new_spent_finance.end_date = new_spent_finance.start_date
+
+      expect(new_spent_finance.valid?).to eq(true)
+    end
+
+    it 'is valid if after start_date' do
+      new_spent_finance.end_date = new_spent_finance.start_date + 1
+
+      expect(new_spent_finance.valid?).to eq(true)
+    end
   end
 
   describe '#finance_spendable' do
