@@ -109,8 +109,13 @@ RSpec.shared_examples_for 'nameable' do
     it 'loads each nameable with its most recent name object' do
       name1.save!
       name1b.save!
+      name1b.nameable.reload
+      name1b.run_callbacks(:commit)
+
       name2.save!
       name2b.save!
+      name2b.nameable.reload
+      name2b.run_callbacks(:commit)
 
       nameables_with_names = described_class.with_most_recent_names
 
