@@ -13,11 +13,13 @@ RSpec.shared_examples_for 'nameable' do
   let(:nameable2) { FactoryGirl.create(described_class_sym) }
   let(:nameable3) { FactoryGirl.create(described_class_sym) }
 
+  let(:name_start_date) { Date.new(2015, 01, 01) }
+
   let(:name1) do
     FactoryGirl.create(
       :name,
       text: name_text1,
-      start_date: Date.new(2015, 1, 1),
+      start_date: name_start_date,
       nameable: nameable1
     )
   end
@@ -45,6 +47,14 @@ RSpec.shared_examples_for 'nameable' do
       :name,
       text: name_text3,
       start_date: name1.start_date + 1,
+      nameable: nameable1
+    )
+  end
+
+  let(:name1c) do
+    FactoryGirl.create(
+      :name,
+      start_date: name1b.start_date + 1,
       nameable: nameable1
     )
   end
@@ -103,6 +113,126 @@ RSpec.shared_examples_for 'nameable' do
 
       expect(described_class.find_by_name(name_text1)).to match_array([nameable1, nameable3])
     end
+  end
+
+  describe '#names' do
+    it 'gets names in order of start date' do
+      name1
+      name1b.start_date = name1.start_date + 1
+      name1b.save!
+
+      nameable1.reload
+      expect(nameable1.names).to eq([name1, name1b])
+    end
+  end
+
+  describe '#merge_same_names' do
+    context 'when nameable has one name' do
+      it 'does not affect name' do
+        name1
+
+        nameable1.reload
+        nameable1.merge_same_names
+        nameable1.reload
+
+        expect(nameable1.names).to eq([name1])
+      end
+    end
+
+    context 'when nameable has two names' do
+      context 'with the same text' do
+        before :each do
+          name1.start_date = name_start_date
+          name1.save!
+
+          name1b.start_date = name1.start_date + 1
+          name1b.text = name1.text
+          name1b.save!
+
+          nameable1.reload
+          nameable1.merge_same_names
+          nameable1.reload
+        end
+
+        it 'combines names into one name' do
+          expect(nameable1.names.length).to eq(1)
+        end
+
+        context 'combines names into one name' do
+          it 'with earlier start date' do
+            merged_name = nameable1.recent_name_object
+            expect(merged_name.start_date).to eq(name_start_date)
+          end
+        end
+      end
+
+      context 'with different texts' do
+        it 'does not combine names' do
+          name1
+          name1b
+
+          nameable1.reload
+          nameable1.merge_same_names
+
+          nameable1.reload
+          expect(nameable1.names).to eq([name1, name1b])
+        end
+      end
+    end
+
+    context 'when nameable has three names' do
+      before :each do
+        name1
+        name1b
+        name1c
+      end
+      
+      context 'and all have the same text' do
+        before :each do
+          name1b.text = name1.text
+          name1b.save!
+          name1c.text = name1.text
+          name1c.save!
+        end
+
+        it 'will merge all names into one' do
+          nameable1.reload
+          nameable1.merge_same_names
+          nameable1.reload
+          expect(nameable1.names.length).to eq(1)
+        end
+
+        context 'will merge all names into one' do
+          it 'with start date equal to earliest name start date' do
+            nameable1.reload
+            nameable1.merge_same_names
+            nameable1.reload
+            expect(nameable1.recent_name_object.start_date).to eq(name_start_date)
+          end
+
+          it 'with is_most_recent set to true' do
+            nameable1.reload
+            nameable1.update_names_is_most_recent
+            nameable1.merge_same_names
+            nameable1.reload
+            expect(nameable1.recent_name_object.is_most_recent).to eq(true)
+          end
+        end
+      end
+
+      context 'and the first and third have the same text' do
+        it 'will not affect the names' do
+          name1c.text = name1.text
+          name1c.save!
+
+          nameable1.reload
+          nameable1.merge_same_names
+          nameable1.reload
+          expect(nameable1.names).to match_array([name1, name1b, name1c])
+        end
+      end
+    end
+
   end
 
   describe '.with_most_recent_names' do

@@ -2,7 +2,7 @@ module Nameable
   extend ActiveSupport::Concern
 
   included do
-    has_many :names, as: :nameable, dependent: :destroy
+    has_many :names, -> { order 'names.start_date' }, as: :nameable, dependent: :destroy
   end
 
   # text of most recent name
@@ -12,14 +12,30 @@ module Nameable
 
   # most recent name
   def recent_name_object
-    names.sort_by(&:start_date).last
+    names.last
   end
 
+  def update_names
+    update_names_is_most_recent
+    merge_same_names
+  end
+  
   def update_names_is_most_recent
     names.update_all(is_most_recent: false)
     recent_name_object.update_column(:is_most_recent, true)
 
     return true
+  end
+
+  def merge_same_names
+    names.to_enum.with_index.reverse_each do |name, index|
+      next if index == 0
+      previous_name = names[index - 1]
+
+      if name.text == previous_name.text
+        previous_name.merge_more_recent_name(name)
+      end
+    end
   end
 
   module ClassMethods
