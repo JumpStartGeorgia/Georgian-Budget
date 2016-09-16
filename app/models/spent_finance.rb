@@ -4,8 +4,6 @@ class SpentFinance < ApplicationRecord
   belongs_to :finance_spendable, polymorphic: true
 
   validates :amount, presence: true
-  validates :start_date, presence: true
-  validates :end_date, presence: true
   validates :finance_spendable, presence: true
 
   def self.year_cumulative_up_to(date)
