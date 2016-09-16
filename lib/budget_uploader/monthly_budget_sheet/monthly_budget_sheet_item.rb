@@ -1,6 +1,8 @@
 class MonthlyBudgetSheetItem
   def initialize(rows)
     @rows = rows
+    @budget_item = nil
+
   end
 
   def save(start_date, end_date)
@@ -8,17 +10,19 @@ class MonthlyBudgetSheetItem
 
     return unless budget_item_class.present?
 
-    budget_item = budget_item_class.find_by_name(name)[0]
+    budget_item = budget_item_class.find_by_code(primary_code)
 
-    unless budget_item.present? # do not create new item and new name if budget item is present
+    unless budget_item.present?
       budget_item = budget_item_class.create(code: primary_code)
-
-      Name.create(
-        nameable: budget_item,
-        text: name,
-        start_date: start_date
-      )
     end
+
+    # if the new name is a duplicate of another name, then the names
+    # will be merged in an after commit callback
+    Name.create(
+      nameable: budget_item,
+      text: name,
+      start_date: start_date
+    )
 
     SpentFinance.create(
       finance_spendable: budget_item,
@@ -32,7 +36,7 @@ class MonthlyBudgetSheetItem
     # )
   end
 
-  attr_accessor :rows
+  attr_accessor :rows, :budget_item
 
   private
 
