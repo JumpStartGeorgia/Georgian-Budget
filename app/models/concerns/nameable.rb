@@ -19,7 +19,7 @@ module Nameable
     update_names_is_most_recent
     merge_same_names
   end
-  
+
   def update_names_is_most_recent
     names.update_all(is_most_recent: false)
     recent_name_object.update_column(:is_most_recent, true)
