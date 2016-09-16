@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.shared_examples_for 'nameable' do
+RSpec.shared_examples_for 'Nameable' do
   let(:described_class_sym) { described_class.to_s.underscore.to_sym }
 
   let(:name_text1) { 'Name #1' }
@@ -186,7 +186,7 @@ RSpec.shared_examples_for 'nameable' do
         name1b
         name1c
       end
-      
+
       context 'and all have the same text' do
         before :each do
           name1b.text = name1.text
