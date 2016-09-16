@@ -1,8 +1,8 @@
 FactoryGirl.define do
   factory :program do
-    # sequence :code do |n|
-    #   "01 #{n.to_s}"
-    # end
+    sequence :code do |n|
+      "01 #{n.to_s}"
+    end
 
     factory :program_with_name do
       transient do
