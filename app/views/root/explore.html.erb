@@ -2,7 +2,7 @@ Programs:
 <ul>
   <% @programs.each do |program| %>
     <li>
-      <%= link_to program.name,
+      <%= link_to "#{program.code}: #{program.name}",
                   nameable_path(
                     program.class.to_s.underscore,
                     program.id
@@ -15,7 +15,7 @@ Priorities:
 <ul>
   <% @priorities.each do |priority| %>
     <li>
-      <%= link_to priority.name,
+      <%= link_to "#{priority.code}: #{priority.name}",
                   nameable_path(
                     priority.class.to_s.underscore,
                     priority.id
@@ -28,7 +28,7 @@ Spending Agencies:
 <ul>
   <% @spending_agencies.each do |spending_agency| %>
     <li>
-      <%= link_to spending_agency.name,
+      <%= link_to "#{spending_agency.code}: #{spending_agency.name}",
                   nameable_path(
                     spending_agency.class.to_s.underscore,
                     spending_agency.id
