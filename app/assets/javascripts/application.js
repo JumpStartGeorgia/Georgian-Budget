@@ -22,22 +22,28 @@
 ////////////////////////////////////////
 ///////  Load dependencies here  ///////
 
-//= require twitter/bootstrap/transition
-//= require twitter/bootstrap/alert
-//= require twitter/bootstrap/modal
-//= require twitter/bootstrap/dropdown
-//= require twitter/bootstrap/scrollspy
-//= require twitter/bootstrap/tab
-//= require twitter/bootstrap/tooltip
-//= require twitter/bootstrap/popover
-//= require twitter/bootstrap/button
-//= require twitter/bootstrap/collapse
-//= require twitter/bootstrap/carousel
-//= require twitter/bootstrap/affix
-
-//= require_tree .
+// require twitter/bootstrap/transition
+// require twitter/bootstrap/alert
+// require twitter/bootstrap/modal
+// require twitter/bootstrap/dropdown
+// require twitter/bootstrap/scrollspy
+// require twitter/bootstrap/tab
+// require twitter/bootstrap/tooltip
+// require twitter/bootstrap/popover
+// require twitter/bootstrap/button
+// require twitter/bootstrap/collapse
+// require twitter/bootstrap/carousel
+// require twitter/bootstrap/affix
 
 ////////////////////////////////////////
 
+//= require highcharts
+//= require highcharts/modules/exporting
+
 //= require turbolinks
 //= require google-analytics-turbolinks
+
+//= require react
+//= require react_ujs
+//= require components
+//= require_tree .

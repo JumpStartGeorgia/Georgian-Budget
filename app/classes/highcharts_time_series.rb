@@ -1,7 +1,19 @@
 class HighchartsTimeSeries
-  def initialize(unformatted_data)
-    @unformatted_data = unformatted_data
+  def initialize(budget_item, item_data)
+    @budget_item = budget_item
+    @unformatted_data = item_data
   end
+
+  def config
+    {
+      name: budget_item.name,
+      data: data
+    }
+  end
+
+  attr_reader :budget_item, :unformatted_data
+
+  private
 
   def data
     {
@@ -10,12 +22,8 @@ class HighchartsTimeSeries
     }
   end
 
-  attr_reader :unformatted_data
-
-  private
-
   def amounts
-    unformatted_data.map(&:amount)
+    unformatted_data.map { |point| point.amount.to_f }
   end
 
   def time_period_months

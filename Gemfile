@@ -166,7 +166,14 @@ end
 #####################################################################
 ########################## Project Gems #############################
 
+# Provides integration for using react in rails
+gem 'react-rails', '~> 1.8.2'
+
+# Parses excel files
 gem 'rubyXL', '~> 3.3.21', require: false
+
+# Creates nice-lookin' charts :)
+gem 'highcharts-rails', '~> 4.2', '>= 4.2.5'
 
 group :test do
   # Test the number of SQL queries are created by a model call
