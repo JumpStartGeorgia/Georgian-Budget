@@ -4,8 +4,6 @@ require Rails.root.join('spec', 'validators', 'start_end_date_validator_spec')
 RSpec.describe SpentFinance do
   include_examples 'StartEndDateValidator'
 
-  let(:finance_spendable1) { FactoryGirl.create(:program) }
-
   let(:new_spent_finance) do
     FactoryGirl.build(:spent_finance)
   end
@@ -22,7 +20,8 @@ RSpec.describe SpentFinance do
     FactoryGirl.create(
       :spent_finance,
       start_date: spent_finance1.end_date + 1,
-      end_date: spent_finance1.end_date + 30
+      end_date: spent_finance1.end_date + 30,
+      finance_spendable: spent_finance1.finance_spendable
     )
   end
 
@@ -30,7 +29,8 @@ RSpec.describe SpentFinance do
     FactoryGirl.create(
       :spent_finance,
       start_date: spent_finance1b.end_date + 1,
-      end_date: spent_finance1b.end_date + 30
+      end_date: spent_finance1b.end_date + 30,
+      finance_spendable: spent_finance1b.finance_spendable
     )
   end
 
@@ -38,7 +38,8 @@ RSpec.describe SpentFinance do
     FactoryGirl.create(
       :spent_finance,
       start_date: spent_finance1c.end_date + 1,
-      end_date: spent_finance1c.end_date + 30
+      end_date: spent_finance1c.end_date + 30,
+      finance_spendable: spent_finance1c.finance_spendable
     )
   end
 
@@ -51,6 +52,16 @@ RSpec.describe SpentFinance do
       new_spent_finance.amount = nil
 
       expect(new_spent_finance).to have(1).error_on(:amount)
+    end
+  end
+
+  describe 'time period' do
+    it 'is unique' do
+      spent_finance1
+      spent_finance1b.start_date = spent_finance1.start_date
+      spent_finance1b.end_date = spent_finance1.end_date
+
+      expect(spent_finance1b).to have(1).error_on(:end_date)
     end
   end
 

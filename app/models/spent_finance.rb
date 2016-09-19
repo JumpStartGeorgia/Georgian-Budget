@@ -5,6 +5,7 @@ class SpentFinance < ApplicationRecord
 
   validates :amount, presence: true
   validates :finance_spendable, presence: true
+  validates :end_date, uniqueness: { scope: [:finance_spendable, :start_date] }
 
   def self.year_cumulative_up_to(date)
     after(Date.new(date.year, 1, 1)).before(date).total
