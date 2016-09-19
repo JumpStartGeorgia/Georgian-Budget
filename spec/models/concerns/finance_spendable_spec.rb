@@ -36,5 +36,15 @@ RSpec.shared_examples_for 'FinanceSpendable' do
     it 'gets all spent finances for the finance_spendable' do
       expect(finance_spendable1.spent_finances).to match_array([spent_finance1, spent_finance1b])
     end
+
+    it 'are ordered by start date' do
+      spent_finance1
+      spent_finance1b.start_date = spent_finance1.start_date + 1
+      spent_finance1b.save!
+
+      expect(finance_spendable1.spent_finances).to eq(
+        [spent_finance1, spent_finance1b]
+      )
+    end
   end
 end
