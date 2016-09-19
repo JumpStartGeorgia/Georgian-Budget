@@ -17,9 +17,7 @@ class BudgetUploader
     puts "Uploading all budget data from files in #{folder} to database\n\n"
 
     begin
-      ActiveRecord::Base.transaction do
-        upload_monthly_sheets(MonthlyBudgetSheet.file_paths(folder))
-      end
+      upload_monthly_sheets(MonthlyBudgetSheet.file_paths(folder))
     rescue StandardError => error
       puts "\n\nStopping uploader due to ERROR: #{error}"
       puts error.backtrace
@@ -41,7 +39,9 @@ class BudgetUploader
     monthly_sheets_ordered = order_monthly_sheets_by_start_date(monthly_sheets)
 
     monthly_sheets_ordered.each do |monthly_sheet|
-      monthly_sheet.save_data
+      ActiveRecord::Base.transaction do
+        monthly_sheet.save_data
+      end
 
       self.num_monthly_sheets_processed = num_monthly_sheets_processed + 1
     end
