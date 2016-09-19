@@ -16,12 +16,7 @@ class BudgetUploader
     puts "\nBEGIN: Budget Uploader\n\n"
     puts "Uploading all budget data from files in #{folder} to database\n\n"
 
-    begin
-      upload_monthly_sheets(MonthlyBudgetSheet.file_paths(folder))
-    rescue StandardError => error
-      puts "\n\nStopping uploader due to ERROR: #{error}"
-      puts error.backtrace
-    end
+    upload_monthly_sheets(MonthlyBudgetSheet.file_paths(folder))
 
     puts "\nEND: Budget Uploader"
     puts "Time elapsed: #{pretty_time(total_elapsed_time)}"
