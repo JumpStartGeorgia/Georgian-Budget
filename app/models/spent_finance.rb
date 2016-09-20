@@ -55,6 +55,10 @@ class SpentFinance < ApplicationRecord
     array_of_finances
   end
 
+  def month
+    Month.between_dates(start_date, end_date)
+  end
+
   def amount_pretty
     ActionController::Base.helpers.number_with_delimiter(amount, delimiter: ',')
   end

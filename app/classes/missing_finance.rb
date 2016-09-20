@@ -12,6 +12,10 @@ class MissingFinance
     @end_date = args[:end_date]
   end
 
+  def month
+    Month.between_dates(start_date, end_date)
+  end
+
   attr_reader :start_date, :end_date
 
   def amount
