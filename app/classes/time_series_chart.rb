@@ -1,4 +1,4 @@
-class HighchartsTimeSeries
+class TimeSeriesChart
   def initialize(budget_item, item_data)
     @budget_item = budget_item
     @unformatted_data = item_data

@@ -1,12 +1,12 @@
 require 'rails_helper'
 
-RSpec.describe HighchartsTimeSeries do
+RSpec.describe TimeSeriesChart do
   let(:program) { FactoryGirl.create(:program_with_name) }
   
   describe '#config' do
     context 'when budget item has a name' do
       it 'includes name as top level property' do
-        config = HighchartsTimeSeries.new(program, program.spent_finances).config
+        config = TimeSeriesChart.new(program, program.spent_finances).config
 
         expect(config[:name]).to eq(program.name)
       end
@@ -28,7 +28,7 @@ RSpec.describe HighchartsTimeSeries do
       )
 
       program.reload
-      config = HighchartsTimeSeries.new(program, program.spent_finances).config
+      config = TimeSeriesChart.new(program, program.spent_finances).config
       data = config[:data]
 
       expect(data[:time_periods]).to eq(['January, 2015', 'February, 2015'])
