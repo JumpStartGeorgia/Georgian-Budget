@@ -4,9 +4,8 @@ var HighchartsTimeSeries = React.createClass({
   componentDidMount: function () {
     var component = this;
 
-
     $.getJSON(
-      'http://localhost:3000/en/api',
+      gon.api_path,
       function (response) {
 
         var data = response.data;

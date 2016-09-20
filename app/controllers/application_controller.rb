@@ -4,7 +4,21 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
+  before_action :set_locale
+  before_action :set_gon_api_path
   around_action :redirect_from_record_not_found
+
+  ##############################################
+  # Actions #
+
+  def set_locale
+    I18n.locale = params[:locale] || I18n.default_locale
+  end
+  private :set_locale
+
+  def set_gon_api_path
+    gon.api_path = api_path
+  end
 
   def redirect_from_record_not_found
     yield
@@ -13,13 +27,6 @@ class ApplicationController < ActionController::Base
   end
 
   ##############################################
-  # Locales #
-
-  def set_locale
-    I18n.locale = params[:locale] || I18n.default_locale
-  end
-  before_action :set_locale
-  private :set_locale
 
   def default_url_options(options = {})
     { locale: I18n.locale }.merge options
