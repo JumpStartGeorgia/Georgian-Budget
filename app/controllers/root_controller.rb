@@ -30,7 +30,7 @@ class RootController < ApplicationController
 
   def api
     budget_item = Program.first
-    chart_config = HighchartsTimeSeries.new(budget_item, budget_item.spent_finances ).config
+    chart_config = TimeSeriesChart.new(budget_item, budget_item.spent_finances ).config
     render json: chart_config, status: :ok
   end
 end

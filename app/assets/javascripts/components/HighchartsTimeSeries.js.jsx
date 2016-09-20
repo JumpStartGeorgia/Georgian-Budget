@@ -1,4 +1,4 @@
-var HighchartsTimeSeries = React.createClass({
+var TimeSeriesChart = React.createClass({
 
   // When the DOM is ready, create the chart.
   componentDidMount: function () {
