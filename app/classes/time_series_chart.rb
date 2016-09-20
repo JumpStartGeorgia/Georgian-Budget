@@ -23,7 +23,9 @@ class TimeSeriesChart
   end
 
   def amounts
-    unformatted_data.map { |point| point.amount.to_f }
+    unformatted_data.map(&:amount).map do |amount|
+      amount.present? ? amount.to_f : nil
+    end
   end
 
   def time_period_months

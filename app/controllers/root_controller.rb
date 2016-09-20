@@ -30,7 +30,9 @@ class RootController < ApplicationController
 
   def api
     budget_item = Program.first
-    chart_config = TimeSeriesChart.new(budget_item, budget_item.spent_finances ).config
+    spent_finances = budget_item.spent_finances.with_missing_finances.sort_by { |finance| finance.start_date }
+    chart_config = TimeSeriesChart.new(budget_item, spent_finances).config
+
     render json: chart_config, status: :ok
   end
 end
