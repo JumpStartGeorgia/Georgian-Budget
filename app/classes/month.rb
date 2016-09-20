@@ -33,6 +33,14 @@ class Month
     end
   end
 
+  def ==(another_month)
+    if start_date == another_month.start_date
+      return true
+    else
+      return false
+    end
+  end
+
   private
 
   def self.dates_not_valid_error

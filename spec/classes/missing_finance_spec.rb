@@ -1,6 +1,9 @@
 require 'rails_helper'
+require Rails.root.join('spec', 'modules', 'time_periodable_spec')
 
 RSpec.describe MissingFinance do
+  it_behaves_like 'TimePeriodable'
+
   let(:start_date) { Date.new(2015, 01, 01) }
   let(:end_date) { Date.new(2015, 01, 31) }
 
@@ -14,7 +17,7 @@ RSpec.describe MissingFinance do
         expect do
           MissingFinance.new(end_date: end_date)
         end.to raise_error(
-          RuntimeError, 
+          RuntimeError,
           'MissingFinance must be initialized with a start date'
         )
       end

@@ -1,4 +1,6 @@
 class MissingFinance
+  include TimePeriodable
+
   def initialize(args)
     if args[:start_date].nil?
       raise 'MissingFinance must be initialized with a start date'
@@ -10,10 +12,6 @@ class MissingFinance
 
     @start_date = args[:start_date]
     @end_date = args[:end_date]
-  end
-
-  def month
-    Month.between_dates(start_date, end_date)
   end
 
   attr_reader :start_date, :end_date

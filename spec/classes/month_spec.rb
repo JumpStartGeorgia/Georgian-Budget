@@ -96,4 +96,18 @@ RSpec.describe Month do
       end
     end
   end
+
+  describe '==' do
+    context "when start date is same as second month's start date" do
+      it 'returns true' do
+        expect(january2015 == january2015).to eq(true)
+      end
+    end
+
+    context "when start date is not the same as second month's start date" do
+      it 'returns false' do
+        expect(january2015 == february2015).to eq(false)
+      end
+    end
+  end
 end

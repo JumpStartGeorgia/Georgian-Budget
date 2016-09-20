@@ -1,4 +1,5 @@
 class SpentFinance < ApplicationRecord
+  include TimePeriodable
   validates_with StartEndDateValidator
 
   belongs_to :finance_spendable, polymorphic: true
@@ -53,10 +54,6 @@ class SpentFinance < ApplicationRecord
     end
 
     array_of_finances
-  end
-
-  def month
-    Month.between_dates(start_date, end_date)
   end
 
   def amount_pretty
