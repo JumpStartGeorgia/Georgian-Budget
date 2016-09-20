@@ -29,12 +29,12 @@ class TimeSeriesChart
   end
 
   def time_period_months
-    time_periods.map(&:month)
+    time_periods.map { |month| month.strftime('%B, %Y') }
   end
 
   def time_periods
     unformatted_data.map do |data_point|
-      TimePeriod.new(data_point.start_date, data_point.end_date)
+      Month.between_dates(data_point.start_date, data_point.end_date)
     end
   end
 end
