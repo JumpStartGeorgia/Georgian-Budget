@@ -46,6 +46,10 @@ class RootController < ApplicationController
       amounts: amounts
     }
 
-    render json: chart_config, status: :ok
+    response = {
+      budget_items: [chart_config]
+    }
+
+    render json: response, status: :ok
   end
 end

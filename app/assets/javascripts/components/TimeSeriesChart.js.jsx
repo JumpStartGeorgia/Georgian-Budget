@@ -1,41 +1,36 @@
 var TimeSeriesChart = React.createClass({
 
   // When the DOM is ready, create the chart.
-  componentDidMount: function () {
-    var component = this;
+  componentDidMount: function() {
+    options = {
+      title: {
+        text: 'Spent Finances',
+        x: -20 //center
+      },
+      subtitle: {
+        text: this.props.name,
+        x: -20
+      },
+      legend: {
+        enabled: false
+      },
+      xAxis: {
+        categories: this.props.timePeriods
+      },
+      yAxis: {
+        title: {
+          text: 'Amount Spent (lari)'
+        },
+      },
+      series: [{
+        data: this.props.amounts
+      }]
+    }
 
-    $.getJSON(
-      gon.api_path,
-      function (response) {
-
-        options = {
-          title: {
-            text: 'Spent Finances',
-            x: -20 //center
-          },
-          subtitle: {
-            text: response.name,
-            x: -20
-          },
-          xAxis: {
-            categories: response.time_periods
-          },
-          yAxis: {
-            title: {
-              text: 'Amount Spent (lari)'
-            },
-          },
-          series: [{
-            data: response.amounts
-          }]
-        }
-
-        // Set container which the chart should render to.
-        this.chart = new Highcharts.Chart(
-            component.props.container,
-            options
-        );
-      }
+    // Set container which the chart should render to.
+    this.chart = new Highcharts.Chart(
+        this.props.container,
+        options
     );
   },
 
@@ -46,12 +41,13 @@ var TimeSeriesChart = React.createClass({
 
   //Create the div which the chart will be rendered to.
   render: function () {
-      return React.createElement('div', { id: this.props.container });
+    return <div id={this.props.container}></div>
   }
 });
 
-// TimeSeriesChart.propTypes = {
-//   name: React.PropTypes.string,
-//   time_periods: React.PropTypes.array.isRequired,
-//
-// }
+TimeSeriesChart.propTypes = {
+  container: React.PropTypes.string.isRequired,
+  timePeriods: React.PropTypes.array.isRequired,
+  amounts: React.PropTypes.array.isRequired,
+  name: React.PropTypes.string
+}
