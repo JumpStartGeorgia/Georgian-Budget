@@ -31,7 +31,20 @@ class RootController < ApplicationController
   def api
     budget_item = Program.first
     spent_finances = budget_item.spent_finances.with_missing_finances.sort_by { |finance| finance.start_date }
-    chart_config = TimeSeriesChart.new(budget_item, spent_finances).config
+
+    name = budget_item.name
+
+    time_period_months = spent_finances.map(&:month).map { |month| month.strftime('%B, %Y') }
+
+    amounts = spent_finances.map(&:amount).map do |amount|
+      amount.present? ? amount.to_f : nil
+    end
+
+    chart_config = {
+      name: name,
+      time_periods: time_period_months,
+      amounts: amounts
+    }
 
     render json: chart_config, status: :ok
   end

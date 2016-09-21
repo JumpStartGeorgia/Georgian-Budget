@@ -8,8 +8,6 @@ var TimeSeriesChart = React.createClass({
       gon.api_path,
       function (response) {
 
-        var data = response.data;
-
         options = {
           title: {
             text: 'Spent Finances',
@@ -20,7 +18,7 @@ var TimeSeriesChart = React.createClass({
             x: -20
           },
           xAxis: {
-            categories: data.time_periods
+            categories: response.time_periods
           },
           yAxis: {
             title: {
@@ -28,7 +26,7 @@ var TimeSeriesChart = React.createClass({
             },
           },
           series: [{
-            data: data.amounts
+            data: response.amounts
           }]
         }
 
@@ -51,3 +49,9 @@ var TimeSeriesChart = React.createClass({
       return React.createElement('div', { id: this.props.container });
   }
 });
+
+// TimeSeriesChart.propTypes = {
+//   name: React.PropTypes.string,
+//   time_periods: React.PropTypes.array.isRequired,
+//
+// }
