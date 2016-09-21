@@ -29,7 +29,17 @@ class RootController < ApplicationController
   end
 
   def api
-    budget_item = Program.first
+    response = {
+      budget_items: params['budgetItemIds'].map { |id| chart_config_for_program(id) }
+    }
+
+    render json: response, status: :ok
+  end
+
+  private
+
+  def chart_config_for_program(id)
+    budget_item = Program.find(id)
     spent_finances = budget_item.spent_finances.with_missing_finances.sort_by { |finance| finance.start_date }
 
     name = budget_item.name
@@ -40,16 +50,10 @@ class RootController < ApplicationController
       amount.present? ? amount.to_f : nil
     end
 
-    chart_config = {
+    {
       name: name,
       time_periods: time_period_months,
       amounts: amounts
     }
-
-    response = {
-      budget_items: [chart_config]
-    }
-
-    render json: response, status: :ok
   end
 end

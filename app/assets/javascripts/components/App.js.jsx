@@ -8,6 +8,9 @@ var App = React.createClass({
     var component = this;
     $.getJSON(
       gon.api_path,
+      {
+        budgetItemIds: [6430, 6203, 6438]
+      },
       function (response) {
         component.setState({
           budgetItems: response.budget_items
