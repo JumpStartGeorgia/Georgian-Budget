@@ -17,8 +17,8 @@ RSpec.describe 'BudgetUploader' do
       spending_agency1_array = SpendingAgency.find_by_name('საქართველოს პარლამენტი და მასთან არსებული ორგანიზაციები')
       spending_agency1 = spending_agency1_array[0]
 
-      spending_agency1_spent_finance1 = spending_agency1.spent_finances[1]
-      spending_agency1_spent_finance2 = spending_agency1.spent_finances[0]
+      spending_agency1_spent_finance1 = spending_agency1.spent_finances[0]
+      spending_agency1_spent_finance2 = spending_agency1.spent_finances[1]
 
       expect(spending_agency1_array.length).to eq(1)
       expect(spending_agency1.code).to eq('01 00')
