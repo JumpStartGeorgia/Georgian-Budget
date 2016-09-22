@@ -14,6 +14,7 @@ RSpec.describe 'BudgetUploader' do
       uploader.upload_folder(test_budget_files_dir)
 
       # verify
+      # TOTAL
       total = Total.first
 
       expect(total.code).to eq('00')
@@ -34,6 +35,18 @@ RSpec.describe 'BudgetUploader' do
       expect(total_spent_finance2.start_date).to eq(Date.new(2015, 2, 1))
       expect(total_spent_finance2.end_date).to eq(Date.new(2015, 2, 28))
 
+      total_planned_finance1 = total.planned_finances[0]
+
+      expect(total.planned_finances.length).to eq(1)
+
+      # TODO
+      # expect(total.planned_finances_all.length).to eq(2)
+
+      expect(total_planned_finance1.amount.to_f).to eq(2162575900)
+      expect(total_planned_finance1.start_date).to eq(Date.new(2015, 1, 1))
+      expect(total_planned_finance1.end_date).to eq(Date.new(2015, 3, 31))
+
+      ### SPENDING AGENCY
       spending_agency1_array = SpendingAgency.find_by_name('საქართველოს პარლამენტი და მასთან არსებული ორგანიზაციები')
       spending_agency1 = spending_agency1_array[0]
 
@@ -54,7 +67,18 @@ RSpec.describe 'BudgetUploader' do
       expect(spending_agency1_spent_finance2.start_date).to eq(Date.new(2015, 2, 1))
       expect(spending_agency1_spent_finance2.end_date).to eq(Date.new(2015, 2, 28))
 
-      ###
+      spending_agency1_planned_finance1 = spending_agency1.planned_finances[0]
+
+      expect(spending_agency1.planned_finances.length).to eq(1)
+
+      # TODO
+      # expect(spending_agency1.planned_finances_all.length).to eq(2)
+
+      expect(spending_agency1_planned_finance1.amount.to_f).to eq(14767400)
+      expect(spending_agency1_planned_finance1.start_date).to eq(Date.new(2015, 1, 1))
+      expect(spending_agency1_planned_finance1.end_date).to eq(Date.new(2015, 3, 31))
+
+      ### PROGRAM
       program1_array = Program.find_by_name('საკანონმდებლო საქმიანობა')
       program1 = program1_array[0]
 

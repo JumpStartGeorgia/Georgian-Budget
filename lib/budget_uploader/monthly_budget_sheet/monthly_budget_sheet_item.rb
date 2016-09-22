@@ -40,15 +40,21 @@ class MonthlyBudgetSheetItem
       amount: spent_finance_amount(budget_item, start_date)
     )
 
-    #
-    # PlannedFinance.create(
-    #   amount: planned_finance_amount
-    # )
+    PlannedFinance.create(
+      finance_plannable: budget_item,
+      start_date: quarter(start_date).start_date,
+      end_date: quarter(start_date).end_date,
+      amount: planned_finance_amount
+    )
   end
 
   attr_accessor :rows, :budget_item
 
   private
+
+  def quarter(date)
+    Quarter.for_date(date)
+  end
 
   def spent_finance_amount(budget_item, start_date)
     previously_spent = budget_item.spent_finances.year_cumulative_up_to(start_date)
