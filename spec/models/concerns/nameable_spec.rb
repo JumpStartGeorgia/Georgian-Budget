@@ -93,6 +93,23 @@ RSpec.shared_examples_for 'Nameable' do
     end
   end
 
+  describe '#name_{locale} methods' do
+    it 'return correct translations of most recent name text' do
+      georgian_name = 'Georgian name!'
+      english_name = 'English name!'
+
+      name1b.text_ka = georgian_name
+      name1b.text_en = english_name
+
+      name1b.save!
+      nameable1.reload
+
+      expect(nameable1.name_ka).to eq(georgian_name)
+      expect(nameable1.name_en).to eq(english_name)
+    end
+  end
+
+
   describe '#recent_name_object' do
     it 'returns the most recent name object' do
       nameable1.save!

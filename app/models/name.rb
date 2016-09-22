@@ -1,10 +1,10 @@
 class Name < ApplicationRecord
   belongs_to :nameable, polymorphic: true
 
-  translates :text,
-             fallbacks_for_empty_translations: true
+  translates :text, fallbacks_for_empty_translations: true
+  globalize_accessors locales: [:en, :ka], attributes: [:text]
 
-  validates :start_date, uniqueness: { scope: :nameable }, presence: true
+  validates :start_date, uniqueness: { scope: [:nameable_type, :nameable_id] }, presence: true
   validates :nameable, presence: true
 
   after_commit :set_nameable_is_most_recent

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160916132105) do
+ActiveRecord::Schema.define(version: 20160922113718) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -88,6 +88,12 @@ ActiveRecord::Schema.define(version: 20160916132105) do
     t.index ["end_date"], name: "index_spent_finances_on_end_date", using: :btree
     t.index ["finance_spendable_type", "finance_spendable_id"], name: "index_spent_finances_on_finance_spendable", using: :btree
     t.index ["start_date"], name: "index_spent_finances_on_start_date", using: :btree
+  end
+
+  create_table "totals", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string   "code"
   end
 
   create_table "users", force: :cascade do |t|

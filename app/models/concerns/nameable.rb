@@ -10,6 +10,14 @@ module Nameable
     recent_name_object.text
   end
 
+  def name_ka
+    recent_name_object.text_ka
+  end
+
+  def name_en
+    recent_name_object.text_en
+  end
+
   # most recent name
   def recent_name_object
     names.last

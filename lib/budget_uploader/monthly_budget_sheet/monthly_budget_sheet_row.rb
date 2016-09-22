@@ -49,11 +49,11 @@ class MonthlyBudgetSheetRow
     cells[6].value.to_f
   end
 
-  private
-
   def code_is_left_aligned
     cells[0].horizontal_alignment == 'left'
   end
+
+  private
 
   def third_cell_is_empty
     cells[2].nil? || cells[2].value.nil? || cells[2].value.strip == ''

@@ -2,7 +2,6 @@ class MonthlyBudgetSheetItem
   def initialize(rows)
     @rows = rows
     @budget_item = nil
-
   end
 
   def save(start_date, end_date)
@@ -16,13 +15,23 @@ class MonthlyBudgetSheetItem
       budget_item = budget_item_class.create(code: primary_code)
     end
 
-    # if the new name is a duplicate of another name, then the names
-    # will be merged in an after commit callback
-    Name.create(
-      nameable: budget_item,
-      text: name,
-      start_date: start_date
-    )
+    # There is only one Total method with only one name
+    if budget_item_class == Total
+      Name.create(
+        nameable: budget_item,
+        text_en: 'Total Georgian Budget',
+        text_ka: 'მთლიანი სახელმწიფო ბიუჯეტი',
+        start_date: start_date
+      )
+    else
+      # if the new name is a duplicate of another name, then the names
+      # will be merged in an after commit callback
+      Name.create(
+        nameable: budget_item,
+        text: name,
+        start_date: start_date
+      )
+    end
 
     SpentFinance.create(
       finance_spendable: budget_item,
@@ -30,6 +39,7 @@ class MonthlyBudgetSheetItem
       end_date: end_date,
       amount: spent_finance_amount(budget_item, start_date)
     )
+
     #
     # PlannedFinance.create(
     #   amount: planned_finance_amount
@@ -66,6 +76,6 @@ class MonthlyBudgetSheetItem
   end
 
   def totals_row
-    rows.find { |row| row.name == 'ჯამური' }
+    rows.find { |row| row.name == 'ჯამური' && !row.code_is_left_aligned }
   end
 end

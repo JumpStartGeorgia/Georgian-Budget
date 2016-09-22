@@ -14,21 +14,43 @@ RSpec.describe 'BudgetUploader' do
       uploader.upload_folder(test_budget_files_dir)
 
       # verify
+      total = Total.first
+
+      expect(total.code).to eq('00')
+
+      expect(total.name_en).to eq('Total Georgian Budget')
+      expect(total.name_ka).to eq('მთლიანი სახელმწიფო ბიუჯეტი')
+
+      total_spent_finance1 = total.spent_finances[0]
+      total_spent_finance2 = total.spent_finances[1]
+
+      expect(total.spent_finances.length).to eq(2)
+
+      expect(total_spent_finance1.amount.to_f).to eq(656549486.69)
+      expect(total_spent_finance1.start_date).to eq(Date.new(2015, 1, 1))
+      expect(total_spent_finance1.end_date).to eq(Date.new(2015, 1, 31))
+
+      expect(total_spent_finance2.amount.to_f).to eq(641341973.31)
+      expect(total_spent_finance2.start_date).to eq(Date.new(2015, 2, 1))
+      expect(total_spent_finance2.end_date).to eq(Date.new(2015, 2, 28))
+
       spending_agency1_array = SpendingAgency.find_by_name('საქართველოს პარლამენტი და მასთან არსებული ორგანიზაციები')
       spending_agency1 = spending_agency1_array[0]
-
-      spending_agency1_spent_finance1 = spending_agency1.spent_finances[0]
-      spending_agency1_spent_finance2 = spending_agency1.spent_finances[1]
 
       expect(spending_agency1_array.length).to eq(1)
       expect(spending_agency1.code).to eq('01 00')
       expect(spending_agency1.recent_name_object.start_date).to eq(monthly_budgets_start_date)
 
-      expect(spending_agency1_spent_finance1.amount).to eq(3532432.91)
+      spending_agency1_spent_finance1 = spending_agency1.spent_finances[0]
+      spending_agency1_spent_finance2 = spending_agency1.spent_finances[1]
+
+      expect(spending_agency1.spent_finances.length).to eq(2)
+
+      expect(spending_agency1_spent_finance1.amount.to_f).to eq(3532432.91)
       expect(spending_agency1_spent_finance1.start_date).to eq(Date.new(2015, 1, 1))
       expect(spending_agency1_spent_finance1.end_date).to eq(Date.new(2015, 1, 31))
 
-      expect(spending_agency1_spent_finance2.amount).to eq(3753083.38)
+      expect(spending_agency1_spent_finance2.amount.to_f).to eq(3753083.38)
       expect(spending_agency1_spent_finance2.start_date).to eq(Date.new(2015, 2, 1))
       expect(spending_agency1_spent_finance2.end_date).to eq(Date.new(2015, 2, 28))
 
