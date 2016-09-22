@@ -6,7 +6,6 @@ class ApplicationController < ActionController::Base
 
   before_action :set_locale
   before_action :set_gon_api_path
-  around_action :redirect_from_record_not_found
 
   ##############################################
   # Actions #
@@ -18,12 +17,6 @@ class ApplicationController < ActionController::Base
 
   def set_gon_api_path
     gon.api_path = api_path
-  end
-
-  def redirect_from_record_not_found
-    yield
-  rescue ActiveRecord::RecordNotFound
-    redirect_to explore_url, flash: { error: 'Record not found.' }
   end
 
   ##############################################
