@@ -22,7 +22,7 @@ class MissingFinance
     return true
   end
 
-  attr_reader :start_date, :end_date
+  attr_accessor :start_date, :end_date
 
   def amount
     nil
