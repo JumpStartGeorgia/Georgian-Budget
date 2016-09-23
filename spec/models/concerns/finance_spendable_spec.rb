@@ -21,9 +21,8 @@ RSpec.shared_examples_for 'FinanceSpendable' do
 
   describe '#destroy' do
     it 'should destroy associated spent_finances' do
-      finance_spendable1.save!
-      spent_finance1.save!
-      spent_finance1b.save!
+      spent_finance1
+      spent_finance1b
 
       finance_spendable1.destroy
 

@@ -5,9 +5,9 @@ FactoryGirl.define do
     end
 
     start_date Date.new(2015, 1, 1)
-
-    sequence :end_date do |n|
-      Date.new(2015 + n, 3, 1).end_of_month
+    end_date Date.new(2015, 3, 31)
+    sequence :announce_date do |n|
+      Date.new(2015 + n, 1, 1)
     end
 
     association :finance_plannable, factory: :priority

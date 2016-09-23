@@ -59,13 +59,20 @@ RSpec.describe PlannedFinance do
     end
   end
 
-  describe 'time period' do
-    it 'is unique' do
+  describe '#announce_date' do
+    it 'is required' do
+      planned_finance1.announce_date = nil
+
+      expect(planned_finance1).to have(1).error_on(:announce_date)
+    end
+
+    it 'is unique for same finance_plannable, start_date, and end_date' do
       planned_finance1
       planned_finance1b.start_date = planned_finance1.start_date
       planned_finance1b.end_date = planned_finance1.end_date
+      planned_finance1b.announce_date = planned_finance1.announce_date
 
-      expect(planned_finance1b).to have(1).error_on(:end_date)
+      expect(planned_finance1b).to have(1).error_on(:announce_date)
     end
   end
 
@@ -74,6 +81,82 @@ RSpec.describe PlannedFinance do
       new_planned_finance.finance_plannable = nil
 
       expect(new_planned_finance).to have(1).error_on(:finance_plannable)
+    end
+  end
+
+  describe '==' do
+    context 'when two planned finances' do
+      before :each do
+        planned_finance1b.update_attributes(
+          finance_plannable: planned_finance1.finance_plannable,
+          start_date: planned_finance1.start_date,
+          end_date: planned_finance1.end_date,
+          # announce date must be different, otherwise validation won't pass
+          announce_date: planned_finance1.announce_date + 1,
+          amount: planned_finance1.amount
+        )
+      end
+
+      context 'have different finance plannable' do
+        it 'returns false' do
+          planned_finance1b.update_attributes(
+            announce_date: planned_finance1.announce_date,
+            finance_plannable: FactoryGirl.create(:program)
+          )
+
+          planned_finance1b.reload
+
+          expect(planned_finance1 == planned_finance1b).to eq(false)
+        end
+      end
+
+      context 'have different start date' do
+        it 'returns false' do
+          planned_finance1b.update_attributes(
+            announce_date: planned_finance1.announce_date,
+            start_date: planned_finance1.start_date + 1
+          )
+
+          planned_finance1b.reload
+
+          expect(planned_finance1 == planned_finance1b).to eq(false)
+        end
+      end
+
+      context 'have different end date' do
+        it 'returns false' do
+          planned_finance1b.update_attributes(
+            announce_date: planned_finance1.announce_date,
+            end_date: planned_finance1.end_date + 1
+          )
+
+          planned_finance1b.reload
+
+          expect(planned_finance1 == planned_finance1b).to eq(false)
+        end
+      end
+
+      context 'have different announce date' do
+        context 'and amounts are the same' do
+          it 'returns true' do
+            planned_finance1b.reload
+
+            expect(planned_finance1 == planned_finance1b).to eq(true)
+          end
+        end
+
+        context 'and amounts are different' do
+          it 'returns false' do
+            planned_finance1b.update_attributes(
+              amount: planned_finance1.amount + 1
+            )
+
+            planned_finance1b.reload
+
+            expect(planned_finance1 == planned_finance1b).to eq(false)
+          end
+        end
+      end
     end
   end
 

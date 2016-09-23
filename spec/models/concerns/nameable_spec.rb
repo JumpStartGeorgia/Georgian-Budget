@@ -70,11 +70,10 @@ RSpec.shared_examples_for 'Nameable' do
 
   describe '#destroy' do
     it 'destroys associated names' do
-      nameable1.save!
-      name1.save!
-      name1b.save!
-      nameable1.reload
+      name1
+      name1b
 
+      nameable1.reload
       nameable1.destroy
 
       expect(Name.exists?(name1.id)).to eq(false)

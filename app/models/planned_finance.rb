@@ -6,7 +6,17 @@ class PlannedFinance < ApplicationRecord
 
   validates :amount, presence: true
   validates :finance_plannable, presence: true
-  validates :end_date, uniqueness: { scope: [:finance_plannable_type, :finance_plannable_id, :start_date] }
+
+  validates :announce_date,
+            presence: true,
+            uniqueness: {
+              scope: [
+                :finance_plannable_type,
+                :finance_plannable_id,
+                :start_date,
+                :end_date
+              ]
+            }
 
   def self.year_cumulative_up_to(date)
     after(Date.new(date.year, 1, 1)).before(date).total
@@ -22,6 +32,18 @@ class PlannedFinance < ApplicationRecord
 
   def self.total
     calculate(:sum, :amount)
+  end
+
+  def ==(other_planned_finance)
+    return false if finance_plannable != other_planned_finance.finance_plannable
+    return false if start_date != other_planned_finance.start_date
+    return false if end_date != other_planned_finance.end_date
+
+    if announce_date != other_planned_finance.announce_date
+      return false if amount != other_planned_finance.amount
+    end
+
+    return true
   end
 
   def self.with_missing_finances
