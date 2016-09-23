@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'Name', type: :feature do
   context 'of every program and priority' do
-    it 'is shown on explore page' do
+    it 'is shown on list page' do
       program1 = FactoryGirl.create(:program)
       FactoryGirl.create(
         :name,
@@ -39,7 +39,7 @@ RSpec.describe 'Name', type: :feature do
         nameable: spending_agency2
       )
 
-      visit explore_path
+      visit list_path
 
       expect(page).to have_content(program1.code)
       expect(page).to have_content(program1.name)
