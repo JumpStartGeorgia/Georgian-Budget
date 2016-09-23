@@ -35,15 +35,4 @@ class RootController < ApplicationController
       @nameable = Priority.find(params[:nameable_id])
     end
   end
-
-  def api
-    response = APIResponse.new(params)
-
-    render json: response.to_json,
-           status: :ok
-  end
-
-  private
-
-
 end
