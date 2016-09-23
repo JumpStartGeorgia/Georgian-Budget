@@ -1,7 +1,7 @@
 class ApiController < ApplicationController
   def main
     version = params['version']
-    if version == 'v1' do
+    if version == 'v1'
       response = APIResponse.new(params)
 
       render json: response.to_json,
