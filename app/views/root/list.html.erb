@@ -1,0 +1,54 @@
+<% if @total.present? %>
+  <div>
+    Total: <%= link_to @total.name,
+               nameable_path(
+                 @total.class.to_s.underscore,
+                 total.id
+               )%>
+  </div>
+<% end %>
+
+<div>
+  Programs:
+  <ul>
+    <% @programs.each do |program| %>
+      <li>
+        <%= link_to "#{program.code}: #{program.name}",
+                    nameable_path(
+                      program.class.to_s.underscore,
+                      program.id
+                    ) %>
+      </li>
+    <% end %>
+  </ul>
+</div>
+
+<div>
+  Priorities:
+  <ul>
+    <% @priorities.each do |priority| %>
+      <li>
+        <%= link_to "#{priority.code}: #{priority.name}",
+                    nameable_path(
+                      priority.class.to_s.underscore,
+                      priority.id
+                    ) %>
+      </li>
+    <% end %>
+  </ul>
+</div>
+
+<div>
+  Spending Agencies:
+  <ul>
+    <% @spending_agencies.each do |spending_agency| %>
+      <li>
+        <%= link_to "#{spending_agency.code}: #{spending_agency.name}",
+                    nameable_path(
+                      spending_agency.class.to_s.underscore,
+                      spending_agency.id
+                    ) %>
+      </li>
+    <% end %>
+  </ul>
+</div>
