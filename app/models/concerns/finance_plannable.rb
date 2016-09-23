@@ -34,7 +34,9 @@ module FinancePlannable
   # all_planned_finances gets both records that are and are not
   # most_recently_announced.
   def all_planned_finances
-    planned_finances.unscope(where: :most_recently_announced)
+    planned_finances
+    .unscope(where: :most_recently_announced)
+    .order('planned_finances.announce_date')
   end
 
   # planned_finances doesn't get all dependent finances, so we can't

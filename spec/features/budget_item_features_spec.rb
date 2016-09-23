@@ -51,9 +51,9 @@ RSpec.describe 'BudgetItem' do
       expect(page).to have_content("#{spent_finance1.start_date} - #{spent_finance1.end_date}: #{spent_finance1.amount_pretty}")
       expect(page).to have_content("#{spent_finance2.start_date} - #{spent_finance2.end_date}: #{spent_finance2.amount_pretty}")
 
-      expect(page).to have_content("#{q1.to_s}: #{program1_q1_planned1.amount}")
-      expect(page).to have_content("#{q1.to_s}: #{program1_q1_planned1b.amount} (most recently announced)")
-      expect(page).to have_content("#{q2.to_s}: #{program1_q2_planned1.amount}")
+      expect(page).to have_content("#{q1.to_s}: #{program1_q1_planned1.amount_pretty} (Announced: #{program1_q1_planned1.announce_date})")
+      expect(page).to have_content("#{q1.to_s}: #{program1_q1_planned1b.amount_pretty} (Announced: #{program1_q1_planned1b.announce_date})*")
+      expect(page).to have_content("#{q2.to_s}: #{program1_q2_planned1.amount_pretty} (Announced: #{program1_q2_planned1.announce_date})*")
     end
   end
 end

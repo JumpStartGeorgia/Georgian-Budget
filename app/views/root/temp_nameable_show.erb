@@ -41,7 +41,7 @@
 <ul>
   <% if @nameable.all_planned_finances.each do |planned_finance| %>
     <li>
-      <%= "#{planned_finance.time_period.to_s}: #{planned_finance.amount}#{" (most recently announced)" if planned_finance.most_recently_announced}" %>
+      <%= "#{planned_finance.time_period.to_s}: #{planned_finance.amount_pretty} (Announced: #{planned_finance.announce_date})#{"*" if planned_finance.most_recently_announced}" %>
     </li>
   <% end.empty? %>
     <li>
