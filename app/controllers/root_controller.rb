@@ -19,6 +19,10 @@ class RootController < ApplicationController
   def temp_nameable_show
     nameable_type = params[:nameable_type].to_sym
 
+    if nameable_type == :total
+      @nameable = Total.first
+    end
+
     if nameable_type == :program
       @nameable = Program.find(params[:nameable_id])
     end

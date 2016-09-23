@@ -1,1 +1,7 @@
 # ---
+ka:
+  activerecord:
+    models:
+      spent_finance:
+        one: გადახდილი ფინანსი
+        other: გადახდილი ფინანსები

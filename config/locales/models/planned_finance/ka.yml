@@ -1,0 +1,7 @@
+# ---
+ka:
+  activerecord:
+    models:
+      spent_finance:
+        one: დაგეგმილი ფინანსი
+        other: დაგეგმილი ფინანსები
