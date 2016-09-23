@@ -9,6 +9,7 @@ var DataDisplay = React.createClass({
     $.getJSON(
       gon.api_path,
       {
+        financeType: 'spent_finance',
         budgetItemIds: [1336, 990]
       },
       function (response) {
