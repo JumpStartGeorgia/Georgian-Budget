@@ -1,6 +1,7 @@
 class APIResponse
   def initialize(params)
     @budget_item_ids = params['budgetItemIds'] if params['budgetItemIds']
+    @finance_type = params['financeType']
     @error = nil
   end
 
@@ -17,7 +18,7 @@ class APIResponse
 
   attr_accessor :error
 
-  attr_reader :budget_item_ids
+  attr_reader :budget_item_ids, :finance_type
 
   def budget_items
     budget_item_ids.map { |id| chart_config_for_program(id) }
@@ -31,19 +32,29 @@ class APIResponse
       return nil
     end
 
-    spent_finances = budget_item.spent_finances.with_missing_finances.sort_by { |finance| finance.start_date }
+    if finance_type == 'planned_finance'
+      finances = budget_item.planned_finances
+    elsif finance_type == 'spent_finance'
+      finances = budget_item.spent_finances
+    else
+      self.error = "No #{finance_type} finance type available"
+      return nil
+    end
+
+    finances = finances.with_missing_finances.sort_by { |finance| finance.start_date }
 
     name = budget_item.name
 
-    time_period_months = spent_finances.map(&:month).map { |month| month.to_s }
+    time_periods = finances.map { |finance| finance.time_period.to_s }
 
-    amounts = spent_finances.map(&:amount).map do |amount|
+    amounts = finances.map(&:amount).map do |amount|
       amount.present? ? amount.to_f : nil
     end
 
     {
+      chart_name: I18n.t("activerecord.models.#{finance_type}.other"),
       name: name,
-      time_periods: time_period_months,
+      time_periods: time_periods,
       amounts: amounts
     }
   end

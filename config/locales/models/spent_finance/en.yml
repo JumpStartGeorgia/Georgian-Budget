@@ -1,0 +1,7 @@
+# ---
+en:
+  activerecord:
+    models:
+      spent_finance:
+        one: Spent Finance
+        other: Spent Finances
