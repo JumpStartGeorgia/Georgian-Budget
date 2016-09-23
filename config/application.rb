@@ -15,7 +15,7 @@ require 'sprockets/railtie'
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-module GeorgianBudget 
+module GeorgianBudget
   # Comment necessary for rubocop
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those
@@ -38,5 +38,13 @@ module GeorgianBudget
     config.i18n.available_locales = [:en, :ka]
 
     config.i18n.fallbacks = true
+
+    # API Allow
+    config.middleware.insert_before 0, Rack::Cors do
+      allow do
+        origins '*'
+        resource '*', headers: :any, methods: [:get]
+      end
+    end
   end
 end

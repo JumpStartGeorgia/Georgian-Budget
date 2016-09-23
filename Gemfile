@@ -175,6 +175,9 @@ gem 'rubyXL', '~> 3.3.21', require: false
 # Creates nice-lookin' charts :)
 gem 'highcharts-rails', '~> 4.2', '>= 4.2.5'
 
+# Provide API access from other origins
+gem 'rack-cors', '~> 0.4.0'
+
 group :test do
   # Test the number of SQL queries are created by a model call
   gem 'rspec-query-limit', '~> 0.1.2'
