@@ -9,7 +9,7 @@ var DataDisplay = React.createClass({
     $.getJSON(
       gon.api_path,
       {
-        budgetItemIds: [1]
+        budgetItemIds: [1336, 990]
       },
       function (response) {
         component.setState({
