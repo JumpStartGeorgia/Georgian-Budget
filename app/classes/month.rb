@@ -62,6 +62,10 @@ class Month
     }
   end
 
+  def to_s
+    strftime('%B, %Y')
+  end
+
   private
 
   def dates_valid?

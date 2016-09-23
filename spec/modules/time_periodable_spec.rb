@@ -28,4 +28,18 @@ RSpec.shared_examples_for 'TimePeriodable' do
       )
     end
   end
+
+  describe '#time_period=' do
+    it "sets start date to time period's start date" do
+      time_periodable1.time_period = Quarter.for_date(Date.new(2011, 2, 2))
+
+      expect(time_periodable1.start_date).to eq(Date.new(2011, 1, 1))
+    end
+
+    it "sets end date to time period's end date" do
+      time_periodable1.time_period = Quarter.for_date(Date.new(2011, 2, 2))
+
+      expect(time_periodable1.end_date).to eq(Date.new(2011, 3, 31))
+    end
+  end
 end

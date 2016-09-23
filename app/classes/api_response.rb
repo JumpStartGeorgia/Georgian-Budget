@@ -30,12 +30,12 @@ class APIResponse
       self.error = 'Could not find budget item'
       return nil
     end
-    
+
     spent_finances = budget_item.spent_finances.with_missing_finances.sort_by { |finance| finance.start_date }
 
     name = budget_item.name
 
-    time_period_months = spent_finances.map(&:month).map { |month| month.strftime('%B, %Y') }
+    time_period_months = spent_finances.map(&:month).map { |month| month.to_s }
 
     amounts = spent_finances.map(&:amount).map do |amount|
       amount.present? ? amount.to_f : nil

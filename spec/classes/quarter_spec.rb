@@ -5,6 +5,11 @@ RSpec.describe Quarter do
   let(:other_date) { Date.new(2013, 4, 1) }
   let(:quarter_for_date) { Quarter.for_date(date) }
 
+  let(:q1) { Quarter.for_date(Date.new(2015, 1, 1)) }
+  let(:q2) { Quarter.for_date(Date.new(2015, 4, 1)) }
+  let(:q3) { Quarter.for_date(Date.new(2015, 7, 1)) }
+  let(:q4) { Quarter.for_date(Date.new(2015, 10, 1)) }
+
   describe '<=>' do
     context 'when start date is before other quarter start date' do
       it 'returns -1' do
@@ -60,6 +65,48 @@ RSpec.describe Quarter do
         next_quarter = Quarter.for_date(Date.new(2014, 3, 1))
 
         expect(quarter.next).to eq(next_quarter)
+      end
+    end
+  end
+
+  describe '#to_s' do
+    context 'when quarter is first quarter of 2015' do
+      it 'returns "Quarter #1, 2015"' do
+        quarter = Quarter.for_date(Date.new(2015, 2, 4))
+        expect(quarter.to_s).to eq('Quarter #1, 2015')
+      end
+    end
+
+    context 'when quarter is fourth of 1234' do
+      it 'returns "Quarter #4, 1234"' do
+        quarter = Quarter.for_date(Date.new(1234, 10, 4))
+        expect(quarter.to_s).to eq('Quarter #4, 1234')
+      end
+    end
+  end
+
+  describe '#to_i' do
+    context 'when quarter is first' do
+      it 'return 1' do
+        expect(q1.to_i).to eq(1)
+      end
+    end
+
+    context 'when quarter is second' do
+      it 'return 2' do
+        expect(q2.to_i).to eq(2)
+      end
+    end
+
+    context 'when quarter is third' do
+      it 'return 3' do
+        expect(q3.to_i).to eq(3)
+      end
+    end
+
+    context 'when quarter is fourth' do
+      it 'return 4' do
+        expect(q4.to_i).to eq(4)
       end
     end
   end

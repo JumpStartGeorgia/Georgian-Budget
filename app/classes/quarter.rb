@@ -23,6 +23,17 @@ class Quarter
     }
   end
 
+  def to_i
+    return 1 if start_date < Quarter.valid_start_dates(start_date.year)[1]
+    return 2 if start_date < Quarter.valid_start_dates(start_date.year)[2]
+    return 3 if start_date < Quarter.valid_start_dates(start_date.year)[3]
+    return 4
+  end
+
+  def to_s
+    "Quarter ##{to_i}, #{year}"
+  end
+
   def self.dates_valid?(start_date, end_date)
     return false unless valid_start_dates(start_date.year).include?(start_date)
     return false unless valid_end_dates(end_date.year).include?(end_date)

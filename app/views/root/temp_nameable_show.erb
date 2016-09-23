@@ -13,7 +13,7 @@
     </li>
   <% end.empty? %>
     <li>
-      No names for this program :/
+      No names for this budget item
     </li>
   <% end %>
 </ul>
@@ -24,13 +24,28 @@
   Spent Finances:
 </h2>
 <ul>
-  <% if @nameable.spent_finances.order(:start_date).each do |spent_finance| %>
+  <% if @nameable.spent_finances.each do |spent_finance| %>
     <li>
       <%= "#{spent_finance.start_date} - #{spent_finance.end_date}: #{spent_finance.amount_pretty}" %>
     </li>
   <% end.empty? %>
     <li>
-      No spent finances for this program :(
+      No spent finances for this budget item
+    </li>
+  <% end %>
+</ul>
+
+<h2>
+  Planned Finances:
+</h2>
+<ul>
+  <% if @nameable.all_planned_finances.each do |planned_finance| %>
+    <li>
+      <%= "#{planned_finance.time_period.to_s}: #{planned_finance.amount}#{" (most recently announced)" if planned_finance.most_recently_announced}" %>
+    </li>
+  <% end.empty? %>
+    <li>
+      No planned finances for this budget item
     </li>
   <% end %>
 </ul>

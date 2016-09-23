@@ -71,6 +71,15 @@ RSpec.describe Month do
     end
   end
 
+  describe '#to_s' do
+    context 'when month is 2015, 01' do
+      it 'returns "January, 2015"' do
+        month = Month.for_date(Date.new(2015, 1, 25))
+        expect(month.to_s).to eq('January, 2015')
+      end
+    end
+  end
+
   describe '#strftime' do
     it 'passes argument to start date' do
       expect(january2015.strftime('%B, %Y')).to eq('January, 2015')
