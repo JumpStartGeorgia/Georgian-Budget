@@ -16,7 +16,7 @@ class ApplicationController < ActionController::Base
   private :set_locale
 
   def set_gon_api_path
-    gon.api_path = api_path
+    gon.api_path = api_path(version: 'v1')
   end
 
   ##############################################

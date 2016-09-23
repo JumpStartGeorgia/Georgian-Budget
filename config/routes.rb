@@ -29,7 +29,10 @@ Rails.application.routes.draw do
     get '/about' => 'root#about'
     get '/list' => 'root#list'
 
-    get '/api/:version' => 'api#main'
+    get '/api/:version' => 'api#main',
+        as: 'api',
+        controller: 'api',
+        constraints: { format: :json }
 
     # handles /en/fake/path/whatever
     get '*path', to: redirect("/#{I18n.default_locale}")
@@ -40,6 +43,4 @@ Rails.application.routes.draw do
 
   # handles /not-a-locale/anything
   get '*path', to: redirect("/#{I18n.default_locale}/%{path}")
-
-
 end
