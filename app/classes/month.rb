@@ -9,14 +9,24 @@ class Month
   attr_reader :year, :month, :start_date, :end_date
 
   def self.between_dates(start_date, end_date)
-    raise dates_not_valid_error if start_date.month != end_date.month
-    raise dates_not_valid_error if start_date != start_date.beginning_of_month
-    raise dates_not_valid_error if end_date != end_date.end_of_month
-
     @start_date = start_date
     @end_date = end_date
 
+    raise dates_not_valid_error unless dates_valid?(start_date, end_date)
+
     Month.new(start_date.year, start_date.month)
+  end
+
+  def self.dates_valid?(start_date, end_date)
+    return false if start_date.month != end_date.month
+    return false if start_date != start_date.beginning_of_month
+    return false if end_date != end_date.end_of_month
+
+    true
+  end
+
+  def self.for_date(date)
+    Month.new(date.year, date.month)
   end
 
   def strftime(format_str)
@@ -41,7 +51,22 @@ class Month
     end
   end
 
+  def next
+    Month.for_date(start_date.next_month)
+  end
+
+  def to_hash
+    {
+      start_date: start_date,
+      end_date: end_date
+    }
+  end
+
   private
+
+  def dates_valid?
+    Month.dates_valid?(start_date, end_date)
+  end
 
   def self.dates_not_valid_error
     'Dates must be first and last day of same month'

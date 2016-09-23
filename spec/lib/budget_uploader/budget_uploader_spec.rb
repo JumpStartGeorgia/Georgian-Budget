@@ -79,7 +79,7 @@ RSpec.describe 'BudgetUploader' do
       expect(spending_agency1_planned_finance1.amount.to_f).to eq(14767400)
       expect(spending_agency1_planned_finance1.start_date).to eq(Date.new(2015, 1, 1))
       expect(spending_agency1_planned_finance1.end_date).to eq(Date.new(2015, 3, 31))
-      expect(spending_agency1_planned_finance1.announce_date).to eq(Date.new(2015, 1, 31))
+      expect(spending_agency1_planned_finance1.announce_date).to eq(Date.new(2015, 1, 1))
       expect(spending_agency1_planned_finance1.most_recently_announced).to eq(true)
 
       ### SPENDING AGENCY
@@ -99,13 +99,13 @@ RSpec.describe 'BudgetUploader' do
       expect(spending_agency2_planned_finance1.amount.to_f).to eq(11471000)
       expect(spending_agency2_planned_finance1.start_date).to eq(Date.new(2015, 1, 1))
       expect(spending_agency2_planned_finance1.end_date).to eq(Date.new(2015, 3, 31))
-      expect(spending_agency2_planned_finance1.announce_date).to eq(Date.new(2015, 1, 31))
+      expect(spending_agency2_planned_finance1.announce_date).to eq(Date.new(2015, 1, 1))
       expect(spending_agency2_planned_finance1.most_recently_announced).to eq(false)
 
       expect(spending_agency2_planned_finance2.amount.to_f).to eq(12471000)
       expect(spending_agency2_planned_finance2.start_date).to eq(Date.new(2015, 1, 1))
       expect(spending_agency2_planned_finance2.end_date).to eq(Date.new(2015, 3, 31))
-      expect(spending_agency2_planned_finance2.announce_date).to eq(Date.new(2015, 2, 31))
+      expect(spending_agency2_planned_finance2.announce_date).to eq(Date.new(2015, 2, 1))
       expect(spending_agency2_planned_finance2.most_recently_announced).to eq(true)
 
       # TODO

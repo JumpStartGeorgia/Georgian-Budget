@@ -110,4 +110,18 @@ RSpec.describe Month do
       end
     end
   end
+
+  describe '#next' do
+    context 'when month is January' do
+      it 'returns February' do
+        expect(Month.new(299, 1).next).to eq(Month.new(299, 2))
+      end
+    end
+
+    context 'when month is December' do
+      it 'returns January of next year' do
+        expect(Month.new(2000, 12).next).to eq(Month.new(2001, 1))
+      end
+    end
+  end
 end

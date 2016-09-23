@@ -1,10 +1,12 @@
 require 'rails_helper'
 require Rails.root.join('spec', 'modules', 'time_periodable_spec')
 require Rails.root.join('spec', 'validators', 'start_end_date_validator_spec')
+require Rails.root.join('spec', 'models', 'concerns', 'with_missing_finances_spec')
 
 RSpec.describe PlannedFinance do
   it_behaves_like 'TimePeriodable'
   include_examples 'StartEndDateValidator'
+  include_examples 'WithMissingFinances'
 
   let(:new_planned_finance) do
     FactoryGirl.build(:planned_finance)
@@ -185,14 +187,6 @@ RSpec.describe PlannedFinance do
 
       expect(PlannedFinance.all.before(planned_finance1.end_date))
       .to match_array([planned_finance1])
-    end
-  end
-
-  describe '.with_missing_finances' do
-    context 'when there are planned finances for quarter 1 and quarter 3' do
-      it 'adds missing finances for February and March' do
-        pending 'TODO: Implement with_missing_finances for quarters'
-      end
     end
   end
 

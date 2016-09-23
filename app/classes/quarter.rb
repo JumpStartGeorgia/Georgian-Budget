@@ -4,9 +4,7 @@ class Quarter
     @end_date = end_date
     @year = start_date.year
 
-    unless dates_valid?
-      raise 'Dates must be first and last day of a quarter'
-    end
+    raise 'Dates must be first and last day of a quarter' unless dates_valid?
   end
 
   attr_reader :start_date, :end_date, :year
@@ -18,13 +16,42 @@ class Quarter
     Quarter.new(start_date, end_date)
   end
 
+  def to_hash
+    {
+      start_date: start_date,
+      end_date: end_date
+    }
+  end
+
+  def self.dates_valid?(start_date, end_date)
+    return false unless valid_start_dates(start_date.year).include?(start_date)
+    return false unless valid_end_dates(end_date.year).include?(end_date)
+
+    true
+  end
+
+  def <=>(other_quarter)
+    return -1 if start_date < other_quarter.start_date
+    return 0 if start_date == other_quarter.start_date
+    return 1
+  end
+
+  def ==(other_quarter)
+    return false if start_date != other_quarter.start_date
+    true
+  end
+
+  def next
+    new_month = (start_date.month + 3)%12
+    new_year = start_date.year + (start_date.month + 3)/12
+
+    Quarter.for_date(Date.new(new_year, new_month, 1))
+  end
+
   private
 
   def dates_valid?
-    return false unless Quarter.valid_start_dates(year).include?(start_date)
-    return false unless Quarter.valid_end_dates(year).include?(end_date)
-
-    true
+    Quarter.dates_valid?(start_date, end_date)
   end
 
   def self.valid_start_dates(year)

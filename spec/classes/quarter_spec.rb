@@ -1,12 +1,71 @@
 require 'rails_helper'
 
 RSpec.describe Quarter do
+  let(:date) { Date.new(2013, 1, 1) }
+  let(:other_date) { Date.new(2013, 4, 1) }
   let(:quarter_for_date) { Quarter.for_date(date) }
+
+  describe '<=>' do
+    context 'when start date is before other quarter start date' do
+      it 'returns -1' do
+        other_date = date + 100
+        expect(Quarter.for_date(date) <=> Quarter.for_date(other_date)).to eq(-1)
+      end
+    end
+
+    context 'when start date is same as other quarter start date' do
+      it 'returns 0' do
+        other_date = date
+        expect(Quarter.for_date(date) <=> Quarter.for_date(other_date)).to eq(0)
+      end
+    end
+
+    context 'when start date is after other quarter start date' do
+      it 'returns 1' do
+        other_date = date - 100
+        expect(Quarter.for_date(date) <=> Quarter.for_date(other_date)).to eq(1)
+      end
+    end
+  end
+
+  describe '==' do
+    context 'when quarter start dates are different' do
+      it 'returns false' do
+        other_quarter = Quarter.for_date(quarter_for_date.start_date + 100)
+        expect(quarter_for_date == other_quarter).to eq(false)
+      end
+    end
+
+    context 'when quarter start dates are the same' do
+      it 'returns true' do
+        other_quarter = Quarter.for_date(quarter_for_date.start_date)
+        expect(quarter_for_date == other_quarter).to eq(true)
+      end
+    end
+  end
+
+  describe '#next' do
+    context 'when quarter is quarter 1' do
+      it 'returns quarter 2' do
+        quarter = Quarter.for_date(Date.new(2013, 1, 1))
+        next_quarter = Quarter.for_date(Date.new(2013, 4, 1))
+
+        expect(quarter.next).to eq(next_quarter)
+      end
+    end
+
+    context 'when quarter is quarter 4' do
+      it 'returns quarter 1 for the next year' do
+        quarter = Quarter.for_date(Date.new(2013, 10, 20))
+        next_quarter = Quarter.for_date(Date.new(2014, 3, 1))
+
+        expect(quarter.next).to eq(next_quarter)
+      end
+    end
+  end
 
   describe '.for_date' do
     context 'when date is in January' do
-      let(:date) { Date.new(2013, 1, 1) }
-
       it 'sets start date to first day of January' do
         expect(quarter_for_date.start_date).to eq(
           Date.new(date.year, 1, 1)

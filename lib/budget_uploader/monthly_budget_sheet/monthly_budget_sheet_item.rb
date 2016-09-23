@@ -40,10 +40,10 @@ class MonthlyBudgetSheetItem
       amount: spent_finance_amount(budget_item, start_date)
     )
 
-    PlannedFinance.create(
-      finance_plannable: budget_item,
+    budget_item.add_planned_finance(
       start_date: quarter(start_date).start_date,
       end_date: quarter(start_date).end_date,
+      announce_date: start_date,
       amount: planned_finance_amount
     )
   end
