@@ -1,6 +1,6 @@
 set :domain, 'alpha.jumpstart.ge'
 set :user, 'budget-staging'
-set :application, 'Budget-Staging'
+set :application, 'Budget-API-Staging'
 # easier to use https; if you use ssh then you have to create key on server
 set :repository, 'https://github.com/JumpStartGeorgia/Georgian-Budget'
 set :branch, 'master'
