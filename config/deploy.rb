@@ -365,8 +365,7 @@ desc 'Creates Nginx symlink, adds app to puma jungle, and starts '\
 task :post_setup do
   invoke :'nginx:create_symlink'
   invoke :'puma:jungle:add'
-  invoke :'nginx:stop'
-  invoke :'nginx:start'
+  invoke :'nginx:reload'
   invoke :finished_deploy_message
 end
 
