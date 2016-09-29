@@ -3,7 +3,7 @@ require('rails_helper')
 RSpec.describe 'API' do
   context 'when version is not v1' do
     it 'responds with version error' do
-      get '/en/api/v2'
+      get '/en/v2'
 
       json = JSON.parse(response.body)
       error = json['errors'][0]

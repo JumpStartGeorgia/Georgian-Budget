@@ -29,7 +29,7 @@ Rails.application.routes.draw do
     get '/about' => 'root#about'
     get '/list' => 'root#list'
 
-    get '/api/:version' => 'api#main',
+    get '/:version' => 'api#main',
         as: 'api',
         controller: 'api',
         constraints: { format: :json }
