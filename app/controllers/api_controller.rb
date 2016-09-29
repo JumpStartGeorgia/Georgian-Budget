@@ -8,10 +8,13 @@ class ApiController < ApplicationController
              status: :ok
     else
       response = {
-        error: "API version \"#{version}\" does not exist"
+        errors: [{
+          text: "API version \"#{version}\" does not exist"
+        }]
       }
+
       render json: response.to_json,
-             status: :ok
+             status: 400
     end
   end
 end

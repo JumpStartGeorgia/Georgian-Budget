@@ -2,21 +2,27 @@ class APIResponse
   def initialize(params)
     @budget_item_ids = params['budgetItemIds'] if params['budgetItemIds']
     @finance_type = params['financeType']
-    @error = nil
+    @errors = []
   end
 
   def to_json
     response = {}
 
     response['budget_items'] = budget_items if budget_items
-    response['error'] = error if error
+    response['errors'] = errors if errors.present?
 
     response
   end
 
+  def add_error(text)
+    self.errors = errors.push({
+      text: error
+    })
+  end
+
   private
 
-  attr_accessor :error
+  attr_accessor :errors
 
   attr_reader :budget_item_ids, :finance_type
 
