@@ -1,9 +1,9 @@
 class ApiController < ApplicationController
   def main
-    version = params[:version]
+    version = api_params[:version]
 
     if version == 'v1'
-      response = APIResponse.new(params)
+      response = APIResponse.new(api_params)
       status = 200
     else
       response = {
@@ -27,6 +27,7 @@ class ApiController < ApplicationController
       :budget_item_fields,
       :budget_item_ids,
       :finance_type,
+      :filters,
       filters: [:budget_item_type]
     )
   end
