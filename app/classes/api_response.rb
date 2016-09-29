@@ -7,16 +7,16 @@ class APIResponse
     end
 
     @budget_item_fields = params['budget_item_fields'] if params['budget_item_fields']
-    @budget_item_ids = params['budgetItemIds'] if params['budgetItemIds']
-    @finance_type = params['financeType']
+    @budget_item_ids = params['budget_item_ids'] if params['budget_item_ids']
+    @finance_type = params['finance_type']
     @errors = []
   end
 
-  def to_json
+  def to_hash
     response = {}
-    response['errors'] = errors
+    response[:errors] = errors
 
-    response['budget_items'] = budget_items if budget_items
+    response[:budget_items] = budget_items if budget_items
   rescue
     add_error('Failed to process the request')
   ensure

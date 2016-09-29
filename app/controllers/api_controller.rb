@@ -1,21 +1,33 @@
 class ApiController < ApplicationController
   def main
-    version = params['version']
-    
+    version = params[:version]
+
     if version == 'v1'
       response = APIResponse.new(params)
-
-      render json: response.to_json,
-             status: :ok
+      status = 200
     else
       response = {
         errors: [{
           text: "API version \"#{version}\" does not exist"
         }]
       }
-
-      render json: response.to_json,
-             status: 400
+      status = 400
     end
+
+    render json: SnakeCamelCase.to_camel_case_sym(response.to_hash),
+           status: status
+  end
+
+  private
+
+  def api_params
+    params.permit(
+      :version,
+      :locale,
+      :budget_item_fields,
+      :budget_item_ids,
+      :finance_type,
+      filters: [:budget_item_type]
+    )
   end
 end

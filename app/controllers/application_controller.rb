@@ -55,7 +55,6 @@ class ApplicationController < ActionController::Base
   end
 
   def not_found(redirect_path = root_path(locale: I18n.locale))
-    Rails.logger.debug('Not found redirect')
     redirect_to redirect_path,
                 notice: t('shared.msgs.does_not_exist')
   end

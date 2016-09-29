@@ -30,7 +30,7 @@ RSpec.describe 'API' do
         get '/en/v1', params: params
 
         json = JSON.parse(response.body)
-        budget_items = json['budget_items']
+        budget_items = json['budgetItems']
 
         expect(response.status).to eq(200)
 
