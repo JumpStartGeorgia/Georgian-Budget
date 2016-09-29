@@ -7,16 +7,18 @@ class APIResponse
 
   def to_json
     response = {}
+    response['errors'] = errors
 
     response['budget_items'] = budget_items if budget_items
-    response['errors'] = errors if errors.present?
-
-    response
+  rescue
+    add_error('Failed to process the request')
+  ensure
+    return response
   end
 
   def add_error(text)
     self.errors = errors.push({
-      text: error
+      text: text
     })
   end
 
