@@ -21,7 +21,7 @@ class ApiController < ApplicationController
   private
 
   def api_params
-    params.permit(
+    snake_case_params.permit(
       :version,
       :locale,
       :budget_item_fields,
@@ -30,5 +30,11 @@ class ApiController < ApplicationController
       :filters,
       filters: [:budget_item_type]
     )
+  end
+
+  def snake_case_params
+    params.transform_keys!(&:underscore)
+    params[:filters].transform_keys!(&:underscore) if params[:filters]
+    params
   end
 end
