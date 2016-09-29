@@ -21,9 +21,9 @@ RSpec.describe 'API' do
         agency1 = FactoryGirl.create(:spending_agency)
 
         params = {
-          budget_item_fields: 'id,name',
+          budgetItemFields: 'id,name',
           filters: {
-            budget_item_type: 'program'
+            budgetItemType: 'program'
           }
         }
 
