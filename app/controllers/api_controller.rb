@@ -1,9 +1,10 @@
 class ApiController < ApplicationController
   def main
-    version = api_params[:version]
+    parameters = api_params
+    version = parameters[:version]
 
     if version == 'v1'
-      response = APIResponse.new(api_params)
+      response = APIResponse.new(parameters)
       status = 200
     else
       response = {
@@ -33,8 +34,12 @@ class ApiController < ApplicationController
   end
 
   def snake_case_params
-    params.transform_keys!(&:underscore)
-    params[:filters].transform_keys!(&:underscore) if params[:filters]
-    params
+    new_params = params.to_unsafe_h.deep_transform_keys!(&:underscore)
+
+    if new_params[:filters].present? && new_params[:filters].is_a?(String)
+      new_params[:filters] = JSON.parse(params[:filters].to_s).deep_transform_keys!(&:underscore)
+    end
+
+    ActionController::Parameters.new(new_params)
   end
 end
