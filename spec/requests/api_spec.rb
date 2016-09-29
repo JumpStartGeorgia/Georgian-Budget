@@ -12,4 +12,42 @@ RSpec.describe 'API' do
       expect(error['text']).to eq('API version "v2" does not exist')
     end
   end
+
+  context 'when budget_type filter is program' do
+    context 'and budget_item_fields is id,name' do
+      it 'gets the ids and names of all programs' do
+        program1 = FactoryGirl.create(:program_with_name)
+        program2 = FactoryGirl.create(:program_with_name)
+        agency1 = FactoryGirl.create(:spending_agency)
+
+        params = {
+          budget_item_fields: 'id,name',
+          filters: {
+            budget_item_type: 'program'
+          }
+        }
+
+        get '/en/v1', params: params
+
+        json = JSON.parse(response.body)
+        budget_items = json['budget_items']
+
+        expect(response.status).to eq(200)
+
+        expect(budget_items[0]['id']).to eq(program1.id)
+        expect(budget_items[0]['name']).to eq(program1.name)
+
+        expect(budget_items[1]['id']).to eq(program2.id)
+        expect(budget_items[1]['name']).to eq(program2.name)
+      end
+    end
+  end
+
+  context 'when budget_type filter is not allowed value' do
+    it "don't allow it!"
+  end
+
+  context 'when budget_item_fields includes not allowed fields' do
+    it "throw an error!"
+  end
 end
