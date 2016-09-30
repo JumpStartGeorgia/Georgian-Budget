@@ -1,5 +1,7 @@
 class APIResponse
   def initialize(params)
+    @errors = []
+
     filters = params['filters']
 
     if filters.present?
@@ -7,9 +9,8 @@ class APIResponse
       @finance_type = filters['finance_type'] if filters['finance_type'].present?
     end
 
-    @budget_item_fields = params['budget_item_fields'] if params['budget_item_fields'].present?
+    @budget_item_fields = validate_budget_item_fields(params['budget_item_fields']) if params['budget_item_fields'].present?
     @budget_item_ids = params['budget_item_ids'] if params['budget_item_ids'].present?
-    @errors = []
   end
 
   def to_hash
@@ -50,16 +51,22 @@ class APIResponse
   def budget_item_hash(budget_item)
     hash = {}
 
-    budget_item_fields.split(',').each do |field|
-      unless budget_item_permitted_fields.include? field
-        add_error("Budget item field \"#{field}\" not permitted")
-        return
-      end
+    budget_item_fields.each do |field|
+      Rails.logger.debug(field)
 
       hash[field] = budget_item[field]
     end
 
     hash
+  end
+
+  def validate_budget_item_fields(fields)
+    return nil unless fields.present? && fields.is_a?(String)
+    fields.split(',').select do |field|
+      valid = budget_item_permitted_fields.include? field
+      add_error("Budget item field \"#{field}\" not permitted") unless valid
+      valid
+    end
   end
 
   def budget_item_permitted_fields
