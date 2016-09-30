@@ -89,6 +89,17 @@ class APIResponse
     unless budget_item_type.present?
       raise 'Budget item type filter parameter is required'
     end
-    Object.const_get(budget_item_type.camelize)
+
+    camelized = budget_item_type.camelize
+
+    unless allowed_budget_item_types.include? camelized
+      raise "Budget item type #{budget_item_type} is not available"
+    end
+
+    Object.const_get(camelized)
+  end
+
+  def allowed_budget_item_types
+    ['Program', 'SpendingAgency', 'Priority', 'Total']
   end
 end
