@@ -26,10 +26,12 @@ class ApiController < ApplicationController
       :version,
       :locale,
       :budget_item_fields,
-      :finance_type,
       :filters,
       budget_item_ids: [],
-      filters: [:budget_item_type]
+      filters: [
+        :finance_type,
+        :budget_item_type
+      ]
     )
   end
 

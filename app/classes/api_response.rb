@@ -4,11 +4,11 @@ class APIResponse
 
     if filters.present?
       @budget_item_type = filters['budget_item_type'] if filters['budget_item_type'].present?
+      @finance_type = filters['finance_type'] if filters['finance_type'].present?
     end
 
-    @budget_item_fields = params['budget_item_fields'] if params['budget_item_fields']
-    @budget_item_ids = params['budget_item_ids'] if params['budget_item_ids']
-    @finance_type = params['finance_type']
+    @budget_item_fields = params['budget_item_fields'] if params['budget_item_fields'].present?
+    @budget_item_ids = params['budget_item_ids'] if params['budget_item_ids'].present?
     @errors = []
   end
 
@@ -54,7 +54,7 @@ class APIResponse
     begin
       budget_item = budget_type_class.find(id)
     rescue ActiveRecord::RecordNotFound
-      addError('Could not find budget item')
+      add_error('Could not find budget item')
       return nil
     end
 
@@ -63,7 +63,7 @@ class APIResponse
     elsif finance_type == 'spent_finance'
       finances = budget_item.spent_finances
     else
-      addError("No #{finance_type} finance type available")
+      add_error("No #{finance_type} finance type available")
       return nil
     end
 
