@@ -17,8 +17,8 @@ class APIResponse
     response[:errors] = errors
 
     response[:budget_items] = budget_items if budget_items
-  rescue
-    add_error('Failed to process the request')
+  rescue StandardError => error
+    add_error("Failed to process the request: #{error}")
   ensure
     return response
   end
