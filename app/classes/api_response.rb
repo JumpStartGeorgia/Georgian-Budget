@@ -37,7 +37,7 @@ class APIResponse
 
   def budget_items
     if budget_item_fields.present?
-      budget_items = Object.const_get(budget_item_type.camelize).with_most_recent_names
+      budget_items = budget_type_class.with_most_recent_names
 
       return budget_items.map do |budget_item|
         {
@@ -52,7 +52,7 @@ class APIResponse
 
   def budget_item(id)
     begin
-      budget_item = Program.find(id)
+      budget_item = budget_type_class.find(id)
     rescue ActiveRecord::RecordNotFound
       addError('Could not find budget item')
       return nil
@@ -83,5 +83,12 @@ class APIResponse
       time_periods: time_periods,
       amounts: amounts
     }
+  end
+
+  def budget_type_class
+    unless budget_item_type.present?
+      raise 'Budget item type filter parameter is required'
+    end
+    Object.const_get(budget_item_type.camelize)
   end
 end
