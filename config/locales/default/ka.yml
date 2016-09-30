@@ -1,7 +1,5 @@
-# See https://github.com/svenfuchs/rails-i18n/blob/master/rails/locale/en.yml
-
 ---
-en:
+ka:
   date:
 #     abbr_day_names:
 #     - Sun
@@ -39,18 +37,18 @@ en:
 #      full: "%A, %b %e, %Y"
     month_names:
     -
-    - January
-    - February
-    - March
-    - April
-    - May
-    - June
-    - July
-    - August
-    - September
-    - October
-    - November
-    - December
+    - იანვარი
+    - თებერვალი
+    - მარტი
+    - აპრილი
+    - მაისი
+    - ივნისი
+    - ივლისი
+    - აგვისტო
+    - სექტემბერი
+    - ოქტომბერი
+    - ნოემბერი
+    - დეკემბერი
 #     order:
 #     - :year
 #     - :month

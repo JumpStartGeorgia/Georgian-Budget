@@ -31,7 +31,7 @@ class Quarter
   end
 
   def to_s
-    "Quarter ##{to_i}, #{year}"
+    I18n.t("shared.time_periods.quarter_#{to_i}", year: year)
   end
 
   def self.dates_valid?(start_date, end_date)

@@ -63,10 +63,14 @@ class Month
   end
 
   def to_s
-    strftime('%B, %Y')
+    "#{I18n.t('date.month_names')[to_i]}, #{year}"
   end
 
   private
+
+  def to_i
+    start_date.month
+  end
 
   def dates_valid?
     Month.dates_valid?(start_date, end_date)

@@ -2,6 +2,6 @@
 ka:
   activerecord:
     models:
-      spent_finance:
+      planned_finance:
         one: დაგეგმილი ფინანსი
         other: დაგეგმილი ფინანსები
