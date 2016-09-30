@@ -40,17 +40,36 @@ class APIResponse
       budget_items = budget_type_class.with_most_recent_names
 
       return budget_items.map do |budget_item|
-        {
-          'id': budget_item.id,
-          'name': budget_item.name
-        }
+        budget_item_hash(budget_item)
       end
     end
 
-    budget_item_ids.map { |id| budget_item(id) }
+    budget_item_ids.map { |id| budget_item_config(id) }
   end
 
-  def budget_item(id)
+  def budget_item_hash(budget_item)
+    hash = {}
+
+    budget_item_fields.split(',').each do |field|
+      unless budget_item_permitted_fields.include? field
+        add_error("Budget item field \"#{field}\" not permitted")
+        return
+      end
+
+      hash[field] = budget_item[field]
+    end
+
+    hash
+  end
+
+  def budget_item_permitted_fields
+    [
+      'id',
+      'name'
+    ]
+  end
+
+  def budget_item_config(id)
     begin
       budget_item = budget_type_class.find(id)
     rescue ActiveRecord::RecordNotFound
