@@ -1,8 +1,6 @@
 require 'rubyXL'
-require_relative 'monthly_budget_sheet/monthly_budget_sheet'
 
 class BudgetUploader
-
   def self.budget_files_dir
     Rails.root.join('budget_files', 'repo')
   end
@@ -13,22 +11,31 @@ class BudgetUploader
   end
 
   def upload_folder(folder)
+    upload_paths(MonthlyBudgetSheet::File.file_paths(folder))
+  end
+
+  def upload_paths(paths)
+    start_messages
+    upload_monthly_sheets(paths)
+    end_messages
+  end
+
+  private
+
+  def start_messages
     puts "\nBEGIN: Budget Uploader\n\n"
-    puts "Uploading all budget data from files in #{folder} to database\n\n"
+  end
 
-    upload_monthly_sheets(MonthlyBudgetSheet.file_paths(folder))
-
+  def end_messages
     puts "\nEND: Budget Uploader"
     puts "Time elapsed: #{pretty_time(total_elapsed_time)}"
     puts "Number of monthly budget sheets processed: #{num_monthly_sheets_processed}"
     puts "Average time per monthly budget sheet: #{pretty_time(average_time_per_spreadsheet)}"
   end
 
-  private
-
   def upload_monthly_sheets(monthly_sheet_paths)
     monthly_sheets = monthly_sheet_paths.map do |monthly_sheet_path|
-      MonthlyBudgetSheet.new(monthly_sheet_path)
+      MonthlyBudgetSheet::File.new(monthly_sheet_path)
     end
 
     monthly_sheets_ordered = order_monthly_sheets_by_start_date(monthly_sheets)

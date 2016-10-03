@@ -7,11 +7,20 @@ RSpec.describe 'BudgetUploader' do
       # setup
       monthly_budgets_start_date = Date.new(2015, 01, 01)
       I18n.locale = 'ka'
-      test_budget_files_dir = Rails.root.join('spec', 'test_data', 'budget_files').to_s
+      test_budget_files_dir = Rails.root.join(
+        'budget_files',
+        'repo',
+        'files',
+        'monthly_spreadsheets',
+        '2015'
+      )
 
       # exercise
       uploader = BudgetUploader.new
-      uploader.upload_folder(test_budget_files_dir)
+      uploader.upload_paths([
+        test_budget_files_dir.join('monthly_spreadsheet-01.2015.xlsx').to_s,
+        test_budget_files_dir.join('monthly_spreadsheet-02.2015.xlsx').to_s
+      ])
 
       # verify
       # TOTAL
