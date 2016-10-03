@@ -7,14 +7,6 @@ namespace :budget_data do
     uploader.upload_folder(BudgetUploader.budget_files_dir)
   end
 
-  namespace :upload do
-    desc 'Upload one monthly spreadsheet'
-    task :monthly_sheet, [:path] do |t, args|
-      monthly_sheet = MonthlyBudgetSheet.new(args[:path])
-      monthly_sheet.save_data
-    end
-  end
-
   desc 'Download all files from JumpStartGeorgia/Georgian-Budget-Files repo to tmp/budget_files'
   task :sync_with_repo do
     require 'fileutils'
