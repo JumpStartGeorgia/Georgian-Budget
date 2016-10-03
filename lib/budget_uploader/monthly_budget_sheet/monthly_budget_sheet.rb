@@ -55,15 +55,18 @@ class MonthlyBudgetSheet
   end
 
   def date_regex_match
-    filename_date_regex.match(spreadsheet_path)
+    match = filename_date_regex.match(spreadsheet_path)
+    raise 'Cannot parse date from filename. Format of file should be monthly_spreadsheet.mm.yyyy' if match.nil?
+
+    match
   end
 
   def filename_date_regex
-    /ShesBiu.*?(\w+)\.(\w+).xlsx/
+    /monthly_spreadsheet.*?(\w+)\.(\w+).xlsx/
   end
 
   def self.file_name_glob
-    '**/*ShesBiu*.xlsx'
+    '**/monthly_spreadsheet*.xlsx'
   end
 
   def parse
