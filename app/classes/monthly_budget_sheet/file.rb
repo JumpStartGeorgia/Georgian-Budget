@@ -8,6 +8,7 @@ module MonthlyBudgetSheet
       @spreadsheet_path = spreadsheet_path
       @start_date = Date.new(year, month).beginning_of_month
       @end_date = Date.new(year, month).end_of_month
+      @locale = 'ka'
     end
 
     def save_data
@@ -16,6 +17,8 @@ module MonthlyBudgetSheet
       data = parse
       data_rows = data[0]
       current_item = nil
+
+      I18n.locale = locale
 
       data_rows.each_with_index do |row_data, index|
         row = Row.new(row_data)
@@ -39,7 +42,8 @@ module MonthlyBudgetSheet
     attr_reader :spreadsheet_path,
                 :starting_row,
                 :start_date,
-                :end_date
+                :end_date,
+                :locale
 
     private
 

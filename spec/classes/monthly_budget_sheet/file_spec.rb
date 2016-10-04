@@ -49,7 +49,9 @@ RSpec.describe MonthlyBudgetSheet::File do
     MonthlyBudgetSheet::File.new(september_2014_sheet).save_data
 
     total.reload
-
     expect(total.spent_finances.last.amount.to_f).to eq(830795862.26)
+
+    agency = SpendingAgency.find_by_code('01 00')
+    expect(agency.name_ka).to eq('საქართველოს პარლამენტი და მასთან არსებული ორგანიზაციები')
   end
 end
