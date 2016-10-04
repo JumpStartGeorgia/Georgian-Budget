@@ -37,10 +37,10 @@ en:
         en: English
         ka: "ქართული"
     time_periods:
-      quarter_1: Quarter \#1, %{year}
-      quarter_2: Quarter \#2, %{year}
-      quarter_3: Quarter \#3, %{year}
-      quarter_4: Quarter \#4, %{year}
+      quarter_1: "Quarter #1, %{year}"
+      quarter_2: "Quarter #2, %{year}"
+      quarter_3: "Quarter #3, %{year}"
+      quarter_4: "Quarter #4, %{year}"
     msgs:
       does_not_exist: You tried to access a page that does not exist.
       not_authorized: You are not authorized to view that page.
