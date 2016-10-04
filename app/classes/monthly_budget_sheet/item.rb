@@ -1,11 +1,13 @@
 module MonthlyBudgetSheet
   class Item
-    def initialize(rows)
+    def initialize(rows, start_date, end_date)
       @rows = rows
       @budget_item = nil
+      @start_date = start_date
+      @end_date = end_date
     end
 
-    def save(start_date, end_date)
+    def save
       return unless klass.present?
 
       budget_item = klass.find_by_code(primary_code)
@@ -36,18 +38,18 @@ module MonthlyBudgetSheet
         finance_spendable: budget_item,
         start_date: start_date,
         end_date: end_date,
-        amount: spent_finance_amount(budget_item, start_date)
+        amount: spent_finance_amount(budget_item)
       )
 
       budget_item.add_planned_finance(
-        start_date: quarter(start_date).start_date,
-        end_date: quarter(start_date).end_date,
+        start_date: quarter.start_date,
+        end_date: quarter.end_date,
         announce_date: start_date,
         amount: planned_finance_amount
       )
     end
 
-    attr_accessor :rows, :budget_item
+    attr_accessor :rows, :budget_item, :start_date, :end_date
 
     private
 
@@ -55,11 +57,11 @@ module MonthlyBudgetSheet
       BudgetCodeMapper.class_for_code(primary_code)
     end
 
-    def quarter(date)
-      Quarter.for_date(date)
+    def quarter
+      Quarter.for_date(start_date)
     end
 
-    def spent_finance_amount(budget_item, start_date)
+    def spent_finance_amount(budget_item)
       previously_spent = budget_item.spent_finances.year_cumulative_up_to(start_date)
       cumulative_spent_finance_amount - previously_spent
     end
