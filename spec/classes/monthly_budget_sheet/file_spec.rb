@@ -37,6 +37,12 @@ RSpec.describe MonthlyBudgetSheet::File do
       finance_spendable: total
     )
 
+    total.add_planned_finance(
+      amount: 4354890200,
+      time_period: Quarter.for_date(Date.new(2014, 4, 1)),
+      announce_date: Date.new(2014, 6, 1)
+    )
+
     september_2014_sheet = Rails.root.join(
       'budget_files',
       'repo',
@@ -50,6 +56,7 @@ RSpec.describe MonthlyBudgetSheet::File do
 
     total.reload
     expect(total.spent_finances.last.amount.to_f).to eq(830795862.26)
+    expect(total.planned_finances.last.amount.to_f).to eq(6747604300 - 4354890200)
 
     agency = SpendingAgency.find_by_code('01 00')
     expect(agency.name_ka).to eq('საქართველოს პარლამენტი და მასთან არსებული ორგანიზაციები')

@@ -10,10 +10,10 @@ module MonthlyBudgetSheet
     def save
       return unless klass.present?
 
-      budget_item = klass.find_by_code(primary_code)
+      self.budget_item = klass.find_by_code(primary_code)
 
       unless budget_item.present?
-        budget_item = klass.create(code: primary_code)
+        self.budget_item = klass.create(code: primary_code)
       end
 
       # There is only one Total method with only one name
@@ -38,7 +38,7 @@ module MonthlyBudgetSheet
         finance_spendable: budget_item,
         start_date: start_date,
         end_date: end_date,
-        amount: spent_finance_amount(budget_item)
+        amount: spent_finance_amount
       )
 
       budget_item.add_planned_finance(
@@ -61,16 +61,29 @@ module MonthlyBudgetSheet
       Quarter.for_date(start_date)
     end
 
-    def spent_finance_amount(budget_item)
+    # The amounts recorded in the spreadsheets are cumulative within the year.
+    # For example, the spent finance recorded for March is the total
+    # spending of January, February and March, and the planned finance
+    # recorded for Quarter 2 is the total planned amount for the first
+    # two quarters.
+
+    # We don't want to save the cumulative amount, so these methods
+    # get the non-cumulative amounts.
+    def spent_finance_amount
       previously_spent = budget_item.spent_finances.year_cumulative_up_to(start_date)
       cumulative_spent_finance_amount - previously_spent
+    end
+
+    def planned_finance_amount
+      previously_spent = budget_item.planned_finances.year_cumulative_up_to(start_date)
+      cumulative_planned_finance_amount - previously_spent
     end
 
     def cumulative_spent_finance_amount
       totals_row.spent_finance
     end
 
-    def planned_finance_amount
+    def cumulative_planned_finance_amount
       totals_row.planned_finance
     end
 
