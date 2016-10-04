@@ -29,7 +29,7 @@ RSpec.describe MonthlyBudgetSheet::File do
   end
 
   it 'gets the right values for September, 2014' do
-    total = FactoryGirl.create(:total)
+    total = FactoryGirl.create(:total, code: '00')
 
     FactoryGirl.create(
       :spent_finance,
