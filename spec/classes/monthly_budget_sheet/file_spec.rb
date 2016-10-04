@@ -1,9 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe MonthlyBudgetSheet::File do
-  it 'gets the right values for August, 2014' do
-    total = FactoryGirl.create(:total)
+  let(:total) { FactoryGirl.create(:total, code: '00') }
 
+  it 'gets the right values for August, 2014' do
     FactoryGirl.create(
       :spent_finance,
       amount: 4714720298.3,
@@ -29,8 +29,6 @@ RSpec.describe MonthlyBudgetSheet::File do
   end
 
   it 'gets the right values for September, 2014' do
-    total = FactoryGirl.create(:total, code: '00')
-
     FactoryGirl.create(
       :spent_finance,
       amount: 5352006286.52,
