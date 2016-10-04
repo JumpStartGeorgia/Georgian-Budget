@@ -67,6 +67,7 @@ module MonthlyBudgetSheet
     end
 
     def parse
+      require 'rubyXL'
       RubyXL::Parser.parse(spreadsheet_path)
     end
   end
