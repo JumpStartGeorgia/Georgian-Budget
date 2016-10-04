@@ -6,18 +6,16 @@ module MonthlyBudgetSheet
     end
 
     def save(start_date, end_date)
-      budget_item_class = BudgetCodeMapper.class_for_code(primary_code)
+      return unless klass.present?
 
-      return unless budget_item_class.present?
-
-      budget_item = budget_item_class.find_by_code(primary_code)
+      budget_item = klass.find_by_code(primary_code)
 
       unless budget_item.present?
-        budget_item = budget_item_class.create(code: primary_code)
+        budget_item = klass.create(code: primary_code)
       end
 
       # There is only one Total method with only one name
-      if budget_item_class == Total
+      if klass == Total
         Name.create(
           nameable: budget_item,
           text_en: 'Total Georgian Budget',
@@ -52,6 +50,10 @@ module MonthlyBudgetSheet
     attr_accessor :rows, :budget_item
 
     private
+
+    def klass
+      BudgetCodeMapper.class_for_code(primary_code)
+    end
 
     def quarter(date)
       Quarter.for_date(date)
