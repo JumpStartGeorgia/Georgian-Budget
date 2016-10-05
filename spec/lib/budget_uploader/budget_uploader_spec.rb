@@ -17,10 +17,12 @@ RSpec.describe 'BudgetUploader' do
 
       # exercise
       uploader = BudgetUploader.new
-      uploader.upload_paths([
-        test_budget_files_dir.join('monthly_spreadsheet-01.2015.xlsx').to_s,
-        test_budget_files_dir.join('monthly_spreadsheet-02.2015.xlsx').to_s
-      ])
+      uploader.upload(
+        monthly_paths: [
+          test_budget_files_dir.join('monthly_spreadsheet-01.2015.xlsx').to_s,
+          test_budget_files_dir.join('monthly_spreadsheet-02.2015.xlsx').to_s
+        ]
+      )
 
       # verify
       # TOTAL

@@ -3,8 +3,11 @@ require_relative '../budget_uploader/budget_uploader'
 namespace :budget_data do
   desc 'Upload all spreadsheets in budget_files directory'
   task upload: :environment do
-    uploader = BudgetUploader.new
-    uploader.upload_folder(BudgetUploader.budget_files_dir)
+    BudgetUploader
+    .new
+    .upload(
+      monthly_folder: BudgetUploader.budget_files_dir
+    )
   end
 
   desc 'Download all files from JumpStartGeorgia/Georgian-Budget-Files repo to tmp/budget_files'

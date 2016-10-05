@@ -10,17 +10,26 @@ class BudgetUploader
     @num_monthly_sheets_processed = 0
   end
 
-  def upload_folder(folder)
-    upload_paths(MonthlyBudgetSheet::File.file_paths(folder))
-  end
+  def upload(args)
+    monthly_folder = args[:monthly_folder]
+    monthly_paths = args[:monthly_paths]
 
-  def upload_paths(paths)
     start_messages
-    upload_monthly_sheets(paths)
+
+    if monthly_folder.present?
+      upload_monthly_folder(monthly_folder)
+    elsif monthly_paths.present?
+      upload_monthly_sheets(monthly_paths)
+    end
+
     end_messages
   end
 
   private
+
+  def upload_monthly_folder(folder)
+    upload_monthly_sheets(MonthlyBudgetSheet::File.file_paths(folder))
+  end
 
   def start_messages
     puts "\nBEGIN: Budget Uploader\n\n"
