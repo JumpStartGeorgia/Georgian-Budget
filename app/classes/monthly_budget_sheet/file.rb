@@ -27,7 +27,6 @@ module MonthlyBudgetSheet
 
         if row.is_header?
           # save the previous budget item
-
           current_item.save unless current_item.nil?
 
           # create a new budget item
