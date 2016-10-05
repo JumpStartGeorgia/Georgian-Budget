@@ -18,32 +18,32 @@ class BudgetUploader
   def initialize(args)
     @start_time = Time.now
     @num_monthly_sheets_processed = 0
-    @monthly_folder = args[:monthly_folder]
-    @monthly_paths = args[:monthly_paths]
-    @budget_item_english_translations = args[:budget_item_english_translations]
+    @budget_item_english_translations = get_budget_item_english_translations(args)
+    @monthly_sheets = get_monthly_sheets(args)
+  end
+
+  def get_budget_item_english_translations(args)
+    return nil unless args[:budget_item_english_translations]
+
+    BudgetItemEnglishTranslations.new(
+      args[:budget_item_english_translations]
+    )
   end
 
   def upload
     start_messages
 
-    if monthly_folder.present?
-      upload_monthly_folder(monthly_folder)
-    elsif monthly_paths.present?
-      upload_monthly_sheets(monthly_paths)
-    end
-
-    if budget_item_english_translations.present?
-      BudgetItemEnglishTranslations.new(
-        budget_item_english_translations
-      ).save
-    end
+    upload_monthly_sheets if monthly_sheets.present?
+    budget_item_english_translations.save if budget_item_english_translations.present?
 
     end_messages
   end
 
-  attr_reader :monthly_folder,
-              :monthly_paths,
-              :budget_item_english_translations
+  attr_accessor :num_monthly_sheets_processed
+
+  attr_reader :monthly_sheets,
+              :budget_item_english_translations,
+              :start_time
 
   private
 
@@ -51,8 +51,20 @@ class BudgetUploader
     Rails.root.join('budget_files', 'repo', 'files')
   end
 
-  def upload_monthly_folder(folder)
-    upload_monthly_sheets(MonthlyBudgetSheet::File.file_paths(folder))
+  def get_monthly_sheets(args)
+    if args[:monthly_paths]
+      monthly_sheet_paths = args[:monthly_paths]
+    elsif args[:monthly_folder]
+      monthly_sheet_paths = MonthlyBudgetSheet::File.file_paths(args[:monthly_folder])
+    end
+
+    return nil unless monthly_sheet_paths.present?
+
+    @monthly_sheets = monthly_sheet_paths.map do |monthly_sheet_path|
+      MonthlyBudgetSheet::File.new(monthly_sheet_path)
+    end.sort do |sheet1, sheet2|
+      sheet1.start_date <=> sheet2.start_date
+    end
   end
 
   def start_messages
@@ -66,25 +78,13 @@ class BudgetUploader
     puts "Average time per monthly budget sheet: #{pretty_time(average_time_per_spreadsheet)}"
   end
 
-  def upload_monthly_sheets(monthly_sheet_paths)
-    monthly_sheets = monthly_sheet_paths.map do |monthly_sheet_path|
-      MonthlyBudgetSheet::File.new(monthly_sheet_path)
-    end
-
-    monthly_sheets_ordered = order_monthly_sheets_by_start_date(monthly_sheets)
-
-    monthly_sheets_ordered.each do |monthly_sheet|
+  def upload_monthly_sheets
+    monthly_sheets.each do |monthly_sheet|
       ActiveRecord::Base.transaction do
         monthly_sheet.save_data
       end
 
       self.num_monthly_sheets_processed = num_monthly_sheets_processed + 1
-    end
-  end
-
-  def order_monthly_sheets_by_start_date(sheets)
-    sheets.sort do |sheet1, sheet2|
-      sheet1.start_date <=> sheet2.start_date
     end
   end
 
@@ -104,7 +104,4 @@ class BudgetUploader
   def total_elapsed_time
     Time.now - start_time
   end
-
-  attr_reader :start_time
-  attr_accessor :num_monthly_sheets_processed
 end
