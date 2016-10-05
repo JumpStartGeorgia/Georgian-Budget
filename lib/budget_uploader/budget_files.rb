@@ -6,7 +6,7 @@ require Rails.root.join(
   'budget_item_english_translations'
 ).to_s
 
-class BudgetUploader
+class BudgetFiles
   def self.monthly_spreadsheet_dir
     budget_files_dir.join('monthly_spreadsheets')
   end
