@@ -6,7 +6,8 @@ namespace :budget_data do
     BudgetUploader
     .new
     .upload(
-      monthly_folder: BudgetUploader.budget_files_dir
+      monthly_folder: BudgetUploader.monthly_spreadsheet_dir,
+      budget_item_english_translations: BudgetUploader.english_translations_file
     )
   end
 

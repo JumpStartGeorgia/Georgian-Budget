@@ -2,26 +2,21 @@ require 'rails_helper'
 require Rails.root.join('lib', 'budget_uploader', 'budget_uploader').to_s
 
 RSpec.describe 'BudgetUploader' do
-  describe '#upload_folder' do
-    it 'saves names of agencies and programs in files' do
+  describe '#upload with monthly_folder' do
+    it 'saves names of agencies and programs in monthly spreadsheets' do
       # setup
       monthly_budgets_start_date = Date.new(2015, 01, 01)
       I18n.locale = 'ka'
-      test_budget_files_dir = Rails.root.join(
-        'budget_files',
-        'repo',
-        'files',
-        'monthly_spreadsheets',
-        '2015'
-      )
+
+      month_files_dir = BudgetUploader.monthly_spreadsheet_dir.join('2015')
 
       # exercise
-      uploader = BudgetUploader.new
-      uploader.upload(
+      BudgetUploader.new.upload(
         monthly_paths: [
-          test_budget_files_dir.join('monthly_spreadsheet-01.2015.xlsx').to_s,
-          test_budget_files_dir.join('monthly_spreadsheet-02.2015.xlsx').to_s
-        ]
+          month_files_dir.join('monthly_spreadsheet-01.2015.xlsx').to_s,
+          month_files_dir.join('monthly_spreadsheet-02.2015.xlsx').to_s
+        ],
+        budget_item_english_translations: BudgetUploader.english_translations_file
       )
 
       # verify
@@ -143,6 +138,40 @@ RSpec.describe 'BudgetUploader' do
       expect(program2_array.length).to eq(1)
       expect(program2.code).to eq('03 01')
       expect(program2.recent_name_object.start_date).to eq(monthly_budgets_start_date)
+
+      ### Checking translations
+      public_funds_management = Program.find_by_code('23 01')
+
+      expect(public_funds_management.name_ka).to eq(
+        'სახელმწიფო ფინანსების მართვა'
+      )
+
+      expect(public_funds_management.name_en).to eq(
+        'Public Funds Management'
+      )
+    end
+
+    it 'saves English translations of names' do
+      program = FactoryGirl.create(
+        :program,
+        code: '23 01'
+      )
+
+      FactoryGirl.create(
+        :name,
+        text_ka: 'სახელმწიფო ფინანსების მართვა',
+        text_en: '',
+        start_date: Date.new(2015, 1, 1),
+        nameable: program
+      )
+
+      BudgetUploader.new.upload(
+        budget_item_english_translations: BudgetUploader.english_translations_file
+      )
+
+      expect(program.name_en).to eq(
+        'Public Funds Management'
+      )
     end
   end
 end

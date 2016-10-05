@@ -1,8 +1,18 @@
 require 'rubyXL'
+require_relative 'budget_item_english_translations'
+require Rails.root.join(
+  'lib',
+  'budget_uploader',
+  'budget_item_english_translations'
+).to_s
 
 class BudgetUploader
-  def self.budget_files_dir
-    Rails.root.join('budget_files', 'repo')
+  def self.monthly_spreadsheet_dir
+    budget_files_dir.join('monthly_spreadsheets')
+  end
+
+  def self.english_translations_file
+    budget_files_dir.join('budget_item_english_translations.csv').to_s
   end
 
   def initialize
@@ -13,6 +23,7 @@ class BudgetUploader
   def upload(args)
     monthly_folder = args[:monthly_folder]
     monthly_paths = args[:monthly_paths]
+    budget_item_english_translations = args[:budget_item_english_translations]
 
     start_messages
 
@@ -22,10 +33,20 @@ class BudgetUploader
       upload_monthly_sheets(monthly_paths)
     end
 
+    if budget_item_english_translations.present?
+      BudgetItemEnglishTranslations.new(
+        budget_item_english_translations
+      ).save
+    end
+
     end_messages
   end
 
   private
+
+  def self.budget_files_dir
+    Rails.root.join('budget_files', 'repo', 'files')
+  end
 
   def upload_monthly_folder(folder)
     upload_monthly_sheets(MonthlyBudgetSheet::File.file_paths(folder))
