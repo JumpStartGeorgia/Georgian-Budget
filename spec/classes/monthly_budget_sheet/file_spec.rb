@@ -4,16 +4,18 @@ RSpec.describe MonthlyBudgetSheet::File do
   let(:total) { FactoryGirl.create(:total, code: '00') }
 
   it 'gets the right values for April, 2014' do
+    previous_month_date = Date.new(2014, 3, 1)
     FactoryGirl.create(
       :spent_finance,
       amount: 1847553147.46,
-      time_period: Month.for_date(Date.new(2014, 3, 1)),
+      time_period: Month.for_date(previous_month_date),
       finance_spendable: total
     )
 
     total.add_planned_finance(
       amount: 2269603100,
-      time_period: Quarter.for_date(Date.new(2014, 3, 1))
+      time_period: Quarter.for_date(previous_month_date),
+      announce_date: previous_month_date
     )
 
     april_2014_sheet = Rails.root.join(
@@ -29,7 +31,7 @@ RSpec.describe MonthlyBudgetSheet::File do
 
     total.reload
 
-    expect(total.spent_finances.last.amount.to_f).to eq(2503640146.54 - 1847553147.46)
+    expect(total.spent_finances.last.amount.to_f).to eq(656086999.08)
     expect(total.planned_finances.last.amount.to_f).to eq(4354890200 - 2269603100)
   end
 

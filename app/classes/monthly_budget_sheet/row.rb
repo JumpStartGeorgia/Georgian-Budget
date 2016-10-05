@@ -1,7 +1,7 @@
 module MonthlyBudgetSheet
   class Row
-    def initialize(row_data)
-      @row_data = row_data
+    def initialize(data)
+      @data = data
     end
 
     # returns true if this is the header row of an item
@@ -22,13 +22,15 @@ module MonthlyBudgetSheet
 
     def code
       return nil if cells.empty?
-      code_cell = cells[0]
-
       return nil if code_cell.nil?
       value = code_cell.value
 
       return nil if value.nil?
       value.to_s.strip
+    end
+
+    def code_cell
+      cells[0]
     end
 
     def name
@@ -54,16 +56,16 @@ module MonthlyBudgetSheet
       cells[0].horizontal_alignment == 'left'
     end
 
+    def cells
+      data.cells
+    end
+
+    attr_reader :data
+
     private
 
     def third_cell_is_empty
       cells[2].nil? || cells[2].value.nil? || cells[2].value.strip == ''
     end
-
-    def cells
-      row_data.cells
-    end
-
-    attr_reader :row_data
   end
 end

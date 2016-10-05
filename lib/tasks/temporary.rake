@@ -20,7 +20,7 @@ namespace :temporary do
         end
 
         codes = codes.uniq
-        
+
         csv << [name_text, codes.join(', '), codes.count]
       end
     end
@@ -34,6 +34,34 @@ namespace :temporary do
       csv << ["Budget Item Code", "Georgian Name", "Budget Item Type", "English Translation"]
       names.each do |name|
         csv << [Name.find(name.id).nameable.code, Name.find(name.id).text, name.nameable_type]
+      end
+    end
+  end
+
+  desc 'Change codes that are 0 in spreadsheet to 00'
+  task fix_spreadsheet_codes: :environment do
+    budget_files = BudgetFiles.new(monthly_folder: BudgetFiles.monthly_spreadsheet_dir)
+
+    budget_files.monthly_sheets.each do |monthly_sheet|
+      month = Month.for_date(Date.new(monthly_sheet.year, monthly_sheet.month, 1))
+      puts "\nProcessing #{month.to_s} spreadsheet"
+
+      rows_changed = 0
+
+      monthly_sheet.data_rows.each do |row_data|
+        row = MonthlyBudgetSheet::Row.new(row_data)
+
+        next unless row.code == '0'
+
+        row.code_cell.change_contents('00')
+        rows_changed += 1
+      end
+
+      puts "#{rows_changed} code cells found with value of 0"
+
+      if rows_changed > 0
+        monthly_sheet.excel_data.write(monthly_sheet.spreadsheet_path)
+        puts 'Writing fixed data to spreadsheet'
       end
     end
   end

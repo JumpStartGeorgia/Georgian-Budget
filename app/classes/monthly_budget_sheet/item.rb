@@ -35,15 +35,13 @@ module MonthlyBudgetSheet
       end
 
       SpentFinance.create(
+        time_period: month,
         finance_spendable: budget_item,
-        start_date: start_date,
-        end_date: end_date,
         amount: spent_finance_amount
       )
 
       budget_item.add_planned_finance(
-        start_date: quarter.start_date,
-        end_date: quarter.end_date,
+        time_period: quarter,
         announce_date: start_date,
         amount: planned_finance_amount
       )
@@ -55,6 +53,10 @@ module MonthlyBudgetSheet
 
     def klass
       BudgetCodeMapper.class_for_code(primary_code)
+    end
+
+    def month
+      Month.for_date(start_date)
     end
 
     def quarter

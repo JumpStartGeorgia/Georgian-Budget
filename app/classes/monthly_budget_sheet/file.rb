@@ -6,6 +6,7 @@ module MonthlyBudgetSheet
 
     def initialize(spreadsheet_path)
       @spreadsheet_path = spreadsheet_path
+      @excel_data = nil
       @start_date = Date.new(year, month).beginning_of_month
       @end_date = Date.new(year, month).end_of_month
       @locale = 'ka'
@@ -14,8 +15,6 @@ module MonthlyBudgetSheet
     def save_data
       puts "Saving data in monthly budget sheet: #{spreadsheet_path}"
 
-      data = parse
-      data_rows = data[0]
       current_item = nil
 
       I18n.locale = locale
@@ -38,13 +37,18 @@ module MonthlyBudgetSheet
       end
     end
 
+    def data_rows
+      get_excel_data unless excel_data.present?
+      excel_data[0]
+    end
+
     attr_reader :spreadsheet_path,
                 :starting_row,
                 :start_date,
                 :end_date,
                 :locale
 
-    private
+    attr_accessor :excel_data
 
     def month
       date_regex_match[1].to_i
@@ -53,6 +57,13 @@ module MonthlyBudgetSheet
     def year
       date_regex_match[2].to_i
     end
+
+    def get_excel_data
+      require 'rubyXL'
+      self.excel_data = RubyXL::Parser.parse(spreadsheet_path)
+    end
+
+    private
 
     def date_regex_match
       match = filename_date_regex.match(spreadsheet_path)
@@ -67,11 +78,6 @@ module MonthlyBudgetSheet
 
     def self.file_name_glob
       '**/monthly_spreadsheet*.xlsx'
-    end
-
-    def parse
-      require 'rubyXL'
-      RubyXL::Parser.parse(spreadsheet_path)
     end
   end
 end
