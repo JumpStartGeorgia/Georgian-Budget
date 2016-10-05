@@ -11,13 +11,13 @@ RSpec.describe 'BudgetUploader' do
       month_files_dir = BudgetUploader.monthly_spreadsheet_dir.join('2015')
 
       # exercise
-      BudgetUploader.new.upload(
+      BudgetUploader.new(
         monthly_paths: [
           month_files_dir.join('monthly_spreadsheet-01.2015.xlsx').to_s,
           month_files_dir.join('monthly_spreadsheet-02.2015.xlsx').to_s
         ],
         budget_item_english_translations: BudgetUploader.english_translations_file
-      )
+      ).upload
 
       # verify
       # TOTAL
@@ -165,9 +165,9 @@ RSpec.describe 'BudgetUploader' do
         nameable: program
       )
 
-      BudgetUploader.new.upload(
+      BudgetUploader.new(
         budget_item_english_translations: BudgetUploader.english_translations_file
-      )
+      ).upload
 
       expect(program.name_en).to eq(
         'Public Funds Management'

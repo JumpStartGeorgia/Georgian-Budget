@@ -15,16 +15,15 @@ class BudgetUploader
     budget_files_dir.join('budget_item_english_translations.csv').to_s
   end
 
-  def initialize
+  def initialize(args)
     @start_time = Time.now
     @num_monthly_sheets_processed = 0
+    @monthly_folder = args[:monthly_folder]
+    @monthly_paths = args[:monthly_paths]
+    @budget_item_english_translations = args[:budget_item_english_translations]
   end
 
-  def upload(args)
-    monthly_folder = args[:monthly_folder]
-    monthly_paths = args[:monthly_paths]
-    budget_item_english_translations = args[:budget_item_english_translations]
-
+  def upload
     start_messages
 
     if monthly_folder.present?
@@ -41,6 +40,10 @@ class BudgetUploader
 
     end_messages
   end
+
+  attr_reader :monthly_folder,
+              :monthly_paths,
+              :budget_item_english_translations
 
   private
 
