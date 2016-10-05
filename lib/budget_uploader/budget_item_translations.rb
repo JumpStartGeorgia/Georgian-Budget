@@ -1,4 +1,4 @@
-class BudgetItemEnglishTranslations
+class BudgetItemTranslations
   def initialize(path)
     @path = path
   end

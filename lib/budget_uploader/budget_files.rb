@@ -1,9 +1,9 @@
 require 'rubyXL'
-require_relative 'budget_item_english_translations'
+require_relative 'budget_item_translations'
 require Rails.root.join(
   'lib',
   'budget_uploader',
-  'budget_item_english_translations'
+  'budget_item_translations'
 ).to_s
 
 class BudgetFiles
@@ -12,29 +12,21 @@ class BudgetFiles
   end
 
   def self.english_translations_file
-    budget_files_dir.join('budget_item_english_translations.csv').to_s
+    budget_files_dir.join('budget_item_translations.csv').to_s
   end
 
   def initialize(args)
     @start_time = Time.now
     @num_monthly_sheets_processed = 0
-    @budget_item_english_translations = get_budget_item_english_translations(args)
+    @budget_item_translations = get_budget_item_translations(args)
     @monthly_sheets = get_monthly_sheets(args)
-  end
-
-  def get_budget_item_english_translations(args)
-    return nil unless args[:budget_item_english_translations]
-
-    BudgetItemEnglishTranslations.new(
-      args[:budget_item_english_translations]
-    )
   end
 
   def upload
     start_messages
 
     upload_monthly_sheets if monthly_sheets.present?
-    budget_item_english_translations.save if budget_item_english_translations.present?
+    budget_item_translations.save if budget_item_translations.present?
 
     end_messages
   end
@@ -42,7 +34,7 @@ class BudgetFiles
   attr_accessor :num_monthly_sheets_processed
 
   attr_reader :monthly_sheets,
-              :budget_item_english_translations,
+              :budget_item_translations,
               :start_time
 
   private
@@ -65,6 +57,14 @@ class BudgetFiles
     end.sort do |sheet1, sheet2|
       sheet1.start_date <=> sheet2.start_date
     end
+  end
+
+  def get_budget_item_translations(args)
+    return nil unless args[:budget_item_translations]
+
+    BudgetItemTranslations.new(
+      args[:budget_item_translations]
+    )
   end
 
   def start_messages

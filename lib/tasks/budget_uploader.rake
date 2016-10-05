@@ -5,7 +5,7 @@ namespace :budget_data do
   task upload: :environment do
     BudgetFiles.new(
       monthly_folder: BudgetFiles.monthly_spreadsheet_dir,
-      budget_item_english_translations: BudgetFiles.english_translations_file
+      budget_item_translations: BudgetFiles.english_translations_file
     ).upload
   end
 

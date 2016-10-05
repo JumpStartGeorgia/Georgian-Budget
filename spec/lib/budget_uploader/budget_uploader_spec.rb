@@ -16,7 +16,7 @@ RSpec.describe 'BudgetFiles' do
           month_files_dir.join('monthly_spreadsheet-01.2015.xlsx').to_s,
           month_files_dir.join('monthly_spreadsheet-02.2015.xlsx').to_s
         ],
-        budget_item_english_translations: BudgetFiles.english_translations_file
+        budget_item_translations: BudgetFiles.english_translations_file
       ).upload
 
       # verify
@@ -166,7 +166,7 @@ RSpec.describe 'BudgetFiles' do
       )
 
       BudgetFiles.new(
-        budget_item_english_translations: BudgetFiles.english_translations_file
+        budget_item_translations: BudgetFiles.english_translations_file
       ).upload
 
       expect(program.name_en).to eq(
