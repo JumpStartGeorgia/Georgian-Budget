@@ -3,6 +3,36 @@ require 'rails_helper'
 RSpec.describe MonthlyBudgetSheet::File do
   let(:total) { FactoryGirl.create(:total, code: '00') }
 
+  it 'gets the right values for April, 2014' do
+    FactoryGirl.create(
+      :spent_finance,
+      amount: 1847553147.46,
+      time_period: Month.for_date(Date.new(2014, 3, 1)),
+      finance_spendable: total
+    )
+
+    total.add_planned_finance(
+      amount: 2269603100,
+      time_period: Quarter.for_date(Date.new(2014, 3, 1))
+    )
+
+    april_2014_sheet = Rails.root.join(
+      'budget_files',
+      'repo',
+      'files',
+      'monthly_spreadsheets',
+      '2014',
+      'monthly_spreadsheet-04.2014.xlsx'
+    ).to_s
+
+    MonthlyBudgetSheet::File.new(april_2014_sheet).save_data
+
+    total.reload
+
+    expect(total.spent_finances.last.amount.to_f).to eq(2503640146.54 - 1847553147.46)
+    expect(total.planned_finances.last.amount.to_f).to eq(4354890200 - 2269603100)
+  end
+
   it 'gets the right values for August, 2014' do
     FactoryGirl.create(
       :spent_finance,
