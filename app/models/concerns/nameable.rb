@@ -7,7 +7,13 @@ module Nameable
 
   # text of most recent name
   def name
-    recent_name_object.text
+    text = recent_name_object.text
+    return text if text.present?
+
+    translations = recent_name_object.translations
+
+    return nil unless translations.present?
+    return translations[0].text
   end
 
   def name_ka
