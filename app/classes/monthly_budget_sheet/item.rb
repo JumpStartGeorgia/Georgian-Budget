@@ -90,7 +90,7 @@ module MonthlyBudgetSheet
     end
 
     def name
-      header_row.name
+      header_row.name.gsub('–', '-')
     end
 
     def primary_code
