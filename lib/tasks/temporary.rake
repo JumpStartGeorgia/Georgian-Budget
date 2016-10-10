@@ -28,12 +28,23 @@ namespace :temporary do
 
   desc 'Get list of unique budget item names to be translated'
   task get_georgian_names_to_be_translated: :environment do
-    names = Name.find_by_sql('SELECT MAX(names.id) AS id, MAX(name_translations.text) AS text_ka, MAX(nameable_id) AS nameable_id, MAX(names.nameable_type) AS nameable_type FROM names JOIN name_translations ON names.id = name_translations.id GROUP BY name_translations.text')
+    name_ids_without_english = Name.find_by_sql(
+      <<-STRING
+        SELECT names.id
+        FROM names LEFT JOIN
+          (SELECT * FROM name_translations
+           WHERE name_translations.locale = 'en') AS name_translations
+        ON names.id = name_translations.name_id
+        WHERE name_translations.name_id IS NULL
+      STRING
+    ).pluck(:id)
+
+    names = Name.find(name_ids_without_english)
 
     CSV.open(Rails.root.join('tmp', 'georgian_budget_names_to_be_translated.csv'), 'wb') do |csv|
       csv << ["Budget Item Code", "Georgian Name", "Budget Item Type", "English Translation"]
       names.each do |name|
-        csv << [Name.find(name.id).nameable.code, Name.find(name.id).text, name.nameable_type]
+        csv << [name.nameable.code, name.text_ka, name.nameable_type, name.text_en]
       end
     end
   end
