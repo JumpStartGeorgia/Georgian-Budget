@@ -44,7 +44,7 @@ RSpec.describe MonthlyBudgetSheet::File do
       finance_spendable: total
     )
 
-    september_2014_sheet = Rails.root.join(
+    august_2014_sheet = Rails.root.join(
       'budget_files',
       'repo',
       'files',
@@ -53,7 +53,7 @@ RSpec.describe MonthlyBudgetSheet::File do
       'monthly_spreadsheet-08.2014.xlsx'
     ).to_s
 
-    MonthlyBudgetSheet::File.new(september_2014_sheet).save_data
+    MonthlyBudgetSheet::File.new(august_2014_sheet).save_data
 
     total.reload
 
