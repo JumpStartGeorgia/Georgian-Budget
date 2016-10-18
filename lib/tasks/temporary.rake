@@ -1,5 +1,4 @@
 require('csv')
-require('pry-byebug')
 
 namespace :temporary do
   desc 'Get names from the database that have multiple codes'
