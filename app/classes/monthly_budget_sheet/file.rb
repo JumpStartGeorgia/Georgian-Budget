@@ -20,7 +20,7 @@ module MonthlyBudgetSheet
       I18n.locale = locale
 
       data_rows.each_with_index do |row_data, index|
-        row = Row.new(row_data)
+        row = create_row(row_data)
 
         next unless row.contains_data?
 
@@ -64,6 +64,19 @@ module MonthlyBudgetSheet
     end
 
     private
+
+    def create_row(row_data)
+      args = {}
+
+      if (year == 2012) && ([1, 2].include? month)
+        args[:code_column] = 1
+        args[:name_column] = 3
+        args[:spent_finance_column] = 13
+        args[:planned_finance_column] = 5
+      end
+
+      Row.new(row_data, args)
+    end
 
     def date_regex_match
       match = filename_date_regex.match(spreadsheet_path)

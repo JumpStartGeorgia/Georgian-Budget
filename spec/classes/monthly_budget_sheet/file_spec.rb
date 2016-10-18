@@ -3,6 +3,52 @@ require 'rails_helper'
 RSpec.describe MonthlyBudgetSheet::File do
   let(:total) { FactoryGirl.create(:total, code: '00') }
 
+  it 'gets the right values for January, 2012' do
+    total
+
+    january_2012_sheet = Rails.root.join(
+      'budget_files',
+      'repo',
+      'files',
+      'monthly_spreadsheets',
+      '2012',
+      'monthly_spreadsheet-01.2012.xlsx'
+    ).to_s
+
+    MonthlyBudgetSheet::File.new(january_2012_sheet).save_data
+
+    total.reload
+
+    expect(total.spent_finances.last.amount).to eq(488834301.67)
+  end
+
+  it 'gets the right values for February, 2012' do
+    previous_month = Month.for_date(Date.new(2012, 1, 1))
+
+    FactoryGirl.create(
+      :spent_finance,
+      amount: 488834301.67,
+      time_period: previous_month,
+      finance_spendable: total
+    )
+
+    total
+
+    february_2012_sheet = Rails.root.join(
+      'budget_files',
+      'repo',
+      'files',
+      'monthly_spreadsheets',
+      '2012',
+      'monthly_spreadsheet-02.2012.xlsx'
+    ).to_s
+
+    MonthlyBudgetSheet::File.new(february_2012_sheet).save_data
+    total.reload
+
+    expect(total.spent_finances.last.amount).to eq(530429467.19)
+  end
+
   it 'gets the right values for April, 2014' do
     previous_month_date = Date.new(2014, 3, 1)
     FactoryGirl.create(
