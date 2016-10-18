@@ -9,6 +9,7 @@ module MonthlyBudgetSheet
       @excel_data = nil
       @start_date = Date.new(year, month).beginning_of_month
       @end_date = Date.new(year, month).end_of_month
+      @code_column = nil
       @locale = 'ka'
     end
 
@@ -21,6 +22,8 @@ module MonthlyBudgetSheet
 
       data_rows.each_with_index do |row_data, index|
         row = create_row(row_data)
+
+        set_columns(row) if row.contains_column_names?
 
         next unless row.contains_data?
 
@@ -48,7 +51,9 @@ module MonthlyBudgetSheet
                 :end_date,
                 :locale
 
-    attr_accessor :excel_data
+    attr_accessor :excel_data,
+                  :code_column
+
 
     def month
       date_regex_match[1].to_i
@@ -65,11 +70,16 @@ module MonthlyBudgetSheet
 
     private
 
+    def set_columns(row)
+      @code_column = row.column_number_for_value('ორგანიზაც. კოდი')
+    end
+
     def create_row(row_data)
-      args = {}
+      args = {
+        code_column: code_column
+      }
 
       if (year == 2012) && ([1, 2].include? month)
-        args[:code_column] = 1
         args[:name_column] = 3
         args[:spent_finance_column] = 13
         args[:planned_finance_column] = 5

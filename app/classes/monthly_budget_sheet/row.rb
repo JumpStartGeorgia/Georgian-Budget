@@ -17,6 +17,22 @@ module MonthlyBudgetSheet
       true
     end
 
+    def contains_column_names?
+      return false unless data.r == 6
+
+      true
+    end
+
+    # Find the cell containing a certain value, and return that cell's column
+    # number. If none of the cells exist, return nil
+    def column_number_for_value(value)
+      cells.find { |cell| clean_cell_value(cell.value) == value }.column
+    end
+
+    def clean_cell_value(value)
+      value.strip().gsub(/\s+/, ' ')
+    end
+
     # returns true if item has code and name
     def contains_data?
       return false if cells.empty?
