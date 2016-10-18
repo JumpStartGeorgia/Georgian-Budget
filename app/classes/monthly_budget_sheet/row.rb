@@ -6,6 +6,7 @@ module MonthlyBudgetSheet
       @name_column = args[:name_column] || 1
       @spent_finance_column = args[:spent_finance_column] || 6
       @planned_finance_column = args[:planned_finance_column] || 2
+      @cell_values = []
     end
 
     # returns true if this is the header row of an item
@@ -18,18 +19,39 @@ module MonthlyBudgetSheet
     end
 
     def contains_column_names?
-      return false unless data.r == 6
+      return false unless contains_value?('დ ა ს ა ხ ე ლ ე ბ ა')
 
       true
+    end
+
+    def contains_value?(value)
+      cell_values = get_cell_values unless cell_values.present?
+      cell_values.include?(value)
+    end
+
+    def column_number_for_values(values)
+      values.each do |value|
+        column = column_number_for_value(value)
+        return column if column.present?
+      end
+
+      nil
     end
 
     # Find the cell containing a certain value, and return that cell's column
     # number. If none of the cells exist, return nil
     def column_number_for_value(value)
-      cells.find { |cell| clean_cell_value(cell.value) == value }.column
+      cell = cells.find { |cell| clean_cell_value(cell) == value }
+      cell.present? ? cell.column : nil
     end
 
-    def clean_cell_value(value)
+    def clean_cell_value(cell)
+      return nil unless cell.present?
+      value = cell.value
+
+      return nil unless value.present?
+      return value unless value.is_a? String
+
       value.strip().gsub(/\s+/, ' ')
     end
 
@@ -99,5 +121,15 @@ module MonthlyBudgetSheet
                 :name_column,
                 :spent_finance_column,
                 :planned_finance_column
+
+    attr_accessor :cell_values
+
+    private
+
+    def get_cell_values
+      cells.map do |cell|
+        clean_cell_value(cell)
+      end
+    end
   end
 end

@@ -10,7 +10,7 @@ module MonthlyBudgetSheet
       @start_date = Date.new(year, month).beginning_of_month
       @end_date = Date.new(year, month).end_of_month
       @locale = 'ka'
-      
+
       @code_column = nil
       @name_column = nil
       @spent_finance_column = nil
@@ -27,11 +27,15 @@ module MonthlyBudgetSheet
       data_rows.each_with_index do |row_data, index|
         row = create_row(row_data)
 
-        set_columns(row) if row.contains_column_names?
+        set_columns(row) if !columns_set? && row.contains_column_names?
 
         next unless row.contains_data?
 
         if row.is_header?
+          unless columns_set?
+            raise "Could not find column headers for spreadsheet: #{spreadsheet_path}"
+          end
+
           # save the previous budget item
           current_item.save unless current_item.nil?
 
@@ -77,10 +81,14 @@ module MonthlyBudgetSheet
     private
 
     def set_columns(row)
-      @code_column = row.column_number_for_value('ორგანიზაც. კოდი')
+      @code_column = row.column_number_for_values(['ორგანიზაც. კოდი', 'ორგანიზაც კოდი'])
       @name_column = row.column_number_for_value('დ ა ს ა ხ ე ლ ე ბ ა')
       @spent_finance_column = row.column_number_for_value('გადახდა')
       @planned_finance_column = row.column_number_for_value('გეგმა')
+    end
+
+    def columns_set?
+      @code_column.present? && @name_column.present? && @spent_finance_column.present? && @planned_finance_column.present?
     end
 
     def create_row(row_data)
