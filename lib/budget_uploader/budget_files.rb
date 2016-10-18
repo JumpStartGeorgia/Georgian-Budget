@@ -31,6 +31,14 @@ class BudgetFiles
     end_messages
   end
 
+  def self.budget_files_dir
+    budget_files_repo_dir.join('files')
+  end
+
+  def self.budget_files_repo_dir
+    Rails.root.join('budget_files', 'repo')
+  end
+
   attr_accessor :num_monthly_sheets_processed
 
   attr_reader :monthly_sheets,
@@ -38,10 +46,6 @@ class BudgetFiles
               :start_time
 
   private
-
-  def self.budget_files_dir
-    Rails.root.join('budget_files', 'repo', 'files')
-  end
 
   def get_monthly_sheets(args)
     if args[:monthly_paths]

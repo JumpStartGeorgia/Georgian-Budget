@@ -13,10 +13,10 @@ namespace :budget_data do
   task :sync_with_repo do
     require 'fileutils'
 
-    FileUtils::mkdir_p BudgetFiles.budget_files_dir
-    FileUtils.cd(BudgetFiles.budget_files_dir)
+    FileUtils::mkdir_p BudgetFiles.budget_files_repo_dir
+    FileUtils.cd(BudgetFiles.budget_files_repo_dir)
 
-    if File.directory?(BudgetFiles.budget_files_dir.join('.git'))
+    if File.directory?(BudgetFiles.budget_files_repo_dir.join('.git'))
       puts 'Budget files repo already exists; pulling in changes'
       `git pull`
     else
