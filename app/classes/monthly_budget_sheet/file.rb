@@ -9,8 +9,12 @@ module MonthlyBudgetSheet
       @excel_data = nil
       @start_date = Date.new(year, month).beginning_of_month
       @end_date = Date.new(year, month).end_of_month
-      @code_column = nil
       @locale = 'ka'
+      
+      @code_column = nil
+      @name_column = nil
+      @spent_finance_column = nil
+      @planned_finance_column = nil
     end
 
     def save_data
@@ -52,8 +56,10 @@ module MonthlyBudgetSheet
                 :locale
 
     attr_accessor :excel_data,
-                  :code_column
-
+                  :code_column,
+                  :name_column,
+                  :spent_finance_column,
+                  :planned_finance_column
 
     def month
       date_regex_match[1].to_i
@@ -72,20 +78,21 @@ module MonthlyBudgetSheet
 
     def set_columns(row)
       @code_column = row.column_number_for_value('ორგანიზაც. კოდი')
+      @name_column = row.column_number_for_value('დ ა ს ა ხ ე ლ ე ბ ა')
+      @spent_finance_column = row.column_number_for_value('გადახდა')
+      @planned_finance_column = row.column_number_for_value('გეგმა')
     end
 
     def create_row(row_data)
-      args = {
-        code_column: code_column
-      }
-
-      if (year == 2012) && ([1, 2].include? month)
-        args[:name_column] = 3
-        args[:spent_finance_column] = 13
-        args[:planned_finance_column] = 5
-      end
-
-      Row.new(row_data, args)
+      Row.new(
+        row_data,
+        {
+          code_column: code_column,
+          name_column: name_column,
+          spent_finance_column: spent_finance_column,
+          planned_finance_column: planned_finance_column
+        }
+      )
     end
 
     def date_regex_match
