@@ -18,6 +18,10 @@ module MonthlyBudgetSheet
       true
     end
 
+    def is_totals_row?
+      name == 'ჯამური' && !is_header?
+    end
+
     def contains_column_names?
       return false unless contains_value?('დ ა ს ა ხ ე ლ ე ბ ა')
 

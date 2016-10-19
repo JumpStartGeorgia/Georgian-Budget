@@ -23,13 +23,14 @@ describe MonthlyBudgetSheet::Item do
             amount: 100
           )
 
-          header_row = double('header_row')
+          header_row = instance_double(MonthlyBudgetSheet::Row, 'header_row')
+          allow(header_row).to receive(:is_header?).and_return(true)
+          allow(header_row).to receive(:is_totals_row?).and_return(false)
           allow(header_row).to receive(:code).and_return('01 83')
           allow(header_row).to receive(:name).and_return('Program name!')
 
-          totals_row = double('totals_row')
-          allow(totals_row).to receive(:name).and_return('ჯამური')
-          allow(totals_row).to receive(:is_header?).and_return(false)
+          totals_row = instance_double(MonthlyBudgetSheet::Row, 'totals_row')
+          allow(totals_row).to receive(:is_totals_row?).and_return(true)
           allow(totals_row).to receive(:spent_finance).and_return(100)
           allow(totals_row).to receive(:planned_finance).and_return(300)
 

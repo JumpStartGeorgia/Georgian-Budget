@@ -115,11 +115,11 @@ module MonthlyBudgetSheet
     end
 
     def header_row
-      rows[0]
+      rows.find(&:is_header?)
     end
 
     def totals_row
-      rows.find { |row| row.name == 'ჯამური' && !row.is_header? }
+      rows.find(&:is_totals_row?)
     end
 
     def add_warning(msg)
