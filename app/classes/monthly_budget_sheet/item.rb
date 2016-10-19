@@ -11,11 +11,7 @@ module MonthlyBudgetSheet
     def save
       return unless klass.present?
 
-      self.budget_item = klass.find_by_code(primary_code)
-
-      unless budget_item.present?
-        self.budget_item = klass.create(code: primary_code)
-      end
+      self.budget_item = get_budget_item
 
       # There is only one Total method with only one name
       if klass == Total
@@ -61,6 +57,12 @@ module MonthlyBudgetSheet
     attr_accessor :rows, :budget_item, :start_date, :end_date, :warnings
 
     private
+
+    def get_budget_item
+      item = klass.find_by_code(primary_code)
+      item = klass.create(code: primary_code) unless item.present?
+      item
+    end
 
     def klass
       BudgetCodeMapper.class_for_code(primary_code)
