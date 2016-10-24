@@ -7,6 +7,8 @@ module Nameable
 
   # text of most recent name
   def name
+    return nil unless recent_name_object.present?
+    
     text = recent_name_object.text
     return text if text.present?
 

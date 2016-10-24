@@ -4,8 +4,6 @@ RSpec.describe MonthlyBudgetSheet::File do
   let(:total) { FactoryGirl.create(:total, code: '00') }
 
   it 'gets the right values for January, 2012' do
-    total
-
     january_2012_sheet = Rails.root.join(
       'budget_files',
       'repo',
@@ -17,9 +15,7 @@ RSpec.describe MonthlyBudgetSheet::File do
 
     MonthlyBudgetSheet::File.new(january_2012_sheet).save_data
 
-    total.reload
-
-    expect(total.spent_finances.last.amount).to eq(488834301.67)
+    expect(Total.first.spent_finances.last.amount).to eq(488834301.67)
   end
 
   it 'gets the right values for February, 2012' do

@@ -64,7 +64,12 @@ module MonthlyBudgetSheet
     private
 
     def get_saved_budget_item
-      item = klass.where(code: primary_code).find { |item| item.name == name }
+      return Total.first if klass == Total
+      
+      item = klass.where(code: primary_code).find do |possible_item|
+        possible_item.name == name
+      end
+
       return nil if item.nil?
       item
     end
