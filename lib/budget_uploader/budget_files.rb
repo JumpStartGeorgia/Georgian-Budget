@@ -6,6 +6,12 @@ require Rails.root.join(
   'budget_item_translations'
 ).to_s
 
+require Rails.root.join(
+  'lib',
+  'budget_uploader',
+  'priorities_list'
+).to_s
+
 class BudgetFiles
   def self.monthly_spreadsheet_dir
     budget_files_dir.join('monthly_spreadsheets')
@@ -15,11 +21,16 @@ class BudgetFiles
     budget_files_dir.join('budget_item_translations.csv').to_s
   end
 
+  def self.priorities_list
+    budget_files_dir.join('priorities_list.csv').to_s
+  end
+
   def initialize(args)
     @start_time = Time.now
     @num_monthly_sheets_processed = 0
     @budget_item_translations = get_budget_item_translations(args)
     @monthly_sheets = get_monthly_sheets(args)
+    @priorities_list = get_priorities_list(args)
   end
 
   def upload
@@ -27,6 +38,7 @@ class BudgetFiles
 
     upload_monthly_sheets if monthly_sheets.present?
     budget_item_translations.save if budget_item_translations.present?
+    priorities_list.save if priorities_list.present?
 
     end_messages
   end
@@ -43,9 +55,14 @@ class BudgetFiles
 
   attr_reader :monthly_sheets,
               :budget_item_translations,
+              :priorities_list,
               :start_time
 
   private
+
+  def get_priorities_list(args)
+    PrioritiesList.new_from_file(args[:priorities_list])
+  end
 
   def get_monthly_sheets(args)
     if args[:monthly_paths]

@@ -7,10 +7,5 @@ RSpec.shared_examples_for 'Codeable' do
   let(:codeable2) { FactoryGirl.create(described_class_sym) }
 
   describe '#code' do
-    it 'is required' do
-      codeable1.code = nil
-
-      expect(codeable1).to have(1).errors_on(:code)
-    end
   end
 end

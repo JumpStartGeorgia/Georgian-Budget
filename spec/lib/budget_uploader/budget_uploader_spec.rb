@@ -173,5 +173,31 @@ RSpec.describe 'BudgetFiles' do
         'Public Funds Management'
       )
     end
+
+    it 'saves priorities in priorities_list' do
+      BudgetFiles.new(
+        priorities_list: BudgetFiles.priorities_list
+      ).upload
+
+      # Education priority
+      education_priority = Priority.find_by_name(
+        'განათლება, მეცნიერება და პროფესიული მომზადება'
+      )
+      
+      expect(education_priority.length).to eq(1)
+
+      expect(education_priority[0].recent_name_object.start_date)
+      .to eq(Date.new(2012, 1, 1))
+
+      # Agriculture priority
+      agriculture_priority = Priority.find_by_name(
+        'სოფლის მეურნეობა'
+      )
+
+      expect(agriculture_priority.length).to eq(1)
+
+      expect(agriculture_priority[0].recent_name_object.start_date)
+      .to eq(Date.new(2012, 1, 1))
+    end
   end
 end
