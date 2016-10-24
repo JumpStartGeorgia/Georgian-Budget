@@ -8,47 +8,50 @@ describe MonthlyBudgetSheet::Item do
   let(:february_2015) { Month.for_date(Date.new(2015, 2, 1)) }
 
   describe '#save' do
-    context 'when code matches previously saved item' do
-      let(:code) { '01 83' }
+    let(:code) { '01 83' }
 
-      let(:previously_saved_item) do
-        item = FactoryGirl.create(
-          :program,
-          code: code
-        )
+    let(:previously_saved_item) do
+      item = FactoryGirl.create(
+        :program,
+        code: code
+      )
 
-        FactoryGirl.create(
-          :name,
-          text: 'Program name1',
-          nameable: item
-        )
+      FactoryGirl.create(
+        :name,
+        text: 'Program name1',
+        nameable: item
+      )
 
-        item
-      end
+      item
+    end
 
-      let(:header_row) do
-        header_row = instance_double(MonthlyBudgetSheet::Row, 'header_row')
-        allow(header_row).to receive(:is_header?).and_return(true)
-        allow(header_row).to receive(:is_totals_row?).and_return(false)
-        allow(header_row).to receive(:code).and_return('01 83')
+    let(:header_row) do
+      header_row = instance_double(MonthlyBudgetSheet::Row, 'header_row')
+      allow(header_row).to receive(:is_header?).and_return(true)
+      allow(header_row).to receive(:is_totals_row?).and_return(false)
 
-        header_row
-      end
+      header_row
+    end
 
-      let(:totals_row) do
-        totals_row = instance_double(MonthlyBudgetSheet::Row, 'totals_row')
-        allow(totals_row).to receive(:is_totals_row?).and_return(true)
-        allow(totals_row).to receive(:spent_finance).and_return(300)
-        allow(totals_row).to receive(:planned_finance).and_return(300)
+    let(:totals_row) do
+      totals_row = instance_double(MonthlyBudgetSheet::Row, 'totals_row')
+      allow(totals_row).to receive(:is_totals_row?).and_return(true)
+      allow(totals_row).to receive(:spent_finance).and_return(300)
+      allow(totals_row).to receive(:planned_finance).and_return(300)
 
+      totals_row
+    end
+
+    let(:rows) do
+      [
+        header_row,
         totals_row
-      end
-
-      let(:rows) do
-        [
-          header_row,
-          totals_row
-        ]
+      ]
+    end
+    
+    context 'when code matches previously saved item' do
+      before :example do
+        allow(header_row).to receive(:code).and_return('01 83')
       end
 
       context "and name matches previously saved item's most recent name" do
@@ -121,12 +124,58 @@ describe MonthlyBudgetSheet::Item do
     end
 
     context 'when code does not match previously saved item' do
+      before :example do
+        allow(header_row).to receive(:code).and_return('01 84')
+      end
+
       context "and name matches previously saved item's most recent name" do
-        it 'creates a new budget item'
+        it 'creates a new budget item' do
+          allow(header_row).to receive(:name).and_return('Program name1')
+
+          FactoryGirl.create(
+            :spent_finance,
+            time_period: january_2015,
+            amount: 100,
+            finance_spendable: previously_saved_item
+          )
+
+          new_budget_item = MonthlyBudgetSheet::Item.new(
+            rows,
+            start_date: february_2015.start_date
+          )
+
+          new_budget_item.save
+
+          previously_saved_item.reload
+
+          expect(new_budget_item.budget_item_object)
+          .to_not eq(previously_saved_item)
+        end
       end
 
       context "and name does not match previously saved item's most recent name" do
-        it 'creates a new budget item'
+        it 'creates a new budget item' do
+          allow(header_row).to receive(:name).and_return('Program name2')
+
+          FactoryGirl.create(
+            :spent_finance,
+            time_period: january_2015,
+            amount: 100,
+            finance_spendable: previously_saved_item
+          )
+
+          new_budget_item = MonthlyBudgetSheet::Item.new(
+            rows,
+            start_date: february_2015.start_date
+          )
+
+          new_budget_item.save
+
+          previously_saved_item.reload
+
+          expect(new_budget_item.budget_item_object)
+          .to_not eq(previously_saved_item)
+        end
       end
     end
   end
