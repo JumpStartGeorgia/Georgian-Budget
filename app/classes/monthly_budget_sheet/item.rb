@@ -1,17 +1,16 @@
 module MonthlyBudgetSheet
   class Item
-    def initialize(rows, start_date, end_date)
+    def initialize(rows, args)
       @rows = rows
       @budget_item = nil
-      @start_date = start_date
-      @end_date = end_date
+      @start_date = args[:start_date]
       @warnings = []
     end
 
     def save
       return unless klass.present?
 
-      self.budget_item = get_budget_item
+      self.budget_item = budget_item_object
 
       # There is only one Total method with only one name
       if klass == Total
@@ -54,13 +53,19 @@ module MonthlyBudgetSheet
       output_warnings
     end
 
-    attr_accessor :rows, :budget_item, :start_date, :end_date, :warnings
+    def budget_item_object
+      item = get_saved_budget_item
+      item = klass.create(code: primary_code) unless item.present?
+      item
+    end
+
+    attr_accessor :rows, :budget_item, :start_date, :warnings
 
     private
 
-    def get_budget_item
-      item = klass.find_by_code(primary_code)
-      item = klass.create(code: primary_code) unless item.present?
+    def get_saved_budget_item
+      item = klass.where(code: primary_code).find { |item| item.name == name }
+      return nil if item.nil?
       item
     end
 

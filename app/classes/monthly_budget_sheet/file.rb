@@ -40,7 +40,7 @@ module MonthlyBudgetSheet
           current_item.save unless current_item.nil?
 
           # create a new budget item
-          current_item = Item.new([row], start_date, end_date)
+          current_item = Item.new([row], start_date: start_date)
         else
           next unless current_item.present?
           current_item.rows << row

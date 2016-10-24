@@ -12,11 +12,5 @@ RSpec.shared_examples_for 'Codeable' do
 
       expect(codeable1).to have(1).errors_on(:code)
     end
-
-    it 'is unique' do
-      codeable2.code = codeable1.code
-
-      expect(codeable2).to have(1).errors_on(:code)
-    end
   end
 end
