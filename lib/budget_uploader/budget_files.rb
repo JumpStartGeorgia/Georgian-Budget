@@ -61,6 +61,7 @@ class BudgetFiles
   private
 
   def get_priority_associations_list(args)
+    return nil unless args[:priority_associations_list].present?
     PriorityAssociations::List.new_from_file(
       args[:priority_associations_list],
       priorities_list: priorities_list
@@ -68,6 +69,7 @@ class BudgetFiles
   end
 
   def get_priorities_list(args)
+    return nil unless args[:priorities_list].present?
     PrioritiesList.new_from_file(args[:priorities_list])
   end
 
