@@ -4,9 +4,9 @@ require Rails.root.join('lib', 'budget_uploader', 'budget_files').to_s
 RSpec.describe 'BudgetFiles' do
   describe '#upload' do
     context 'with monthly spreadsheets' do
-      it 'saves names of agencies and programs in monthly spreadsheets' do
-        # setup
-        monthly_budgets_start_date = Date.new(2015, 01, 01)
+      let(:monthly_budgets_start_date) { Date.new(2015, 01, 01) }
+
+      before :context do
         I18n.locale = 'ka'
 
         month_files_dir = BudgetFiles.monthly_spreadsheet_dir.join('2015')
@@ -19,136 +19,215 @@ RSpec.describe 'BudgetFiles' do
           ],
           budget_item_translations: BudgetFiles.english_translations_file
         ).upload
+      end
 
-        # verify
-        # TOTAL
-        total = Total.first
+      context 'total:' do
+        let(:total) { Total.first }
 
-        expect(total.code).to eq('00')
+        it 'saves total code' do
+          expect(total.code).to eq('00')
+        end
 
-        expect(total.name_en).to eq('Total Georgian Budget')
-        expect(total.name_ka).to eq('მთლიანი სახელმწიფო ბიუჯეტი')
+        it 'saves total English name' do
+          expect(total.name_en).to eq('Total Georgian Budget')
+        end
 
-        # Total: spent
-        total_spent_finance1 = total.spent_finances[0]
-        total_spent_finance2 = total.spent_finances[1]
+        it 'saves total Georgian name' do
+          expect(total.name_ka).to eq('მთლიანი სახელმწიფო ბიუჯეტი')
+        end
 
-        expect(total.spent_finances.length).to eq(2)
+        context 'spent finances:' do
+          it 'saves first spent finance' do
+            total_spent_finance1 = total.spent_finances[0]
+            expect(total_spent_finance1.amount.to_f).to eq(656549486.69)
+            expect(total_spent_finance1.start_date).to eq(Date.new(2015, 1, 1))
+            expect(total_spent_finance1.end_date).to eq(Date.new(2015, 1, 31))
+          end
 
-        expect(total_spent_finance1.amount.to_f).to eq(656549486.69)
-        expect(total_spent_finance1.start_date).to eq(Date.new(2015, 1, 1))
-        expect(total_spent_finance1.end_date).to eq(Date.new(2015, 1, 31))
+          it 'saves second spent finance' do
+            total_spent_finance2 = total.spent_finances[1]
+            expect(total_spent_finance2.amount.to_f).to eq(641341973.31)
+            expect(total_spent_finance2.start_date).to eq(Date.new(2015, 2, 1))
+            expect(total_spent_finance2.end_date).to eq(Date.new(2015, 2, 28))
+          end
 
-        expect(total_spent_finance2.amount.to_f).to eq(641341973.31)
-        expect(total_spent_finance2.start_date).to eq(Date.new(2015, 2, 1))
-        expect(total_spent_finance2.end_date).to eq(Date.new(2015, 2, 28))
+          it 'saves correct number of spent finances' do
+            expect(total.spent_finances.length).to eq(2)
+          end
+        end
 
-        # Total: planned
-        total_planned_finances = total.all_planned_finances
-        total_planned_finance1 = total_planned_finances[0]
+        context 'planned finances:' do
+          it 'saves first planned finance' do
+            total_planned_finance1 = total.all_planned_finances[0]
+            expect(total_planned_finance1.amount.to_f).to eq(2162575900)
+            expect(total_planned_finance1.start_date).to eq(Date.new(2015, 1, 1))
+            expect(total_planned_finance1.end_date).to eq(Date.new(2015, 3, 31))
+            expect(total_planned_finance1.announce_date).to eq(Date.new(2015, 1, 1))
+            expect(total_planned_finance1.most_recently_announced).to eq(true)
+          end
 
-        expect(total_planned_finances.length).to eq(1)
+          it 'saves correct number of planned finances' do
+            expect(total.all_planned_finances.length).to eq(1)
+          end
+        end
+      end
 
-        expect(total_planned_finance1.amount.to_f).to eq(2162575900)
-        expect(total_planned_finance1.start_date).to eq(Date.new(2015, 1, 1))
-        expect(total_planned_finance1.end_date).to eq(Date.new(2015, 3, 31))
-        expect(total_planned_finance1.announce_date).to eq(Date.new(2015, 1, 1))
-        expect(total_planned_finance1.most_recently_announced).to eq(true)
+      context 'spending agency (parliament):' do
+        let(:spending_agency1_array) do
+          SpendingAgency.find_by_name('საქართველოს პარლამენტი და მასთან არსებული ორგანიზაციები')
+        end
 
-        ### SPENDING AGENCY 1
-        spending_agency1_array = SpendingAgency.find_by_name('საქართველოს პარლამენტი და მასთან არსებული ორგანიზაციები')
-        spending_agency1 = spending_agency1_array[0]
+        let(:spending_agency1) { spending_agency1_array[0] }
 
-        expect(spending_agency1_array.length).to eq(1)
-        expect(spending_agency1.code).to eq('01 00')
-        expect(spending_agency1.recent_name_object.start_date).to eq(monthly_budgets_start_date)
+        it 'saves only one' do
+          expect(spending_agency1_array.length).to eq(1)
+        end
 
-        # agency1: spent
-        spending_agency1_spent_finance1 = spending_agency1.spent_finances[0]
-        spending_agency1_spent_finance2 = spending_agency1.spent_finances[1]
+        it 'saves correct code' do
+          expect(spending_agency1.code).to eq('01 00')
+        end
 
-        expect(spending_agency1.spent_finances.length).to eq(2)
+        it 'saves correct start date of name' do
+          expect(spending_agency1.recent_name_object.start_date).to eq(monthly_budgets_start_date)
+        end
 
-        expect(spending_agency1_spent_finance1.amount.to_f).to eq(3532432.91)
-        expect(spending_agency1_spent_finance1.start_date).to eq(Date.new(2015, 1, 1))
-        expect(spending_agency1_spent_finance1.end_date).to eq(Date.new(2015, 1, 31))
+        context 'spent finances:' do
+          it 'saves correct number of spent finances' do
+            expect(spending_agency1.spent_finances.length).to eq(2)
+          end
 
-        expect(spending_agency1_spent_finance2.amount.to_f).to eq(3753083.38)
-        expect(spending_agency1_spent_finance2.start_date).to eq(Date.new(2015, 2, 1))
-        expect(spending_agency1_spent_finance2.end_date).to eq(Date.new(2015, 2, 28))
+          it 'saves spent finance 1' do
+            spending_agency1_spent_finance1 = spending_agency1.spent_finances[0]
+            expect(spending_agency1_spent_finance1.amount.to_f).to eq(3532432.91)
+            expect(spending_agency1_spent_finance1.start_date).to eq(Date.new(2015, 1, 1))
+            expect(spending_agency1_spent_finance1.end_date).to eq(Date.new(2015, 1, 31))
+          end
 
-        # agency1: planned
-        spending_agency1_planned_finances = spending_agency1.all_planned_finances
-        spending_agency1_planned_finance1 = spending_agency1_planned_finances[0]
+          it 'saves spent finance 2' do
+            spending_agency1_spent_finance2 = spending_agency1.spent_finances[1]
 
-        expect(spending_agency1_planned_finances.length).to eq(1)
+            expect(spending_agency1_spent_finance2.amount.to_f).to eq(3753083.38)
+            expect(spending_agency1_spent_finance2.start_date).to eq(Date.new(2015, 2, 1))
+            expect(spending_agency1_spent_finance2.end_date).to eq(Date.new(2015, 2, 28))
+          end
+        end
 
-        expect(spending_agency1_planned_finance1.amount.to_f).to eq(14767400)
-        expect(spending_agency1_planned_finance1.start_date).to eq(Date.new(2015, 1, 1))
-        expect(spending_agency1_planned_finance1.end_date).to eq(Date.new(2015, 3, 31))
-        expect(spending_agency1_planned_finance1.announce_date).to eq(Date.new(2015, 1, 1))
-        expect(spending_agency1_planned_finance1.most_recently_announced).to eq(true)
+        context 'planned finances:' do
+          it 'saves correct number of planned finances' do
+            expect(spending_agency1.all_planned_finances.length).to eq(1)
+          end
 
-        ### SPENDING AGENCY
-        spending_agency2_array = SpendingAgency.find_by_name('საქართველოს მთავრობის ადმინისტრაცია')
-        spending_agency2 = spending_agency2_array[0]
+          it 'saves first planned finance' do
+            spending_agency1_planned_finance1 = spending_agency1.all_planned_finances[0]
 
-        expect(spending_agency2_array.length).to eq(1)
-        expect(spending_agency2.code).to eq('04 00')
-        expect(spending_agency2.name).to eq('საქართველოს მთავრობის ადმინისტრაცია')
+            expect(spending_agency1_planned_finance1.amount.to_f).to eq(14767400)
+            expect(spending_agency1_planned_finance1.start_date).to eq(Date.new(2015, 1, 1))
+            expect(spending_agency1_planned_finance1.end_date).to eq(Date.new(2015, 3, 31))
+            expect(spending_agency1_planned_finance1.announce_date).to eq(Date.new(2015, 1, 1))
+            expect(spending_agency1_planned_finance1.most_recently_announced).to eq(true)
+          end
+        end
+      end
 
-        # this spending agency changes plans from january to february, so it
-        # has two plans for the same quarter
-        spending_agency2_planned_finances = spending_agency2.all_planned_finances
-        spending_agency2_planned_finance1 = spending_agency2_planned_finances[0]
-        spending_agency2_planned_finance2 = spending_agency2_planned_finances[1]
+      context 'spending agency (government administration):' do
+        let(:spending_agency2_array) do
+          SpendingAgency.find_by_name('საქართველოს მთავრობის ადმინისტრაცია')
+        end
 
-        expect(spending_agency2_planned_finance1.amount.to_f).to eq(11471000)
-        expect(spending_agency2_planned_finance1.start_date).to eq(Date.new(2015, 1, 1))
-        expect(spending_agency2_planned_finance1.end_date).to eq(Date.new(2015, 3, 31))
-        expect(spending_agency2_planned_finance1.announce_date).to eq(Date.new(2015, 1, 1))
-        expect(spending_agency2_planned_finance1.most_recently_announced).to eq(false)
+        let(:spending_agency2) { spending_agency2_array[0] }
 
-        expect(spending_agency2_planned_finance2.amount.to_f).to eq(12471000)
-        expect(spending_agency2_planned_finance2.start_date).to eq(Date.new(2015, 1, 1))
-        expect(spending_agency2_planned_finance2.end_date).to eq(Date.new(2015, 3, 31))
-        expect(spending_agency2_planned_finance2.announce_date).to eq(Date.new(2015, 2, 1))
-        expect(spending_agency2_planned_finance2.most_recently_announced).to eq(true)
+        it 'saves only one' do
+          expect(spending_agency2_array.length).to eq(1)
+        end
 
-        ### PROGRAM
-        program1_array = Program.find_by_name('საკანონმდებლო საქმიანობა')
-        program1 = program1_array[0]
+        it 'saves code' do
+          expect(spending_agency2.code).to eq('04 00')
+        end
 
-        expect(program1_array.length).to eq(1)
-        expect(program1.code).to eq('01 01')
-        expect(program1.recent_name_object.start_date).to eq(monthly_budgets_start_date)
+        context 'planned finances:' do
+          # this spending agency changes plans from january to february, so it
+          # has two plans for the same quarter
 
-        ###
-        spending_agency2_array = SpendingAgency.find_by_name('საქართველოს პრეზიდენტის ადმინისტრაცია')
-        spending_agency2 = spending_agency2_array[0]
+          it 'saves first planned finance' do
+            spending_agency2_planned_finance1 = spending_agency2.all_planned_finances[0]
 
-        expect(spending_agency2_array.length).to eq(1)
-        expect(spending_agency2.code).to eq('02 00')
-        expect(spending_agency2.recent_name_object.start_date).to eq(monthly_budgets_start_date)
+            expect(spending_agency2_planned_finance1.amount.to_f).to eq(11471000)
+            expect(spending_agency2_planned_finance1.start_date).to eq(Date.new(2015, 1, 1))
+            expect(spending_agency2_planned_finance1.end_date).to eq(Date.new(2015, 3, 31))
+            expect(spending_agency2_planned_finance1.announce_date).to eq(Date.new(2015, 1, 1))
+            expect(spending_agency2_planned_finance1.most_recently_announced).to eq(false)
+          end
 
-        ###
-        program2_array = Program.find_by_name('საქართველოს ეროვნული უშიშროების საბჭოს აპარატი')
-        program2 = program2_array[0]
+          it 'saves second planned finance' do
+            spending_agency2_planned_finance2 = spending_agency2.all_planned_finances[1]
 
-        expect(program2_array.length).to eq(1)
-        expect(program2.code).to eq('03 01')
-        expect(program2.recent_name_object.start_date).to eq(monthly_budgets_start_date)
+            expect(spending_agency2_planned_finance2.amount.to_f).to eq(12471000)
+            expect(spending_agency2_planned_finance2.start_date).to eq(Date.new(2015, 1, 1))
+            expect(spending_agency2_planned_finance2.end_date).to eq(Date.new(2015, 3, 31))
+            expect(spending_agency2_planned_finance2.announce_date).to eq(Date.new(2015, 2, 1))
+            expect(spending_agency2_planned_finance2.most_recently_announced).to eq(true)
+          end
+        end
+      end
 
-        ### Checking translations
-        public_funds_management = Program.find_by_code('23 01')
+      context 'spending agency (president administration):' do
+        let(:spending_agency2_array) do
+          SpendingAgency.find_by_name('საქართველოს პრეზიდენტის ადმინისტრაცია')
+        end
 
-        expect(public_funds_management.name_ka).to eq(
-          'სახელმწიფო ფინანსების მართვა'
-        )
+        let(:spending_agency2) { spending_agency2_array[0] }
 
-        expect(public_funds_management.name_en).to eq(
-          'Public Funds Management'
-        )
+        it 'saves only one' do
+          expect(spending_agency2_array.length).to eq(1)
+        end
+
+        it 'saves code' do
+          expect(spending_agency2.code).to eq('02 00')
+        end
+
+        it 'saves correct start date for name' do
+          expect(spending_agency2.recent_name_object.start_date).to eq(monthly_budgets_start_date)
+        end
+      end
+
+      context 'program (legislation):' do
+        let(:program1_array) do
+          Program.find_by_name('საკანონმდებლო საქმიანობა')
+        end
+
+        let(:program1) { program1_array[0] }
+
+        it 'saves only one' do
+          expect(program1_array.length).to eq(1)
+        end
+
+        it 'saves code' do
+          expect(program1.code).to eq('01 01')
+        end
+
+        it 'saves correct start date of name' do
+          expect(program1.recent_name_object.start_date).to eq(monthly_budgets_start_date)
+        end
+      end
+
+      context 'program (security and internal affairs apparatus):' do
+        let(:program2_array) do
+          Program.find_by_name('საქართველოს ეროვნული უშიშროების საბჭოს აპარატი')
+        end
+
+        let(:program2) { program2_array[0] }
+
+        it 'saves only one' do
+          expect(program2_array.length).to eq(1)
+        end
+
+        it 'saves code' do
+          expect(program2.code).to eq('03 01')
+        end
+
+        it 'saves correct start date for name' do
+          expect(program2.recent_name_object.start_date).to eq(monthly_budgets_start_date)
+        end
       end
     end
 
