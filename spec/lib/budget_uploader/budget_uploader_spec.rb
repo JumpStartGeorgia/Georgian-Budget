@@ -238,9 +238,9 @@ RSpec.describe 'BudgetFiles' do
       end
     end
 
-    context 'with english translations' do
-      it 'saves English translations of names' do
-        program = FactoryGirl.create(
+    context 'with english translations list' do
+      before :context do
+        @program = FactoryGirl.create(
           :program,
           code: '23 01'
         )
@@ -250,16 +250,16 @@ RSpec.describe 'BudgetFiles' do
           text_ka: 'სახელმწიფო ფინანსების მართვა',
           text_en: '',
           start_date: Date.new(2015, 1, 1),
-          nameable: program
+          nameable: @program
         )
 
         BudgetFiles.new(
           budget_item_translations: BudgetFiles.english_translations_file
         ).upload
+      end
 
-        expect(program.name_en).to eq(
-          'Public Funds Management'
-        )
+      it 'saves English translation of public funds program' do
+        expect(@program.name_en).to eq('Public Funds Management')
       end
     end
   end
