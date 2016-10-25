@@ -174,30 +174,75 @@ RSpec.describe 'BudgetFiles' do
       )
     end
 
-    it 'saves priorities in priorities_list' do
+    it 'creates priorities and associates them with other budget items' do
+      # Setup parliament agency
+      parliament = SpendingAgency.create(code: '01 00')
+      Name.create(
+        nameable: parliament,
+        text_ka: 'საქართველოს პარლამენტი და მასთან არსებული ორგანიზაციები',
+        start_date: Date.new(2012, 1, 1)
+      )
+
+      # Setup audit regulation program
+      audit_regulation_program = Program.create(code: '01 02')
+      Name.create(
+        nameable: audit_regulation_program,
+        text_ka: 'აუდიტორული საქმიანობის სახელმწიფო რეგულირება',
+        start_date: Date.new(2012, 1, 1)
+      )
+
+      # Setup library program
+      library_program = Program.create(code: '01 02')
+      Name.create(
+        nameable: library_program,
+        text_ka: 'საბიბლიოთეკო საქმიანობა',
+        start_date: Date.new(2013, 1, 1)
+      )
+
+      # Exercise
       BudgetFiles.new(
-        priorities_list: BudgetFiles.priorities_list
+        priorities_list: BudgetFiles.priorities_list,
+        priority_associations_list: BudgetFiles.priority_associations_list
       ).upload
 
-      # Education priority
+      # Verify economic stability priority
+      economic_stability_priority = Priority.find_by_name(
+        'მაკროეკონომიკური სტაბილურობა და საინვესტიციო გარემოს გაუმჯობესება'
+      )[0]
+
+      expect(economic_stability_priority).to_not eq(nil)
+
+      expect(economic_stability_priority.recent_name_object.start_date)
+      .to eq(Date.new(2012, 1, 1))
+
+      # Verify education priority
       education_priority = Priority.find_by_name(
         'განათლება, მეცნიერება და პროფესიული მომზადება'
-      )
-      
-      expect(education_priority.length).to eq(1)
+      )[0]
 
-      expect(education_priority[0].recent_name_object.start_date)
+      expect(education_priority).to_not eq(nil)
+
+      expect(education_priority.recent_name_object.start_date)
       .to eq(Date.new(2012, 1, 1))
 
-      # Agriculture priority
-      agriculture_priority = Priority.find_by_name(
-        'სოფლის მეურნეობა'
-      )
+      # Verify uncategorized Priority
+      uncategorized_priority = Priority.find_by_name('უკატეგორიო')[0]
 
-      expect(agriculture_priority.length).to eq(1)
-
-      expect(agriculture_priority[0].recent_name_object.start_date)
+      expect(uncategorized_priority).to_not eq(nil)
+      expect(uncategorized_priority.recent_name_object.start_date)
       .to eq(Date.new(2012, 1, 1))
+
+      # Verify parliament
+      parliament.reload
+      expect(parliament.priority).to eq(uncategorized_priority)
+
+      # Verify audit regulation program
+      audit_regulation_program.reload
+      expect(audit_regulation_program.priority).to eq(economic_stability_priority)
+
+      # Verify library program
+      library_program.reload
+      expect(library_program.priority).to eq(education_priority)
     end
   end
 end

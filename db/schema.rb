@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160922164256) do
+ActiveRecord::Schema.define(version: 20161025065448) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -75,9 +75,11 @@ ActiveRecord::Schema.define(version: 20160922164256) do
   end
 
   create_table "programs", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
     t.string   "code"
+    t.integer  "priority_id"
+    t.index ["priority_id"], name: "index_programs_on_priority_id", using: :btree
   end
 
   create_table "roles", force: :cascade do |t|
@@ -87,9 +89,11 @@ ActiveRecord::Schema.define(version: 20160922164256) do
   end
 
   create_table "spending_agencies", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
     t.string   "code"
+    t.integer  "priority_id"
+    t.index ["priority_id"], name: "index_spending_agencies_on_priority_id", using: :btree
   end
 
   create_table "spent_finances", force: :cascade do |t|
@@ -130,4 +134,6 @@ ActiveRecord::Schema.define(version: 20160922164256) do
     t.index ["role_id"], name: "index_users_on_role_id", using: :btree
   end
 
+  add_foreign_key "programs", "priorities"
+  add_foreign_key "spending_agencies", "priorities"
 end

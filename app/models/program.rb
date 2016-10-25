@@ -3,4 +3,6 @@ class Program < ApplicationRecord
   include Nameable
   include FinanceSpendable
   include FinancePlannable
+
+  belongs_to :priority
 end
