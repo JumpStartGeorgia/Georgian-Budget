@@ -114,7 +114,6 @@ RSpec.describe 'BudgetFiles' do
       expect(spending_agency2_planned_finance2.announce_date).to eq(Date.new(2015, 2, 1))
       expect(spending_agency2_planned_finance2.most_recently_announced).to eq(true)
 
-      # TODO
       ### PROGRAM
       program1_array = Program.find_by_name('საკანონმდებლო საქმიანობა')
       program1 = program1_array[0]
@@ -150,30 +149,9 @@ RSpec.describe 'BudgetFiles' do
         'Public Funds Management'
       )
     end
+  end
 
-    it 'saves English translations of names' do
-      program = FactoryGirl.create(
-        :program,
-        code: '23 01'
-      )
-
-      FactoryGirl.create(
-        :name,
-        text_ka: 'სახელმწიფო ფინანსების მართვა',
-        text_en: '',
-        start_date: Date.new(2015, 1, 1),
-        nameable: program
-      )
-
-      BudgetFiles.new(
-        budget_item_translations: BudgetFiles.english_translations_file
-      ).upload
-
-      expect(program.name_en).to eq(
-        'Public Funds Management'
-      )
-    end
-
+  describe '#upload with priorities list and priority associations list' do
     it 'creates priorities and associates them with other budget items' do
       # Setup parliament agency
       parliament = SpendingAgency.create(code: '01 00')
@@ -243,6 +221,31 @@ RSpec.describe 'BudgetFiles' do
       # Verify library program
       library_program.reload
       expect(library_program.priority).to eq(education_priority)
+    end
+  end
+
+  describe '#upload with english translations' do
+    it 'saves English translations of names' do
+      program = FactoryGirl.create(
+        :program,
+        code: '23 01'
+      )
+
+      FactoryGirl.create(
+        :name,
+        text_ka: 'სახელმწიფო ფინანსების მართვა',
+        text_en: '',
+        start_date: Date.new(2015, 1, 1),
+        nameable: program
+      )
+
+      BudgetFiles.new(
+        budget_item_translations: BudgetFiles.english_translations_file
+      ).upload
+
+      expect(program.name_en).to eq(
+        'Public Funds Management'
+      )
     end
   end
 end
