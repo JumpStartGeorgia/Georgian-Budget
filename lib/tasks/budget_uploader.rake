@@ -1,10 +1,12 @@
 require_relative '../budget_uploader/budget_files'
 
 namespace :budget_data do
-  desc 'Upload all spreadsheets in budget_files directory'
+  desc 'Upload all budget files'
   task upload: :environment do
     BudgetFiles.new(
       monthly_folder: BudgetFiles.monthly_spreadsheet_dir,
+      priorities_list: BudgetFiles.priorities_list,
+      priority_associations_list: BudgetFiles.priority_associations_list,
       budget_item_translations: BudgetFiles.english_translations_file
     ).upload
   end
