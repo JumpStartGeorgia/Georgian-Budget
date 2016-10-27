@@ -364,8 +364,8 @@ RSpec.describe 'BudgetFiles' do
       it "sets education priority's planned finances" do
         planned_finances = education_priority.planned_finances
 
-        expect(planned_finances[1].amount).to eq(500)
-        expect(planned_finances[1].time_period).to eq(@quarter1_2012)
+        expect(planned_finances[0].amount).to eq(500)
+        expect(planned_finances[0].time_period).to eq(@quarter1_2012)
       end
 
       it 'sets priority of library program' do
