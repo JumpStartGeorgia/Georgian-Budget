@@ -9,11 +9,16 @@ class Priority < ApplicationRecord
   # Updates the priority's finances by summing the finance amounts of the
   # priority's programs.
   def update_finances
+    update_spent_finances
+  end
+
+  private
+
+  def update_spent_finances
     program_spent_finances = SpentFinance.select(
       'SUM(amount) AS amount, start_date, end_date'
     ).where(
-      finance_spendable_type: 'Program',
-      finance_spendable_id: programs.pluck(:id)
+      finance_spendable: programs
     ).group(
       :start_date,
       :end_date
