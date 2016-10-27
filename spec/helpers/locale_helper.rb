@@ -43,6 +43,10 @@ RSpec.configure do |config|
     end
   end
 
+  config.after :each do
+    I18n.locale = 'en'
+  end
+
   config.before(:each, type: :feature) do
     default_url_options[:locale] = I18n.default_locale
   end
