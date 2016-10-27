@@ -29,12 +29,17 @@ namespace :temporary do
   task get_georgian_names_to_be_translated: :environment do
     name_ids_without_english = Name.find_by_sql(
       <<-STRING
-        SELECT names.id
+        SELECT MAX(names.id) AS id
         FROM names LEFT JOIN
           (SELECT * FROM name_translations
-           WHERE name_translations.locale = 'en') AS name_translations
-        ON names.id = name_translations.name_id
-        WHERE name_translations.name_id IS NULL
+           WHERE name_translations.locale = 'en') AS english_translations
+        ON names.id = english_translations.name_id
+        JOIN
+          (SELECT * FROM name_translations
+           WHERE name_translations.locale = 'ka') AS georgian_translations
+        ON names.id = georgian_translations.name_id
+        WHERE english_translations.name_id IS NULL
+        GROUP BY georgian_translations.text
       STRING
     ).pluck(:id)
 
