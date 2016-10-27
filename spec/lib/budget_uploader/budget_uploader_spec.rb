@@ -263,6 +263,13 @@ RSpec.describe 'BudgetFiles' do
           start_date: Date.new(2013, 1, 1)
         )
 
+        @financier_qualifications_program = Program.create(code: '23 05')
+        Name.create(
+          nameable: @financier_qualifications_program,
+          text_ka: 'საფინანსო სექტორში დასაქმებულთა კვალიფიკაციის ამაღლება',
+          start_date: Date.new(2012, 1, 1)
+        )
+
         # Exercise
         BudgetFiles.new(
           priorities_list: BudgetFiles.priorities_list,
@@ -297,11 +304,21 @@ RSpec.describe 'BudgetFiles' do
         .to eq(Date.new(2012, 1, 1))
       end
 
+      it 'assigns parliament to uncategorized priority' do
+        @parliament.reload
+        expect(@parliament.priority).to eq(uncategorized_priority)
+      end
+
       it 'creates economic stability priority' do
         expect(economic_stability_priority).to_not eq(nil)
 
         expect(economic_stability_priority.recent_name_object.start_date)
         .to eq(Date.new(2012, 1, 1))
+      end
+
+      it 'assigns audit regulation program to economic stability priority' do
+        @audit_regulation_program.reload
+        expect(@audit_regulation_program.priority).to eq(economic_stability_priority)
       end
 
       it 'creates education priority' do
@@ -311,19 +328,14 @@ RSpec.describe 'BudgetFiles' do
         .to eq(Date.new(2012, 1, 1))
       end
 
-      it 'sets priority of parliament' do
-        @parliament.reload
-        expect(@parliament.priority).to eq(uncategorized_priority)
-      end
-
-      it 'sets priority of audit regulation program' do
-        @audit_regulation_program.reload
-        expect(@audit_regulation_program.priority).to eq(economic_stability_priority)
-      end
-
       it 'sets priority of library program' do
         @library_program.reload
         expect(@library_program.priority).to eq(education_priority)
+      end
+
+      it 'assigns financier_qualifications_program to education priority' do
+        @financier_qualifications_program.reload
+        expect(@financier_qualifications_program.priority).to eq(education_priority)
       end
     end
 
