@@ -3,12 +3,14 @@ require Rails.root.join('lib', 'budget_uploader', 'budget_files').to_s
 
 RSpec.describe 'BudgetFiles' do
   describe '#upload' do
+    before :example do
+      I18n.locale = 'ka'
+    end
+
     context 'with monthly spreadsheets' do
       let(:monthly_budgets_start_date) { Date.new(2015, 01, 01) }
 
       before :context do
-        I18n.locale = 'ka'
-
         month_files_dir = BudgetFiles.monthly_spreadsheet_dir.join('2015')
 
         # exercise
@@ -19,6 +21,10 @@ RSpec.describe 'BudgetFiles' do
           ],
           budget_item_translations: BudgetFiles.english_translations_file
         ).upload
+      end
+
+      after :context do
+        [Program, SpendingAgency, Priority, Total].each(&:destroy_all)
       end
 
       context 'total:' do
@@ -264,6 +270,10 @@ RSpec.describe 'BudgetFiles' do
         ).upload
       end
 
+      after :context do
+        [Program, SpendingAgency, Priority, Total].each(&:destroy_all)
+      end
+
       let(:uncategorized_priority) do
         Priority.find_by_name('უკატეგორიო')[0]
       end
@@ -335,6 +345,10 @@ RSpec.describe 'BudgetFiles' do
         BudgetFiles.new(
           budget_item_translations: BudgetFiles.english_translations_file
         ).upload
+      end
+
+      after :context do
+        [Program, SpendingAgency, Priority, Total].each(&:destroy_all)
       end
 
       it 'saves English translation of public funds program' do
