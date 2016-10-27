@@ -38,6 +38,7 @@ class BudgetFiles
     budget_item_translations.save if budget_item_translations.present?
     priorities_list.save if priorities_list.present?
     priority_associations_list.save if priority_associations_list.present?
+    save_priority_finances
 
     end_messages
   end
@@ -116,6 +117,10 @@ class BudgetFiles
 
       self.num_monthly_sheets_processed = num_monthly_sheets_processed + 1
     end
+  end
+
+  def save_priority_finances
+    Priority.all.each(&:update_finances)
   end
 
   def pretty_time(time = 0)

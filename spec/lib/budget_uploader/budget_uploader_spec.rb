@@ -239,6 +239,8 @@ RSpec.describe 'BudgetFiles' do
 
     context 'with priorities list and priority associations list' do
       before :context do
+        @january_2012 = Month.for_date(Date.new(2012, 1, 1))
+        @quarter1_2012 = Quarter.for_date(Date.new(2012, 1, 1))
         # Setup parliament agency
         @parliament = SpendingAgency.create(code: '01 00')
         Name.create(
@@ -263,11 +265,35 @@ RSpec.describe 'BudgetFiles' do
           start_date: Date.new(2013, 1, 1)
         )
 
+        SpentFinance.create(
+          finance_spendable: @library_program,
+          time_period: @january_2012,
+          amount: 30
+        )
+
+        @library_program.add_planned_finance(
+          time_period: @quarter1_2012,
+          announce_date: @quarter1_2012.start_date,
+          amount: 300
+        )
+
         @financier_qualifications_program = Program.create(code: '23 05')
         Name.create(
           nameable: @financier_qualifications_program,
           text_ka: 'საფინანსო სექტორში დასაქმებულთა კვალიფიკაციის ამაღლება',
           start_date: Date.new(2012, 1, 1)
+        )
+
+        SpentFinance.create(
+          finance_spendable: @financier_qualifications_program,
+          time_period: @january_2012,
+          amount: 70
+        )
+
+        @financier_qualifications_program.add_planned_finance(
+          time_period: @quarter1_2012,
+          announce_date: @quarter1_2012.start_date,
+          amount: 200
         )
 
         # Exercise
@@ -326,6 +352,20 @@ RSpec.describe 'BudgetFiles' do
 
         expect(education_priority.recent_name_object.start_date)
         .to eq(Date.new(2012, 1, 1))
+      end
+
+      it "sets education priority's spent finances" do
+        spent_finances = education_priority.spent_finances
+
+        expect(spent_finances[0].amount).to eq(100)
+        expect(spent_finances[0].time_period).to eq(@january_2012)
+      end
+
+      it "sets education priority's planned finances" do
+        planned_finances = education_priority.planned_finances
+
+        expect(planned_finances[1].amount).to eq(500)
+        expect(planned_finances[1].time_period).to eq(@quarter1_2012)
       end
 
       it 'sets priority of library program' do
