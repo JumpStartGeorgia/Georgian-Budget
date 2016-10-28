@@ -45,26 +45,26 @@ namespace :budget_data do
   task destroy_non_user_data: :environment do
     stop_if_production
 
-    puts "\nDestroying Totals"
-    Total.destroy_all
-
-    puts "\nDestroying Programs"
-    Program.destroy_all
-
-    puts "\nDestroying Priorities"
-    Priority.destroy_all
-
-    puts "\nDestroying Spending Agencies"
-    SpendingAgency.destroy_all
-
-    puts "\nDestroying Names"
-    Name.destroy_all
-
     puts "\nDestroying Spent Finances"
     SpentFinance.destroy_all
 
     puts "\nDestroying Planned Finances"
     PlannedFinance.destroy_all
+
+    puts "\nDestroying Names"
+    Name.destroy_all
+
+    puts "\nDestroying Programs"
+    Program.destroy_all
+
+    puts "\nDestroying Spending Agencies"
+    SpendingAgency.destroy_all
+
+    puts "\nDestroying Priorities"
+    Priority.destroy_all
+
+    puts "\nDestroying Totals"
+    Total.destroy_all
   end
 end
 

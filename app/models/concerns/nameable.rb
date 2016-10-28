@@ -8,7 +8,7 @@ module Nameable
   # text of most recent name
   def name
     return nil unless recent_name_object.present?
-    
+
     text = recent_name_object.text
     return text if text.present?
 
@@ -38,6 +38,8 @@ module Nameable
 
   def update_names_is_most_recent
     names.update_all(is_most_recent: false)
+
+    return true unless recent_name_object.present?
     recent_name_object.update_column(:is_most_recent, true)
 
     return true
