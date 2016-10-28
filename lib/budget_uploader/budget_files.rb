@@ -35,9 +35,9 @@ class BudgetFiles
     start_messages
 
     upload_monthly_sheets if monthly_sheets.present?
-    budget_item_translations.save if budget_item_translations.present?
     priorities_list.save if priorities_list.present?
     priority_associations_list.save if priority_associations_list.present?
+    budget_item_translations.save if budget_item_translations.present?
     save_priority_finances
 
     end_messages
