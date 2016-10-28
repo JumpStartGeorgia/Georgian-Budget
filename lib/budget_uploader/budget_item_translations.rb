@@ -13,14 +13,16 @@ class BudgetItemTranslations
       georgian_name = row[1]
       english_name = row[3]
 
-      name_to_translate = names.find do |name|
+      names_to_translate = names.select do |name|
         name.text_ka == georgian_name
       end
 
-      next unless name_to_translate.present?
+      next unless names_to_translate.present?
 
-      name_to_translate.text_en = english_name
-      name_to_translate.save
+      names_to_translate.each do |name_to_translate|
+        name_to_translate.text_en = english_name
+        name_to_translate.save
+      end
     end
   end
 
