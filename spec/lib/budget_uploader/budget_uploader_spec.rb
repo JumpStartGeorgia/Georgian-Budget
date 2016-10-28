@@ -381,6 +381,30 @@ RSpec.describe 'BudgetFiles' do
 
     context 'with english translations list' do
       before :context do
+        @priority = FactoryGirl.create(
+          :priority)
+
+        FactoryGirl.create(
+          :name,
+          text_ka: 'უკატეგორიო',
+          text_en: '',
+          start_date: Date.new(2015, 1, 1),
+          nameable: @priority
+        )
+
+        @spending_agency = FactoryGirl.create(
+          :spending_agency,
+          code: '35 00'
+        )
+
+        FactoryGirl.create(
+          :name,
+          text_ka: 'საქართველოს შრომის, ჯანმრთელობისა და სოციალური დაცვის სამინისტრო',
+          text_en: '',
+          start_date: Date.new(2015, 1, 1),
+          nameable: @spending_agency
+        )
+
         @program = FactoryGirl.create(
           :program,
           code: '23 01'
@@ -403,7 +427,16 @@ RSpec.describe 'BudgetFiles' do
         [Program, SpendingAgency, Priority, Total].each(&:destroy_all)
       end
 
-      it 'saves English translation of public funds program' do
+      it 'saves English translation of priority' do
+        expect(@priority.name_en).to eq('Uncategorized')
+      end
+
+      it 'saves English translation of spending agency' do
+        expect(@spending_agency.name_en).to eq(
+          'Ministry Of Labour Health and Social Affairs Georgia')
+      end
+
+      it 'saves English translation of program' do
         expect(@program.name_en).to eq('Public Funds Management')
       end
     end
