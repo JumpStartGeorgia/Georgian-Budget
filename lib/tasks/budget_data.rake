@@ -39,65 +39,6 @@ namespace :budget_data do
         )
       end
     end
-
-    desc 'Create test data; not allowed on production'
-    task create_test_data: :environment do
-      stop_if_production
-
-      puts "\nCREATING PROGRAMS\n"
-
-      program1 = Program.create
-      Name.create(
-        text: 'Program #1',
-        start_date: Date.yesterday,
-        end_date: Date.today,
-        nameable: program1
-      )
-
-      program2 = Program.create
-      Name.create(
-        text: 'Program #2',
-        start_date: Date.yesterday,
-        end_date: Date.today,
-        nameable: program2
-      )
-
-      puts "\nCREATING PRIORITIES\n"
-
-      priority1 = Priority.create
-      Name.create(
-        text: 'Priority #1',
-        start_date: Date.yesterday,
-        end_date: Date.today,
-        nameable: priority1
-      )
-
-      priority2 = Priority.create
-      Name.create(
-        text: 'Priority #2',
-        start_date: Date.yesterday,
-        end_date: Date.today,
-        nameable: priority2
-      )
-
-      puts "\nCREATING SPENDING AGENCIES\n"
-
-      spending_agency1 = SpendingAgency.create
-      Name.create(
-        text: 'Spending Agency #1',
-        start_date: Date.yesterday,
-        end_date: Date.today,
-        nameable: spending_agency1
-      )
-
-      spending_agency2 = SpendingAgency.create
-      Name.create(
-        text: 'Spending Agency #2',
-        start_date: Date.yesterday,
-        end_date: Date.today,
-        nameable: spending_agency2
-      )
-    end
   end
 
   desc 'Destroy all data that are not users or roles; not allowed on production'
