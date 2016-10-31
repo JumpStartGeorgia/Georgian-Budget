@@ -5,6 +5,7 @@ module MonthlyBudgetSheet
       @budget_item = nil
       @start_date = args[:start_date]
       @warnings = []
+      @item_is_new = nil
     end
 
     def save
@@ -50,28 +51,39 @@ module MonthlyBudgetSheet
         add_warning 'Could not get the planned finance amount'
       end
 
+      if item_is_new && budget_item.respond_to?(:save_possible_duplicates)
+        budget_item.save_possible_duplicates
+      end
+
       output_warnings
     end
 
     def budget_item_object
       item = get_saved_budget_item
-      item = klass.create(code: primary_code) unless item.present?
+      if item.present?
+        self.item_is_new = false
+        return item
+      end
+
+      self.item_is_new = true
+      item = klass.create(code: primary_code)
+
       item
     end
 
-    attr_accessor :rows, :budget_item, :start_date, :warnings
+    attr_accessor :rows, :budget_item, :start_date, :warnings, :item_is_new
 
     private
 
     def get_saved_budget_item
       return Total.first if klass == Total
-      
+
       item = klass.where(code: primary_code).find do |possible_item|
         possible_item.name == name
       end
 
-      return nil if item.nil?
-      item
+      return item if item.present?
+      nil
     end
 
     def klass

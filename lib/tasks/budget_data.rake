@@ -66,6 +66,39 @@ namespace :budget_data do
     puts "\nDestroying Totals"
     Total.destroy_all
   end
+
+  desc 'Export CSV of possible duplicate budget items'
+  task export_possible_duplicate_budget_items: :environment do
+    csv_file_path = Rails.root.join('tmp', 'possible_duplicate_budget_items.csv')
+
+    headers = [
+      'Budget Item Type',
+      'Budget Item 1 Code',
+      'Budget Item 2 Code',
+      'Budget Item 1 Name',
+      'Budget Item 2 Name',
+      'Merge? (yes / no)'
+    ]
+
+    require 'csv'
+    CSV.open(csv_file_path, 'wb') do |csv|
+      csv << headers
+
+      PossibleDuplicatePairs.all.each do |possible_duplicate_pair|
+        item1 = possible_duplicate_pair.item1
+        item2 = possible_duplicate_pair.item2
+
+        csv << [
+          possible_duplicate_pair.type,
+          item1.code,
+          item2.code,
+          item1.name,
+          item2.name,
+          ''
+        ]
+      end
+    end
+  end
 end
 
 def stop_if_production

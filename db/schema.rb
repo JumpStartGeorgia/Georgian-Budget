@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161025065448) do
+ActiveRecord::Schema.define(version: 20161031064002) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -66,6 +66,14 @@ ActiveRecord::Schema.define(version: 20161025065448) do
     t.index ["end_date"], name: "index_planned_finances_on_end_date", using: :btree
     t.index ["finance_plannable_type", "finance_plannable_id"], name: "index_planned_finances_on_finance_plannable", using: :btree
     t.index ["start_date"], name: "index_planned_finances_on_start_date", using: :btree
+  end
+
+  create_table "possible_duplicate_pairs", force: :cascade do |t|
+    t.integer "item1_id"
+    t.integer "item2_id"
+    t.string  "pair_type"
+    t.index ["item1_id"], name: "index_item1", using: :btree
+    t.index ["item2_id"], name: "index_item2", using: :btree
   end
 
   create_table "priorities", force: :cascade do |t|

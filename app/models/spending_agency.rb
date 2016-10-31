@@ -3,6 +3,7 @@ class SpendingAgency < ApplicationRecord
   include Nameable
   include FinanceSpendable
   include FinancePlannable
+  include BudgetItemDuplicatable
 
   belongs_to :priority
 end

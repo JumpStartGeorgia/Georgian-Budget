@@ -48,7 +48,7 @@ describe MonthlyBudgetSheet::Item do
         totals_row
       ]
     end
-    
+
     context 'when code matches previously saved item' do
       before :example do
         allow(header_row).to receive(:code).and_return('01 83')
@@ -60,6 +60,8 @@ describe MonthlyBudgetSheet::Item do
         end
 
         it 'saves planned_finance to previously saved item' do
+          previously_saved_item
+
           previously_saved_item.add_planned_finance(
             time_period: quarter1_2015,
             announce_date: Date.new(2015, 1, 1),
@@ -78,6 +80,8 @@ describe MonthlyBudgetSheet::Item do
         end
 
         it 'saves spent_finance to previously saved item' do
+          previously_saved_item
+
           FactoryGirl.create(
             :spent_finance,
             time_period: january_2015,
@@ -95,18 +99,9 @@ describe MonthlyBudgetSheet::Item do
           previously_saved_item.reload
           expect(previously_saved_item.spent_finances.last.amount).to eq(300 - 100)
         end
-      end
 
-      context "but name does not match previously saved item's most recent name" do
-        it 'creates a new budget item' do
-          allow(header_row).to receive(:name).and_return('Program name2')
-
-          FactoryGirl.create(
-            :spent_finance,
-            time_period: january_2015,
-            amount: 100,
-            finance_spendable: previously_saved_item
-          )
+        it 'does not save any possible_duplicates' do
+          previously_saved_item
 
           new_budget_item = MonthlyBudgetSheet::Item.new(
             rows,
@@ -116,9 +111,40 @@ describe MonthlyBudgetSheet::Item do
           new_budget_item.save
 
           previously_saved_item.reload
+          expect(previously_saved_item.possible_duplicates).to eq([])
+        end
+      end
+
+      context "but name does not match previously saved item's most recent name" do
+        let(:new_budget_item) do
+          MonthlyBudgetSheet::Item.new(
+            rows,
+            start_date: february_2015.start_date
+          )
+        end
+
+        before :example do
+          allow(header_row).to receive(:name).and_return('Program name2')
+        end
+
+        it 'creates a new budget item' do
+          previously_saved_item
+
+          new_budget_item.save
+          previously_saved_item.reload
 
           expect(new_budget_item.budget_item_object)
           .to_not eq(previously_saved_item)
+        end
+
+        it 'saves the previously saved item as possible duplicate' do
+          previously_saved_item
+
+          new_budget_item.save
+          previously_saved_item.reload
+
+          expect(previously_saved_item.possible_duplicates)
+          .to eq([new_budget_item.budget_item_object])
         end
       end
     end
@@ -129,32 +155,42 @@ describe MonthlyBudgetSheet::Item do
       end
 
       context "and name matches previously saved item's most recent name" do
-        it 'creates a new budget item' do
-          allow(header_row).to receive(:name).and_return('Program name1')
-
-          FactoryGirl.create(
-            :spent_finance,
-            time_period: january_2015,
-            amount: 100,
-            finance_spendable: previously_saved_item
-          )
-
-          new_budget_item = MonthlyBudgetSheet::Item.new(
+        let(:new_budget_item) do
+          MonthlyBudgetSheet::Item.new(
             rows,
             start_date: february_2015.start_date
           )
+        end
+
+        before :example do
+          allow(header_row).to receive(:name).and_return('Program name1')
+        end
+
+        it 'creates a new budget item' do
+          previously_saved_item
 
           new_budget_item.save
-
           previously_saved_item.reload
 
           expect(new_budget_item.budget_item_object)
           .to_not eq(previously_saved_item)
         end
+
+        it 'saves the previously saved item and new budget item as possible duplicates' do
+          previously_saved_item
+
+          new_budget_item.save
+          previously_saved_item.reload
+
+          expect(previously_saved_item.possible_duplicates)
+          .to eq([new_budget_item.budget_item_object])
+        end
       end
 
       context "and name does not match previously saved item's most recent name" do
         it 'creates a new budget item' do
+          previously_saved_item
+
           allow(header_row).to receive(:name).and_return('Program name2')
 
           FactoryGirl.create(
