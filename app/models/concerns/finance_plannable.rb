@@ -57,11 +57,7 @@ module FinancePlannable
   def add_planned_finance(params)
     transaction do
       params[:finance_plannable] = self
-      new_planned_finance = PlannedFinance.create(params)
-
-      unless new_planned_finance.persisted?
-        raise "planned_finance has errors: #{new_planned_finance.errors.to_hash}"
-      end
+      new_planned_finance = PlannedFinance.create!(params)
 
       planned_finance = merge_new_planned_finance(new_planned_finance)
       update_most_recently_announced_with(planned_finance)
