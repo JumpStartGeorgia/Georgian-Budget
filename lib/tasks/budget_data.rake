@@ -69,6 +69,7 @@ namespace :budget_data do
 
   desc 'Export CSV of possible duplicate budget items'
   task export_possible_duplicate_budget_items: :environment do
+    I18n.locale = 'ka'
     csv_file_path = Rails.root.join('tmp', 'possible_duplicate_budget_items.csv')
 
     headers = [
