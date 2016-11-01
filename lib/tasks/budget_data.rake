@@ -78,6 +78,8 @@ namespace :budget_data do
       'Budget Item 2 Code',
       'Budget Item 1 Name',
       'Budget Item 2 Name',
+      'Budget Item 1 Name Date',
+      'Budget Item 2 Name Date',
       'Merge? (yes / no)'
     ]
 
@@ -95,6 +97,8 @@ namespace :budget_data do
           item2.code,
           item1.name,
           item2.name,
+          item1.recent_name_object.start_date,
+          item2.recent_name_object.start_date,
           ''
         ]
       end
