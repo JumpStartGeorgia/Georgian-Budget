@@ -31,9 +31,8 @@ module MonthlyBudgetSheet
       end
 
       if spent_finance_amount.present?
-        SpentFinance.create(
+        budget_item.add_spent_finance(
           time_period: month,
-          finance_spendable: budget_item,
           amount: spent_finance_amount
         )
       else

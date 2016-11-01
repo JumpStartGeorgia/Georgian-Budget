@@ -26,8 +26,7 @@ class Priority < ApplicationRecord
     )
 
     program_spent_finances.each do |program_spent_finance|
-      SpentFinance.create(
-        finance_spendable: self,
+      self.add_spent_finance(
         time_period: program_spent_finance.time_period,
         amount: program_spent_finance.amount
       )

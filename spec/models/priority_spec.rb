@@ -52,18 +52,15 @@ RSpec.describe Priority, type: :model do
         let(:spent_finance_time_period2) { Month.for_date(Date.new(2012, 7, 1)) }
 
         before :example do
-          SpentFinance.create(
-            finance_spendable: program1,
+          program1.add_spent_finance(
             amount: program1_spent_finance1_amount,
             time_period: spent_finance_time_period1)
 
-          SpentFinance.create(
-            finance_spendable: program2,
+          program2.add_spent_finance(
             amount: program2_spent_finance1_amount,
             time_period: spent_finance_time_period1)
 
-          SpentFinance.create(
-            finance_spendable: program1,
+          program1.add_spent_finance(
             amount: program1_spent_finance2_amount,
             time_period: spent_finance_time_period2)
         end

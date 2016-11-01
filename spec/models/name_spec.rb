@@ -58,6 +58,7 @@ RSpec.describe Name, type: :model do
     it 'returns false if text is different' do
       text1 = 'Name1'
       text2 = 'Name2'
+      
       expect(Name.texts_represent_same_budget_item?(text1, text2)).to eq(false)
     end
 

@@ -5,6 +5,9 @@ RSpec.shared_examples_for 'FinanceSpendable' do
 
   let(:finance_spendable1) { FactoryGirl.create(described_class_sym) }
 
+  let(:spent_finance_attr1a) { FactoryGirl.attributes_for(:spent_finance) }
+  let(:spent_finance_attr1b) { FactoryGirl.attributes_for(:spent_finance) }
+
   let(:spent_finance1) do
     FactoryGirl.create(
       :spent_finance,
@@ -44,6 +47,27 @@ RSpec.shared_examples_for 'FinanceSpendable' do
       expect(finance_spendable1.spent_finances).to eq(
         [spent_finance1, spent_finance1b]
       )
+    end
+  end
+
+  describe '#add_spent_finance' do
+    context 'when spent finance is invalid' do
+      it 'throws error' do
+        spent_finance_attr1a[:start_date] = nil
+
+        expect do
+          finance_spendable1.add_spent_finance(spent_finance_attr1a)
+        end.to raise_error(ActiveRecord::RecordInvalid)
+      end
+    end
+
+    context 'when spent finance is valid' do
+      it 'causes finance spendable to have one spent finances' do
+        finance_spendable1.add_spent_finance(spent_finance_attr1a)
+        finance_spendable1.reload
+
+        expect(finance_spendable1.spent_finances.length).to eq(1)
+      end
     end
   end
 end

@@ -262,8 +262,7 @@ RSpec.describe 'BudgetFiles' do
           start_date: Date.new(2013, 1, 1)
         )
 
-        SpentFinance.create(
-          finance_spendable: @library_program,
+        @library_program.add_spent_finance(
           time_period: @january_2012,
           amount: 30
         )
@@ -275,13 +274,10 @@ RSpec.describe 'BudgetFiles' do
         )
 
         @financier_qualifications_program = Program.create(code: '23 05')
-        @financier_qualifications_program.add_name(
+        .add_name(
           text_ka: 'საფინანსო სექტორში დასაქმებულთა კვალიფიკაციის ამაღლება',
           start_date: Date.new(2012, 1, 1)
-        )
-
-        SpentFinance.create(
-          finance_spendable: @financier_qualifications_program,
+        ).add_spent_finance(
           time_period: @january_2012,
           amount: 70
         )
