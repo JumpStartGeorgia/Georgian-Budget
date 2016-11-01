@@ -243,24 +243,21 @@ RSpec.describe 'BudgetFiles' do
         @quarter1_2012 = Quarter.for_date(Date.new(2012, 1, 1))
         # Setup parliament agency
         @parliament = SpendingAgency.create(code: '01 00')
-        Name.create(
-          nameable: @parliament,
+        @parliament.add_name(
           text_ka: 'საქართველოს პარლამენტი და მასთან არსებული ორგანიზაციები',
           start_date: Date.new(2012, 1, 1)
         )
 
         # Setup audit regulation program
         @audit_regulation_program = Program.create(code: '01 02')
-        Name.create(
-          nameable: @audit_regulation_program,
+        @audit_regulation_program.add_name(
           text_ka: 'აუდიტორული საქმიანობის სახელმწიფო რეგულირება',
           start_date: Date.new(2012, 1, 1)
         )
 
         # Setup library program
         @library_program = Program.create(code: '01 02')
-        Name.create(
-          nameable: @library_program,
+        @library_program.add_name(
           text_ka: 'საბიბლიოთეკო საქმიანობა',
           start_date: Date.new(2013, 1, 1)
         )
@@ -278,8 +275,7 @@ RSpec.describe 'BudgetFiles' do
         )
 
         @financier_qualifications_program = Program.create(code: '23 05')
-        Name.create(
-          nameable: @financier_qualifications_program,
+        @financier_qualifications_program.add_name(
           text_ka: 'საფინანსო სექტორში დასაქმებულთა კვალიფიკაციის ამაღლება',
           start_date: Date.new(2012, 1, 1)
         )

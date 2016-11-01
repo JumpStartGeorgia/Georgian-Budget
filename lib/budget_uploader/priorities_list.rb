@@ -46,10 +46,9 @@ class PrioritiesList
   def create_priority_from_row(row)
     priority = Priority.create
 
-    Name.create(
+    priority.add_name(
       start_date: Date.new(2012, 1, 1),
-      text_ka: row_name(row),
-      nameable: priority
+      text_ka: row_name(row)
     )
   end
 

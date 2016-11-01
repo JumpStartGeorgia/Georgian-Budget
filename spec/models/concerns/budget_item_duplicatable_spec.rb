@@ -56,20 +56,17 @@ RSpec.shared_examples_for 'BudgetItemDuplicatable' do
     context 'when two other budget_items have same name' do
       it 'returns the more recently named budget_item in an array' do
         name_text = 'fjiepwjfipejw'
-        Name.create(
-          nameable: previously_saved_budget_item1,
+        previously_saved_budget_item1.add_name(
           start_date: Date.new(2012, 2, 1),
           text: name_text)
 
-        Name.create(
-          nameable: previously_saved_budget_item2,
+        previously_saved_budget_item2.add_name(
           start_date: Date.new(2012, 3, 1),
           text: name_text)
 
         previously_saved_budget_item2.reload.save_possible_duplicates
 
-        Name.create(
-          nameable: budget_item,
+        budget_item.add_name(
           start_date: Date.new(2013, 1, 1),
           text: name_text)
 

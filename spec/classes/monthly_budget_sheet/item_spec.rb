@@ -16,11 +16,10 @@ describe MonthlyBudgetSheet::Item do
         code: code
       )
 
-      FactoryGirl.create(
+      item.add_name(FactoryGirl.attributes_for(
         :name,
-        text: 'Program name1',
-        nameable: item
-      )
+        text: 'Program name1'
+      ))
 
       item
     end

@@ -15,8 +15,7 @@ module MonthlyBudgetSheet
 
       # There is only one Total method with only one name
       if klass == Total
-        Name.create(
-          nameable: budget_item,
+        budget_item.add_name(
           text_en: 'Total Georgian Budget',
           text_ka: 'მთლიანი სახელმწიფო ბიუჯეტი',
           start_date: start_date
@@ -24,7 +23,7 @@ module MonthlyBudgetSheet
       else
         # if the new name is a duplicate of another name, then the names
         # will be merged in an after commit callback
-        Name.create(
+        budget_item.add_name(
           nameable: budget_item,
           text: name,
           start_date: start_date

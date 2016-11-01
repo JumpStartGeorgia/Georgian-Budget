@@ -16,8 +16,12 @@ RSpec.describe 'API' do
   context 'when budget_type filter is program' do
     context 'and budget_item_fields is id,name' do
       it 'gets the ids and names of all programs' do
-        program1 = FactoryGirl.create(:program_with_name)
-        program2 = FactoryGirl.create(:program_with_name)
+        program1 = FactoryGirl.create(:program).add_name(
+          FactoryGirl.attributes_for(:name))
+          
+        program2 = FactoryGirl.create(:program).add_name(
+          FactoryGirl.attributes_for(:name))
+
         agency1 = FactoryGirl.create(:spending_agency)
 
         params = {
