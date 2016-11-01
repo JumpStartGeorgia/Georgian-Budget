@@ -11,7 +11,7 @@ class Name < ApplicationRecord
     self[:text] = Name.clean_text(initial_text)
   end
 
-  def self.texts_functionally_equivalent?(text1, text2)
+  def self.texts_represent_same_budget_item?(text1, text2)
     aggressively_clean_text(text1) == aggressively_clean_text(text2)
   end
 
