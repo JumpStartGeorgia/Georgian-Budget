@@ -7,12 +7,32 @@ class Name < ApplicationRecord
   validates :start_date, uniqueness: { scope: [:nameable_type, :nameable_id] }, presence: true
   validates :nameable, presence: true
 
-  def merge_more_recent_name(more_recent_name)
-    return false if more_recent_name.nil?
-    update_column(:is_most_recent, more_recent_name.is_most_recent)
+  def text=(initial_text)
+    self[:text] = Name.clean_text(initial_text)
+  end
 
-    more_recent_name.destroy
+  def self.texts_functionally_equivalent?(text1, text2)
+    aggressively_clean_text(text1) == aggressively_clean_text(text2)
+  end
 
-    return true
+  private
+
+  def self.aggressively_clean_text(text)
+    clean_text(
+      text
+      .gsub('—', ' ')
+      .gsub('-', ' ')
+      .gsub(',', ' ')
+      .gsub('(', ' ')
+      .gsub(')', ' ')
+      .gsub('/', ' ')
+      .gsub('\\', ' ')
+    )
+  end
+
+  def self.clean_text(text)
+    text
+    .gsub(/\s+/, ' ')
+    .strip
   end
 end

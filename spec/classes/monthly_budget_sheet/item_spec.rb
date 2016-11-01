@@ -10,6 +10,9 @@ describe MonthlyBudgetSheet::Item do
   describe '#save' do
     let(:code) { '01 83' }
 
+    let(:previously_saved_item_spent_finance_amount) { 212340 }
+    let(:previously_saved_item_planned_finance_amount) { 443 }
+
     let(:previously_saved_item) do
       item = FactoryGirl.create(
         :program,
@@ -32,11 +35,14 @@ describe MonthlyBudgetSheet::Item do
       header_row
     end
 
+    let(:current_item_spent_finance_amount) { 1 }
+    let(:current_item_planned_finance_amount) { 73 }
+
     let(:totals_row) do
       totals_row = instance_double(MonthlyBudgetSheet::Row, 'totals_row')
       allow(totals_row).to receive(:is_totals_row?).and_return(true)
-      allow(totals_row).to receive(:spent_finance).and_return(300)
-      allow(totals_row).to receive(:planned_finance).and_return(300)
+      allow(totals_row).to receive(:spent_finance).and_return(current_item_spent_finance_amount)
+      allow(totals_row).to receive(:planned_finance).and_return(current_item_planned_finance_amount)
 
       totals_row
     end
@@ -64,7 +70,7 @@ describe MonthlyBudgetSheet::Item do
           previously_saved_item.add_planned_finance(
             time_period: quarter1_2015,
             announce_date: Date.new(2015, 1, 1),
-            amount: 100
+            amount: previously_saved_item_planned_finance_amount
           )
 
           new_budget_item = MonthlyBudgetSheet::Item.new(
@@ -75,7 +81,8 @@ describe MonthlyBudgetSheet::Item do
           new_budget_item.save
 
           previously_saved_item.reload
-          expect(previously_saved_item.planned_finances.last.amount).to eq(300 - 100)
+          expect(previously_saved_item.planned_finances.last.amount)
+          .to eq(current_item_planned_finance_amount - previously_saved_item_planned_finance_amount)
         end
 
         it 'saves spent_finance to previously saved item' do
@@ -84,7 +91,7 @@ describe MonthlyBudgetSheet::Item do
           FactoryGirl.create(
             :spent_finance,
             time_period: january_2015,
-            amount: 100,
+            amount: previously_saved_item_spent_finance_amount,
             finance_spendable: previously_saved_item
           )
 
@@ -96,7 +103,8 @@ describe MonthlyBudgetSheet::Item do
           new_budget_item.save
 
           previously_saved_item.reload
-          expect(previously_saved_item.spent_finances.last.amount).to eq(300 - 100)
+          expect(previously_saved_item.spent_finances.last.amount)
+          .to eq(current_item_spent_finance_amount - previously_saved_item_spent_finance_amount)
         end
 
         it 'does not save any possible_duplicates' do
@@ -111,6 +119,50 @@ describe MonthlyBudgetSheet::Item do
 
           previously_saved_item.reload
           expect(previously_saved_item.possible_duplicates).to eq([])
+        end
+      end
+
+      context "and cleaned name matches previously saved item's most recent name" do
+        before :example do
+          allow(header_row).to receive(:name).and_return('Program    name1')
+        end
+
+        it 'saves item data to previous item' do
+          previously_saved_item
+
+          new_budget_item = MonthlyBudgetSheet::Item.new(
+            rows,
+            start_date: february_2015.start_date
+          )
+
+          new_budget_item.save
+
+          previously_saved_item.reload
+
+          expect(previously_saved_item.spent_finances.last.amount)
+          .to eq(current_item_spent_finance_amount)
+        end
+      end
+
+      context "and aggressively cleaned name matches previously saved item's most recent name" do
+        before :example do
+          allow(header_row).to receive(:name).and_return('Program—name1')
+        end
+
+        it 'adds new name to previous item' do
+          previously_saved_item
+
+          new_budget_item = MonthlyBudgetSheet::Item.new(
+            rows,
+            start_date: february_2015.start_date
+          )
+
+          new_budget_item.save
+
+          previously_saved_item.reload
+
+          expect(new_budget_item.budget_item_object).to eq(previously_saved_item)
+          expect(previously_saved_item.names.length).to eq(2)
         end
       end
 
@@ -195,7 +247,7 @@ describe MonthlyBudgetSheet::Item do
           FactoryGirl.create(
             :spent_finance,
             time_period: january_2015,
-            amount: 100,
+            amount: previously_saved_item_spent_finance_amount,
             finance_spendable: previously_saved_item
           )
 

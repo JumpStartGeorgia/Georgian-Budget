@@ -41,4 +41,66 @@ RSpec.describe Name, type: :model do
       end
     end
   end
+
+  describe '#text=' do
+    it 'cleans text of extra spaces' do
+      name = FactoryGirl.create(:name, text: 'my  name')
+      expect(name.text).to eq('my name')
+    end
+
+    it 'strips text of surrounding space' do
+      name = FactoryGirl.create(:name, text: ' my name ')
+      expect(name.text).to eq('my name')
+    end
+  end
+
+  describe '.texts_functionally_equivalent?' do
+    it 'returns false if text is different' do
+      text1 = 'Name1'
+      text2 = 'Name2'
+      expect(Name.texts_functionally_equivalent?(text1, text2)).to eq(false)
+    end
+
+    it 'returns true if difference is short dash vs. space' do
+      text1 = 'Name-1'
+      text2 = 'Name 1'
+
+      expect(Name.texts_functionally_equivalent?(text1, text2)).to eq(true)
+    end
+
+    it 'returns true if difference is long dash vs. space' do
+      text1 = 'Name—1'
+      text2 = 'Name 1'
+
+      expect(Name.texts_functionally_equivalent?(text1, text2)).to eq(true)
+    end
+
+    it 'returns true if difference is comma vs. space' do
+      text1 = 'Name, 1'
+      text2 = 'Name 1'
+
+      expect(Name.texts_functionally_equivalent?(text1, text2)).to eq(true)
+    end
+
+    it 'returns true if difference is parentheses vs. space' do
+      text1 = 'Name (1)'
+      text2 = 'Name 1'
+
+      expect(Name.texts_functionally_equivalent?(text1, text2)).to eq(true)
+    end
+
+    it 'returns true if difference is forward slash vs. space' do
+      text1 = 'Name/1'
+      text2 = 'Name 1'
+
+      expect(Name.texts_functionally_equivalent?(text1, text2)).to eq(true)
+    end
+
+    it 'returns true if difference is backward slash vs. space' do
+      text1 = 'Name\1'
+      text2 = 'Name 1'
+
+      expect(Name.texts_functionally_equivalent?(text1, text2)).to eq(true)
+    end
+  end
 end

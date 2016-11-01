@@ -78,7 +78,7 @@ module MonthlyBudgetSheet
       return Total.first if klass == Total
 
       item = klass.where(code: primary_code).find do |possible_item|
-        possible_item.name == name
+        Name.texts_functionally_equivalent?(name, possible_item.name)
       end
 
       return item if item.present?
@@ -128,7 +128,7 @@ module MonthlyBudgetSheet
     end
 
     def name
-      header_row.name.gsub('–', '-')
+      Name.clean_text(header_row.name).gsub('–', '-')
     end
 
     def primary_code
