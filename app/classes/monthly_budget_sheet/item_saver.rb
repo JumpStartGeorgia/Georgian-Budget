@@ -9,7 +9,11 @@ module MonthlyBudgetSheet
 
       return unless budget_item.present?
 
-      save_code
+      BudgetItemSaver.new.save_item_data(
+        budget_item,
+        code_number: code_number
+      )
+
       save_name
       save_spent_finance
       save_planned_finance
