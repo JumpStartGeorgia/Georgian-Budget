@@ -3,4 +3,9 @@ module Codeable
 
   included do
   end
+
+  def add_code(args)
+    self[:code] = args[:code_number]
+    save!
+  end
 end
