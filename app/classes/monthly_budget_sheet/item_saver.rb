@@ -1,6 +1,7 @@
 module MonthlyBudgetSheet
-  class DataSaver
-    def initialize
+  class ItemSaver
+    def initialize(args)
+      @warnings = args[:warnings]
     end
 
     def save_data_from_monthly_sheet_item(monthly_sheet_item)
@@ -15,8 +16,6 @@ module MonthlyBudgetSheet
       if budget_item.respond_to?(:save_possible_duplicates)
         budget_item.save_possible_duplicates
       end
-
-      output_warnings
     end
 
     def budget_item
@@ -44,10 +43,9 @@ module MonthlyBudgetSheet
     def extract_monthly_sheet_item_args(monthly_sheet_item)
       self.start_date = monthly_sheet_item.start_date
       self.primary_code = monthly_sheet_item.primary_code
-      self.name_text = monthly_sheet_item.name_text
+      self.name_text = Name.clean_text(monthly_sheet_item.name_text)
       self.spent_finance_cumulative = monthly_sheet_item.spent_finance_cumulative
       self.planned_finance_cumulative = monthly_sheet_item.planned_finance_cumulative
-      self.warnings = monthly_sheet_item.warnings
     end
 
     def save_name
@@ -123,14 +121,7 @@ module MonthlyBudgetSheet
     end
 
     def add_warning(msg)
-      warnings << msg
-    end
-
-    def output_warnings
-      return if warnings.empty?
-
-      puts "\nWarnings for budget item between rows #{starting_row_num} and #{last_row_num}"
-      warnings.each { |warning| puts "WARNING: #{warning}" }
+      warnings << "Budget Item #{primary_code} #{name_text}: #{msg}"
     end
   end
 end

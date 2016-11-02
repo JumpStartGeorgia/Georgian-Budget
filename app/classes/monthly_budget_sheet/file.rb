@@ -15,6 +15,8 @@ module MonthlyBudgetSheet
       @name_column = nil
       @spent_finance_column = nil
       @planned_finance_column = nil
+
+      @warnings = []
     end
 
     def save_data
@@ -40,12 +42,21 @@ module MonthlyBudgetSheet
           current_item.save unless current_item.nil?
 
           # create a new budget item
-          current_item = Item.new([row], start_date: start_date)
+          current_item = Item.new([row], start_date: start_date, warnings: warnings)
         else
           next unless current_item.present?
           current_item.rows << row
         end
       end
+
+      output_warnings
+    end
+
+    def output_warnings
+      return if warnings.empty?
+
+      puts "\nWARNINGS for Monthly Budget Spreadsheet #{Month.for_date(start_date)}"
+      warnings.each { |warning| puts "WARNING: #{warning}" }
     end
 
     def data_rows
@@ -57,7 +68,8 @@ module MonthlyBudgetSheet
                 :starting_row,
                 :start_date,
                 :end_date,
-                :locale
+                :locale,
+                :warnings
 
     attr_accessor :excel_data,
                   :code_column,
