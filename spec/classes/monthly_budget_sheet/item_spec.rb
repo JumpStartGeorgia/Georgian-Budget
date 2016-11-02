@@ -73,12 +73,12 @@ describe MonthlyBudgetSheet::Item do
             amount: previously_saved_item_planned_finance_amount
           )
 
-          new_budget_item = MonthlyBudgetSheet::Item.new(
+          monthly_sheet_item = MonthlyBudgetSheet::Item.new(
             rows,
             start_date: quarter2_2015.start_date
           )
 
-          new_budget_item.save
+          monthly_sheet_item.save
 
           previously_saved_item.reload
           expect(previously_saved_item.planned_finances.last.amount)
@@ -95,12 +95,12 @@ describe MonthlyBudgetSheet::Item do
             finance_spendable: previously_saved_item
           )
 
-          new_budget_item = MonthlyBudgetSheet::Item.new(
+          monthly_sheet_item = MonthlyBudgetSheet::Item.new(
             rows,
             start_date: february_2015.start_date
           )
 
-          new_budget_item.save
+          monthly_sheet_item.save
 
           previously_saved_item.reload
           expect(previously_saved_item.spent_finances.last.amount)
@@ -110,12 +110,12 @@ describe MonthlyBudgetSheet::Item do
         it 'does not save any possible_duplicates' do
           previously_saved_item
 
-          new_budget_item = MonthlyBudgetSheet::Item.new(
+          monthly_sheet_item = MonthlyBudgetSheet::Item.new(
             rows,
             start_date: february_2015.start_date
           )
 
-          new_budget_item.save
+          monthly_sheet_item.save
 
           previously_saved_item.reload
           expect(previously_saved_item.possible_duplicates).to eq([])
@@ -130,12 +130,12 @@ describe MonthlyBudgetSheet::Item do
         it 'saves item data to previous item' do
           previously_saved_item
 
-          new_budget_item = MonthlyBudgetSheet::Item.new(
+          monthly_sheet_item = MonthlyBudgetSheet::Item.new(
             rows,
             start_date: february_2015.start_date
           )
 
-          new_budget_item.save
+          monthly_sheet_item.save
 
           previously_saved_item.reload
 
@@ -152,22 +152,22 @@ describe MonthlyBudgetSheet::Item do
         it 'adds new name to previous item' do
           previously_saved_item
 
-          new_budget_item = MonthlyBudgetSheet::Item.new(
+          monthly_sheet_item = MonthlyBudgetSheet::Item.new(
             rows,
             start_date: february_2015.start_date
           )
 
-          new_budget_item.save
+          monthly_sheet_item.save
 
           previously_saved_item.reload
 
-          expect(new_budget_item.budget_item_object).to eq(previously_saved_item)
+          expect(monthly_sheet_item.budget_item_object).to eq(previously_saved_item)
           expect(previously_saved_item.names.length).to eq(2)
         end
       end
 
       context "but name does not match previously saved item's most recent name" do
-        let(:new_budget_item) do
+        let(:monthly_sheet_item) do
           MonthlyBudgetSheet::Item.new(
             rows,
             start_date: february_2015.start_date
@@ -181,21 +181,21 @@ describe MonthlyBudgetSheet::Item do
         it 'creates a new budget item' do
           previously_saved_item
 
-          new_budget_item.save
+          monthly_sheet_item.save
           previously_saved_item.reload
 
-          expect(new_budget_item.budget_item_object)
+          expect(monthly_sheet_item.budget_item_object)
           .to_not eq(previously_saved_item)
         end
 
         it 'saves the previously saved item as possible duplicate' do
           previously_saved_item
 
-          new_budget_item.save
+          monthly_sheet_item.save
           previously_saved_item.reload
 
           expect(previously_saved_item.possible_duplicates)
-          .to eq([new_budget_item.budget_item_object])
+          .to eq([monthly_sheet_item.budget_item_object])
         end
       end
     end
@@ -206,7 +206,7 @@ describe MonthlyBudgetSheet::Item do
       end
 
       context "and name matches previously saved item's most recent name" do
-        let(:new_budget_item) do
+        let(:monthly_sheet_item) do
           MonthlyBudgetSheet::Item.new(
             rows,
             start_date: february_2015.start_date
@@ -220,21 +220,21 @@ describe MonthlyBudgetSheet::Item do
         it 'creates a new budget item' do
           previously_saved_item
 
-          new_budget_item.save
+          monthly_sheet_item.save
           previously_saved_item.reload
 
-          expect(new_budget_item.budget_item_object)
+          expect(monthly_sheet_item.budget_item_object)
           .to_not eq(previously_saved_item)
         end
 
         it 'saves the previously saved item and new budget item as possible duplicates' do
           previously_saved_item
 
-          new_budget_item.save
+          monthly_sheet_item.save
           previously_saved_item.reload
 
           expect(previously_saved_item.possible_duplicates)
-          .to eq([new_budget_item.budget_item_object])
+          .to eq([monthly_sheet_item.budget_item_object])
         end
       end
 
@@ -251,16 +251,16 @@ describe MonthlyBudgetSheet::Item do
             finance_spendable: previously_saved_item
           )
 
-          new_budget_item = MonthlyBudgetSheet::Item.new(
+          monthly_sheet_item = MonthlyBudgetSheet::Item.new(
             rows,
             start_date: february_2015.start_date
           )
 
-          new_budget_item.save
+          monthly_sheet_item.save
 
           previously_saved_item.reload
 
-          expect(new_budget_item.budget_item_object)
+          expect(monthly_sheet_item.budget_item_object)
           .to_not eq(previously_saved_item)
         end
       end
