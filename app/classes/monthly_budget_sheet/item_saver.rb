@@ -11,10 +11,11 @@ module MonthlyBudgetSheet
 
       BudgetItemSaver.new.save_item_data(
         budget_item,
-        code_number: code_number
+        start_date: start_date,
+        code_number: code_number,
+        name_text: name_text
       )
 
-      save_name
       save_spent_finance
       save_planned_finance
 
@@ -51,21 +52,6 @@ module MonthlyBudgetSheet
       self.name_text = Name.clean_text(monthly_sheet_item.name_text)
       self.spent_finance_cumulative = monthly_sheet_item.spent_finance_cumulative
       self.planned_finance_cumulative = monthly_sheet_item.planned_finance_cumulative
-    end
-
-    def save_code
-      budget_item.add_code(
-        code_number: code_number
-      )
-    end
-
-    def save_name
-      budget_item.add_name(
-        nameable: budget_item,
-        text_ka: name_text,
-        text_en: '',
-        start_date: start_date
-      )
     end
 
     def save_spent_finance
