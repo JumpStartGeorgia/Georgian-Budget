@@ -6,23 +6,28 @@ module MonthlyBudgetSheet
     def save_data_from_monthly_sheet_item(monthly_sheet_item)
       extract_monthly_sheet_item_args(monthly_sheet_item)
 
-      return unless klass.present?
-
-      self.budget_item = get_budget_item
+      return unless budget_item.present?
 
       save_name
       save_spent_finance
       save_planned_finance
 
-      if item_is_new && budget_item.respond_to?(:save_possible_duplicates)
+      if budget_item.respond_to?(:save_possible_duplicates)
         budget_item.save_possible_duplicates
       end
 
       output_warnings
     end
 
-    attr_accessor :budget_item,
-                  :item_is_new,
+    def budget_item
+      @budget_item ||= BudgetItemFetcher.new.fetch(
+        create_if_nil: true,
+        code_number: primary_code,
+        name_text: name_text
+      )
+    end
+
+    attr_accessor :item_is_new,
                   :start_date,
                   :primary_code,
                   :name_text,
@@ -32,20 +37,8 @@ module MonthlyBudgetSheet
 
     private
 
-    def get_budget_item
-      self.item_is_new = false
-      budget_item = BudgetItemFetcher.new.fetch(
-        klass: klass,
-        code_number: primary_code,
-        name_text: name_text
-      )
-
-      return budget_item if budget_item.present?
-
-      budget_item = klass.create(code: primary_code)
-      self.item_is_new = true
-
-      budget_item
+    def item_is_new
+      budget_item.recent_name_object.start_date == start_date
     end
 
     def extract_monthly_sheet_item_args(monthly_sheet_item)
@@ -57,13 +50,9 @@ module MonthlyBudgetSheet
       self.warnings = monthly_sheet_item.warnings
     end
 
-    def klass
-      BudgetCodeMapper.class_for_code(primary_code)
-    end
-
     def save_name
       # There is only one Total method with only one name
-      if klass == Total
+      if budget_item.class == Total
         budget_item.add_name(
           text_en: 'Total Georgian Budget',
           text_ka: 'მთლიანი სახელმწიფო ბიუჯეტი',

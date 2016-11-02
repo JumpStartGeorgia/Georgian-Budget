@@ -1,16 +1,28 @@
 class BudgetItemFetcher
   def fetch(args)
-    klass = args[:klass]
+    self.code_number = args[:code_number]
+
+    return nil unless klass.present?
+
     name_text = args[:name_text]
-    primary_code = args[:code_number]
 
     return Total.first if klass == Total
 
-    item = klass.where(code: primary_code).find do |possible_item|
+    item = klass.where(code: code_number).find do |possible_item|
       Name.texts_represent_same_budget_item?(name_text, possible_item.name)
     end
 
     return item if item.present?
-    nil
+    return nil unless args[:create_if_nil]
+
+    klass.create(code: code_number)
+  end
+
+  attr_accessor :code_number
+
+  private
+
+  def klass
+    @klass ||= BudgetCodeMapper.class_for_code(code_number)
   end
 end

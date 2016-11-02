@@ -12,6 +12,10 @@ class Name < ApplicationRecord
   end
 
   def self.texts_represent_same_budget_item?(text1, text2)
+    unless (text1.is_a? String) && (text2.is_a? String)
+      raise 'Texts must be strings'
+    end
+
     aggressively_clean_text(text1) == aggressively_clean_text(text2)
   end
 
