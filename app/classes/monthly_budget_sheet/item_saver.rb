@@ -9,13 +9,8 @@ module MonthlyBudgetSheet
 
       return unless budget_item.present?
 
-      BudgetItemSaver.new.save_item_data(
-        budget_item,
-        start_date: start_date,
-        code_number: code_number,
-        name_text: name_text
-      )
-
+      save_code
+      save_name
       save_spent_finance
       save_planned_finance
 
@@ -42,10 +37,6 @@ module MonthlyBudgetSheet
 
     private
 
-    def item_is_new
-      budget_item.recent_name_object.start_date == start_date
-    end
-
     def extract_monthly_sheet_item_args(monthly_sheet_item)
       self.start_date = monthly_sheet_item.start_date
       self.code_number = monthly_sheet_item.primary_code
@@ -54,19 +45,34 @@ module MonthlyBudgetSheet
       self.planned_finance_cumulative = monthly_sheet_item.planned_finance_cumulative
     end
 
+    def save_code
+      budget_item.add_code(code_data)
+    end
+
+    def code_data
+      {
+        code_number: code_number
+      }
+    end
+
+    def save_name
+      budget_item.add_name(name_data)
+    end
+
+    def name_data
+      {
+        nameable: budget_item,
+        text_ka: name_text,
+        text_en: '',
+        start_date: start_date
+      }
+    end
+
     def save_spent_finance
       if spent_finance_data.present?
         budget_item.add_spent_finance(spent_finance_data)
       else
         add_warning 'Could not get the spent finance amount'
-      end
-    end
-
-    def save_planned_finance
-      if planned_finance_data.present?
-        budget_item.add_planned_finance(planned_finance_data)
-      else
-        add_warning 'Could not get the planned finance amount'
       end
     end
 
@@ -81,6 +87,14 @@ module MonthlyBudgetSheet
       }
     end
 
+    def save_planned_finance
+      if planned_finance_data.present?
+        budget_item.add_planned_finance(planned_finance_data)
+      else
+        add_warning 'Could not get the planned finance amount'
+      end
+    end
+
     def planned_finance_data
       {
         time_period: quarter,
@@ -93,15 +107,6 @@ module MonthlyBudgetSheet
       }
     end
 
-    # The amounts recorded in the spreadsheets are cumulative within the year.
-    # For example, the spent finance recorded for March is the total
-    # spending of January, February and March, and the planned finance
-    # recorded for Quarter 2 is the total planned amount for the first
-    # two quarters.
-
-    # We don't want to save the cumulative amount, so these methods
-    # get the non-cumulative amounts.
-
     def month
       Month.for_date(start_date)
     end
@@ -112,6 +117,10 @@ module MonthlyBudgetSheet
 
     def add_warning(msg)
       warnings << "Budget Item #{code_number} #{name_text}: #{msg}"
+    end
+
+    def item_is_new
+      budget_item.recent_name_object.start_date == start_date
     end
   end
 end
