@@ -73,7 +73,7 @@ module MonthlyBudgetSheet
     end
 
     def save_planned_finance
-      if planned_finance_amount.present?
+      if planned_finance_data.present?
         budget_item.add_planned_finance(planned_finance_data)
       else
         add_warning 'Could not get the planned finance amount'
@@ -81,18 +81,25 @@ module MonthlyBudgetSheet
     end
 
     def spent_finance_data
-      SpentFinanceCalculator.new(
-        budget_item: budget_item,
-        start_date: start_date,
-        spent_finance_cumulative: spent_finance_cumulative
-      ).get_data
+      {
+        time_period: month,
+        amount: NonCumulativeFinanceCalculator.calculate(
+          finances: budget_item.spent_finances,
+          cumulative_amount: spent_finance_cumulative,
+          start_date: start_date
+        )
+      }
     end
 
     def planned_finance_data
       {
         time_period: quarter,
         announce_date: start_date,
-        amount: planned_finance_amount
+        amount: NonCumulativeFinanceCalculator.calculate(
+          finances: budget_item.planned_finances,
+          start_date: start_date,
+          cumulative_amount: planned_finance_cumulative
+        )
       }
     end
 
@@ -105,11 +112,8 @@ module MonthlyBudgetSheet
     # We don't want to save the cumulative amount, so these methods
     # get the non-cumulative amounts.
 
-    def planned_finance_amount
-      return nil unless planned_finance_cumulative.present?
-
-      previously_spent = budget_item.planned_finances.year_cumulative_up_to(start_date)
-      planned_finance_cumulative - previously_spent
+    def month
+      Month.for_date(start_date)
     end
 
     def quarter
