@@ -22,14 +22,14 @@ module MonthlyBudgetSheet
     def budget_item
       @budget_item ||= BudgetItemFetcher.new.fetch(
         create_if_nil: true,
-        code_number: primary_code,
+        code_number: code_number,
         name_text: name_text
       )
     end
 
     attr_accessor :item_is_new,
                   :start_date,
-                  :primary_code,
+                  :code_number,
                   :name_text,
                   :spent_finance_cumulative,
                   :planned_finance_cumulative,
@@ -43,7 +43,7 @@ module MonthlyBudgetSheet
 
     def extract_monthly_sheet_item_args(monthly_sheet_item)
       self.start_date = monthly_sheet_item.start_date
-      self.primary_code = monthly_sheet_item.primary_code
+      self.code_number = monthly_sheet_item.primary_code
       self.name_text = Name.clean_text(monthly_sheet_item.name_text)
       self.spent_finance_cumulative = monthly_sheet_item.spent_finance_cumulative
       self.planned_finance_cumulative = monthly_sheet_item.planned_finance_cumulative
@@ -51,7 +51,7 @@ module MonthlyBudgetSheet
 
     def save_code
       budget_item.add_code(
-        code_number: primary_code
+        code_number: code_number
       )
     end
 
@@ -121,7 +121,7 @@ module MonthlyBudgetSheet
     end
 
     def add_warning(msg)
-      warnings << "Budget Item #{primary_code} #{name_text}: #{msg}"
+      warnings << "Budget Item #{code_number} #{name_text}: #{msg}"
     end
   end
 end
