@@ -4,11 +4,11 @@ module MonthlyBudgetSheet
       @rows = rows
       @start_date = args[:start_date]
       @warnings = []
-      @data_saver = BudgetDataSaver.new
+      @data_saver = DataSaver.new
     end
 
     def save
-      data_saver.save_data(DataExtractor.new.extract_from_item(self))
+      data_saver.save_data_from_monthly_sheet_item(self)
 
       self.budget_item_object = data_saver.budget_item
 
@@ -22,15 +22,15 @@ module MonthlyBudgetSheet
                   :warnings,
                   :budget_item_object
 
-    def cumulative_spent_finance_amount
+    def spent_finance_cumulative
       totals_row.spent_finance
     end
 
-    def cumulative_planned_finance_amount
+    def planned_finance_cumulative
       totals_row.planned_finance
     end
 
-    def name
+    def name_text
       Name.clean_text(header_row.name)
     end
 
