@@ -6,7 +6,7 @@ class BudgetItemFetcher
 
     name_text = args[:name_text]
 
-    return Total.first if klass == Total
+    return Total.first if klass == Total && Total.first.present?
 
     item = klass.where(code: code_number).find do |possible_item|
       Name.texts_represent_same_budget_item?(name_text, possible_item.name)
@@ -15,7 +15,7 @@ class BudgetItemFetcher
     return item if item.present?
     return nil unless args[:create_if_nil]
 
-    klass.create(code: code_number)
+    klass.create
   end
 
   attr_accessor :code_number

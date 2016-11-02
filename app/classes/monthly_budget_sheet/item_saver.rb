@@ -9,6 +9,7 @@ module MonthlyBudgetSheet
 
       return unless budget_item.present?
 
+      save_code
       save_name
       save_spent_finance
       save_planned_finance
@@ -48,23 +49,26 @@ module MonthlyBudgetSheet
       self.planned_finance_cumulative = monthly_sheet_item.planned_finance_cumulative
     end
 
+    def save_code
+      budget_item.code = primary_code
+      budget_item.save!
+    end
+
     def save_name
-      # There is only one Total method with only one name
-      if budget_item.class == Total
-        budget_item.add_name(
-          text_en: 'Total Georgian Budget',
-          text_ka: 'მთლიანი სახელმწიფო ბიუჯეტი',
-          start_date: start_date
-        )
-      else
-        # if the new name is a duplicate of another name, then the names
-        # will be merged in an after commit callback
-        budget_item.add_name(
-          nameable: budget_item,
-          text: name_text,
-          start_date: start_date
-        )
-      end
+      budget_item.add_name(
+        nameable: budget_item,
+        text_ka: name_text_ka,
+        text_en: name_text_en,
+        start_date: start_date
+      )
+    end
+
+    def name_text_ka
+      budget_item.class == Total ? 'მთლიანი სახელმწიფო ბიუჯეტი' : name_text
+    end
+
+    def name_text_en
+      budget_item.class == Total ? 'Complete Government Budget' : ''
     end
 
     def save_spent_finance
