@@ -39,15 +39,12 @@ module MonthlyBudgetSheet
         add_warning 'Could not get the spent finance amount'
       end
 
-      if planned_finance_amount.present?
-        budget_item.add_planned_finance(
-          time_period: quarter,
-          announce_date: start_date,
-          amount: planned_finance_amount
-        )
-      else
-        add_warning 'Could not get the planned finance amount'
-      end
+      DataSaver.new.save_data(
+        budget_item: budget_item,
+        start_date: start_date,
+        planned_finance_cumulative: cumulative_planned_finance_amount,
+        warnings: warnings
+      )
 
       if item_is_new && budget_item.respond_to?(:save_possible_duplicates)
         budget_item.save_possible_duplicates
@@ -109,13 +106,6 @@ module MonthlyBudgetSheet
       return nil unless cumulative_spent_finance_amount.present?
 
       cumulative_spent_finance_amount - previously_spent
-    end
-
-    def planned_finance_amount
-      previously_spent = budget_item.planned_finances.year_cumulative_up_to(start_date)
-      return nil unless cumulative_planned_finance_amount.present?
-
-      cumulative_planned_finance_amount - previously_spent
     end
 
     def cumulative_spent_finance_amount
