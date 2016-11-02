@@ -73,25 +73,33 @@ module MonthlyBudgetSheet
 
     def save_spent_finance
       if spent_finance_amount.present?
-        budget_item.add_spent_finance(
-          time_period: month,
-          amount: spent_finance_amount
-        )
+        budget_item.add_spent_finance(spent_finance_data)
       else
         add_warning 'Could not get the spent finance amount'
       end
     end
 
+    def spent_finance_data
+      {
+        time_period: month,
+        amount: spent_finance_amount
+      }
+    end
+
     def save_planned_finance
       if planned_finance_amount.present?
-        budget_item.add_planned_finance(
-          time_period: quarter,
-          announce_date: start_date,
-          amount: planned_finance_amount
-        )
+        budget_item.add_planned_finance(planned_finance_data)
       else
         add_warning 'Could not get the planned finance amount'
       end
+    end
+
+    def planned_finance_data
+      {
+        time_period: quarter,
+        announce_date: start_date,
+        amount: planned_finance_amount
+      }
     end
 
     # The amounts recorded in the spreadsheets are cumulative within the year.
