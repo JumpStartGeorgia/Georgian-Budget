@@ -30,18 +30,10 @@ module MonthlyBudgetSheet
         )
       end
 
-      if spent_finance_amount.present?
-        budget_item.add_spent_finance(
-          time_period: month,
-          amount: spent_finance_amount
-        )
-      else
-        add_warning 'Could not get the spent finance amount'
-      end
-
       DataSaver.new.save_data(
         budget_item: budget_item,
         start_date: start_date,
+        spent_finance_cumulative: cumulative_spent_finance_amount,
         planned_finance_cumulative: cumulative_planned_finance_amount,
         warnings: warnings
       )
@@ -91,21 +83,6 @@ module MonthlyBudgetSheet
 
     def quarter
       Quarter.for_date(start_date)
-    end
-
-    # The amounts recorded in the spreadsheets are cumulative within the year.
-    # For example, the spent finance recorded for March is the total
-    # spending of January, February and March, and the planned finance
-    # recorded for Quarter 2 is the total planned amount for the first
-    # two quarters.
-
-    # We don't want to save the cumulative amount, so these methods
-    # get the non-cumulative amounts.
-    def spent_finance_amount
-      previously_spent = budget_item.spent_finances.year_cumulative_up_to(start_date)
-      return nil unless cumulative_spent_finance_amount.present?
-
-      cumulative_spent_finance_amount - previously_spent
     end
 
     def cumulative_spent_finance_amount
