@@ -87,6 +87,10 @@ module MonthlyBudgetSheet
       }
     end
 
+    def month
+      Month.for_date(start_date)
+    end
+
     def save_planned_finance
       if planned_finance_data.present?
         budget_item.add_planned_finance(planned_finance_data)
@@ -105,10 +109,6 @@ module MonthlyBudgetSheet
           cumulative_amount: planned_finance_cumulative
         )
       }
-    end
-
-    def month
-      Month.for_date(start_date)
     end
 
     def quarter
