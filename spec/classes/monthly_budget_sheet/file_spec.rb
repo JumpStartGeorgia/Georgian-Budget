@@ -134,10 +134,5 @@ RSpec.describe MonthlyBudgetSheet::File do
 
     agency = SpendingAgency.find_by_code('01 00')
     expect(agency.name_ka).to eq('საქართველოს პარლამენტი და მასთან არსებული ორგანიზაციები')
-
-    # Check that the name is corrected to have a short dash instead of a long dash
-    program = Program.find_by_code('45 12')
-
-    expect(program.name_ka).to eq('ა(ა)იპ - ახალქალაქისა და კუმურდოს ეპარქიის სასწავლო ცენტრისთვის გადასაცემი გრანტი')
   end
 end

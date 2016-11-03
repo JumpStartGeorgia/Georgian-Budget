@@ -38,14 +38,21 @@ module MonthlyBudgetSheet
             raise "Could not find column headers for spreadsheet: #{spreadsheet_path}"
           end
 
-          # save the previous budget item
-          current_item.save unless current_item.nil?
+          if current_item.present?
+            # save the previous budget item
+            ItemSaver.new(
+              current_item,
+              start_date: start_date,
+              warnings: warnings
+            ).save_data_from_monthly_sheet_item
+          end
 
           # create a new budget item
-          current_item = Item.new([row], start_date: start_date, warnings: warnings)
-        else
-          next unless current_item.present?
-          current_item.rows << row
+          current_item = Item.new(header_row: row)
+        end
+
+        if current_item.present? && row.is_totals_row?
+          current_item.totals_row = row
         end
       end
 

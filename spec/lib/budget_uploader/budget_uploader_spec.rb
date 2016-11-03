@@ -35,7 +35,7 @@ RSpec.describe 'BudgetFiles' do
         end
 
         it 'saves total English name' do
-          expect(total.name_en).to eq('Total Georgian Budget')
+          expect(total.name_en).to eq('Complete National Budget')
         end
 
         it 'saves total Georgian name' do

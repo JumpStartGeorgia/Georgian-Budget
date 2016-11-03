@@ -53,14 +53,6 @@ RSpec.describe PlannedFinance do
     expect(new_planned_finance).to be_valid
   end
 
-  describe '#amount' do
-    it 'is required' do
-      new_planned_finance.amount = nil
-
-      expect(new_planned_finance).to have(1).error_on(:amount)
-    end
-  end
-
   describe '#announce_date' do
     it 'is required' do
       planned_finance1.announce_date = nil

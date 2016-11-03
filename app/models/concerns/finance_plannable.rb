@@ -54,7 +54,7 @@ module FinancePlannable
 
   prepend DestroyAllDependentPlannedFinances
 
-  def add_planned_finance(params)
+  def add_planned_finance(params, args = {})
     transaction do
       params[:finance_plannable] = self
       new_planned_finance = PlannedFinance.create!(params)
@@ -62,7 +62,9 @@ module FinancePlannable
       planned_finance = merge_new_planned_finance(new_planned_finance)
       update_most_recently_announced_with(planned_finance)
 
-      return planned_finance.reload
+      return planned_finance if args[:return_finance]
+
+      self
     end
   end
 

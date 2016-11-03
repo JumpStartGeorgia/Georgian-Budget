@@ -1,6 +1,20 @@
 class Total < ApplicationRecord
-  include Codeable
-  include Nameable
   include FinanceSpendable
   include FinancePlannable
+
+  def code
+    '00'
+  end
+
+  def name
+    send("name_#{I18n.locale}".to_sym)
+  end
+
+  def name_ka
+    'მთლიანი სახელმწიფო ბიუჯეტი'
+  end
+
+  def name_en
+    'Complete National Budget'
+  end
 end

@@ -88,15 +88,18 @@ RSpec.shared_examples_for 'FinancePlannable' do
   end
 
   let(:added_planned_finance1) do
-    finance_plannable1.add_planned_finance(planned_finance_attr1)
+    finance_plannable1
+    .add_planned_finance(planned_finance_attr1, return_finance: true)
   end
 
   let(:added_planned_finance1b) do
-    finance_plannable1.add_planned_finance(planned_finance_attr1b)
+    finance_plannable1
+    .add_planned_finance(planned_finance_attr1b, return_finance: true)
   end
 
   let(:added_planned_finance1c) do
-    finance_plannable1.add_planned_finance(planned_finance_attr1c)
+    finance_plannable1
+    .add_planned_finance(planned_finance_attr1c, return_finance: true)
   end
 
   describe '#destroy' do
@@ -205,14 +208,6 @@ RSpec.shared_examples_for 'FinancePlannable' do
       end
 
       context 'and sibling has different amount' do
-        let(:added_planned_finance1) do
-          finance_plannable1.add_planned_finance(planned_finance_attr1)
-        end
-
-        let(:added_planned_finance1b) do
-          finance_plannable1.add_planned_finance(planned_finance_attr1b)
-        end
-
         it 'sets most_recently_announced for earlier announced planned finance to false' do
           added_planned_finance1
           added_planned_finance1b
@@ -225,6 +220,8 @@ RSpec.shared_examples_for 'FinancePlannable' do
         it 'sets most_recently_announced for new planned finance to true' do
           added_planned_finance1
           added_planned_finance1b
+
+          added_planned_finance1b.reload
 
           expect(added_planned_finance1b.most_recently_announced).to eq(true)
         end

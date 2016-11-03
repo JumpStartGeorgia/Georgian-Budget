@@ -1,12 +1,13 @@
 module MonthlyBudgetSheet
   class ItemSaver
-    def initialize(args)
+    def initialize(monthly_sheet_item, args = {})
+      @monthly_sheet_item = monthly_sheet_item
       @warnings = args[:warnings]
+      @start_date = args[:start_date]
+      @budget_item_fetcher = BudgetItemFetcher.new
     end
 
-    def save_data_from_monthly_sheet_item(monthly_sheet_item)
-      extract_monthly_sheet_item_args(monthly_sheet_item)
-
+    def save_data_from_monthly_sheet_item
       return unless budget_item.present?
 
       save_code
@@ -14,38 +15,28 @@ module MonthlyBudgetSheet
       save_spent_finance
       save_planned_finance
 
-      if budget_item.respond_to?(:save_possible_duplicates)
+      if budget_item_fetcher.created_new_item && budget_item.respond_to?(:save_possible_duplicates)
         budget_item.save_possible_duplicates
       end
     end
 
     def budget_item
-      @budget_item ||= BudgetItemFetcher.new.fetch(
+      @budget_item ||= budget_item_fetcher.fetch(
         create_if_nil: true,
         code_number: code_number,
         name_text: name_text
       )
     end
 
-    attr_accessor :item_is_new,
-                  :start_date,
-                  :code_number,
-                  :name_text,
-                  :spent_finance_cumulative,
-                  :planned_finance_cumulative,
-                  :warnings
+    attr_reader :budget_item_fetcher,
+                :monthly_sheet_item,
+                :start_date,
+                :warnings
 
     private
 
-    def extract_monthly_sheet_item_args(monthly_sheet_item)
-      self.start_date = monthly_sheet_item.start_date
-      self.code_number = monthly_sheet_item.primary_code
-      self.name_text = Name.clean_text(monthly_sheet_item.name_text)
-      self.spent_finance_cumulative = monthly_sheet_item.spent_finance_cumulative
-      self.planned_finance_cumulative = monthly_sheet_item.planned_finance_cumulative
-    end
-
     def save_code
+      return unless budget_item.respond_to?(:add_code)
       budget_item.add_code(code_data)
     end
 
@@ -55,25 +46,33 @@ module MonthlyBudgetSheet
       }
     end
 
+    def code_number
+      monthly_sheet_item.primary_code
+    end
+
     def save_name
+      return unless budget_item.respond_to?(:add_name)
       budget_item.add_name(name_data)
     end
 
     def name_data
       {
-        nameable: budget_item,
-        text_ka: name_text,
-        text_en: '',
+        text_ka: name_text_ka,
+        text_en: name_text_en,
         start_date: start_date
       }
     end
 
     def name_text_ka
-      budget_item.class == Total ? 'მთლიანი სახელმწიფო ბიუჯეტი' : name_text
+      name_text
+    end
+
+    def name_text
+      Name.clean_text(monthly_sheet_item.name_text)
     end
 
     def name_text_en
-      budget_item.class == Total ? 'Complete Government Budget' : ''
+      ''
     end
 
     def save_spent_finance
@@ -93,6 +92,10 @@ module MonthlyBudgetSheet
           start_date: start_date
         )
       }
+    end
+
+    def spent_finance_cumulative
+      monthly_sheet_item.spent_finance_cumulative
     end
 
     def month
@@ -119,16 +122,16 @@ module MonthlyBudgetSheet
       }
     end
 
+    def planned_finance_cumulative
+      monthly_sheet_item.planned_finance_cumulative
+    end
+
     def quarter
       Quarter.for_date(start_date)
     end
 
     def add_warning(msg)
       warnings << "Budget Item #{code_number} #{name_text}: #{msg}"
-    end
-
-    def item_is_new
-      budget_item.recent_name_object.start_date == start_date
     end
   end
 end
