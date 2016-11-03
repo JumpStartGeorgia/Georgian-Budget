@@ -23,8 +23,8 @@ RSpec.describe PlannedFinance do
   let(:planned_finance1b) do
     FactoryGirl.create(
       :planned_finance,
-      start_date: planned_finance1.end_date + 1,
-      end_date: planned_finance1.end_date + 30,
+      start_date: planned_finance1.time_period.next.start_date,
+      end_date: planned_finance1.time_period.next.end_date,
       finance_plannable: planned_finance1.finance_plannable
     )
   end
@@ -32,8 +32,8 @@ RSpec.describe PlannedFinance do
   let(:planned_finance1c) do
     FactoryGirl.create(
       :planned_finance,
-      start_date: planned_finance1b.end_date + 1,
-      end_date: planned_finance1b.end_date + 30,
+      start_date: planned_finance1b.time_period.next.start_date,
+      end_date: planned_finance1b.time_period.next.end_date,
       finance_plannable: planned_finance1b.finance_plannable
     )
   end
@@ -41,8 +41,8 @@ RSpec.describe PlannedFinance do
   let(:planned_finance1d) do
     FactoryGirl.create(
       :planned_finance,
-      start_date: planned_finance1c.end_date + 1,
-      end_date: planned_finance1c.end_date + 30,
+      start_date: planned_finance1c.time_period.next.start_date,
+      end_date: planned_finance1c.time_period.next.end_date,
       finance_plannable: planned_finance1c.finance_plannable
     )
   end
@@ -108,20 +108,7 @@ RSpec.describe PlannedFinance do
         it 'returns false' do
           planned_finance1b.update_attributes(
             announce_date: planned_finance1.announce_date,
-            start_date: planned_finance1.start_date + 1
-          )
-
-          planned_finance1b.reload
-
-          expect(planned_finance1 == planned_finance1b).to eq(false)
-        end
-      end
-
-      context 'have different end date' do
-        it 'returns false' do
-          planned_finance1b.update_attributes(
-            announce_date: planned_finance1.announce_date,
-            end_date: planned_finance1.end_date + 1
+            time_period: planned_finance1.time_period.next
           )
 
           planned_finance1b.reload

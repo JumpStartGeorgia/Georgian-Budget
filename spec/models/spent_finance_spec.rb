@@ -23,8 +23,8 @@ RSpec.describe SpentFinance do
   let(:spent_finance1b) do
     FactoryGirl.create(
       :spent_finance,
-      start_date: spent_finance1.end_date + 1,
-      end_date: spent_finance1.end_date + 30,
+      start_date: spent_finance1.time_period.next.start_date,
+      end_date: spent_finance1.time_period.next.end_date,
       finance_spendable: spent_finance1.finance_spendable
     )
   end
@@ -32,8 +32,8 @@ RSpec.describe SpentFinance do
   let(:spent_finance1c) do
     FactoryGirl.create(
       :spent_finance,
-      start_date: spent_finance1b.end_date + 1,
-      end_date: spent_finance1b.end_date + 30,
+      start_date: spent_finance1b.time_period.next.start_date,
+      end_date: spent_finance1b.time_period.next.end_date,
       finance_spendable: spent_finance1b.finance_spendable
     )
   end
@@ -41,8 +41,8 @@ RSpec.describe SpentFinance do
   let(:spent_finance1d) do
     FactoryGirl.create(
       :spent_finance,
-      start_date: spent_finance1c.end_date + 1,
-      end_date: spent_finance1c.end_date + 30,
+      start_date: spent_finance1c.time_period.next.start_date,
+      end_date: spent_finance1c.time_period.next.end_date,
       finance_spendable: spent_finance1c.finance_spendable
     )
   end
@@ -111,8 +111,8 @@ RSpec.describe SpentFinance do
 
   describe '.total' do
     it 'gets the sum of the spent finance amounts' do
-      spent_finance1.save!
-      spent_finance1b.save!
+      spent_finance1
+      spent_finance1b
 
       expect(SpentFinance.all.total).to eq(
         spent_finance1.amount + spent_finance1b.amount

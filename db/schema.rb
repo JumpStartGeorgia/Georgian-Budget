@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161103102332) do
+ActiveRecord::Schema.define(version: 20161103110636) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -63,9 +63,11 @@ ActiveRecord::Schema.define(version: 20161103102332) do
     t.datetime "updated_at",                                                       null: false
     t.date     "announce_date"
     t.boolean  "most_recently_announced",                          default: false, null: false
+    t.string   "time_period_type"
     t.index ["end_date"], name: "index_planned_finances_on_end_date", using: :btree
     t.index ["finance_plannable_type", "finance_plannable_id"], name: "index_planned_finances_on_finance_plannable", using: :btree
     t.index ["start_date"], name: "index_planned_finances_on_start_date", using: :btree
+    t.index ["time_period_type"], name: "index_planned_finances_on_time_period_type", using: :btree
   end
 
   create_table "possible_duplicate_pairs", force: :cascade do |t|
@@ -112,9 +114,11 @@ ActiveRecord::Schema.define(version: 20161103102332) do
     t.integer  "finance_spendable_id"
     t.datetime "created_at",                                      null: false
     t.datetime "updated_at",                                      null: false
+    t.string   "time_period_type"
     t.index ["end_date"], name: "index_spent_finances_on_end_date", using: :btree
     t.index ["finance_spendable_type", "finance_spendable_id"], name: "index_spent_finances_on_finance_spendable", using: :btree
     t.index ["start_date"], name: "index_spent_finances_on_start_date", using: :btree
+    t.index ["time_period_type"], name: "index_spent_finances_on_time_period_type", using: :btree
   end
 
   create_table "totals", force: :cascade do |t|

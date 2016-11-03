@@ -4,10 +4,12 @@ FactoryGirl.define do
       n * 99
     end
 
-    start_date Date.new(2015, 1, 1)
+    sequence :start_date do |n|
+      Month.for_date(Date.new(2015 + n, 1, 1)).start_date
+    end
 
     sequence :end_date do |n|
-      Date.new(2015 + n, 1, 1)
+      Month.for_date(Date.new(2015 + n, 1, 1)).end_date
     end
 
     association :finance_spendable, factory: :program

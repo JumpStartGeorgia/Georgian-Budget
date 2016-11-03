@@ -26,16 +26,16 @@ RSpec.shared_examples_for 'StartEndDateValidator' do
       expect(new_subject).to have(1).error_on(:end_date)
     end
 
-    it 'is valid if same as start_date' do
+    it 'if same as start_date has zero errors on end_date' do
       new_subject.end_date = new_subject.start_date
 
-      expect(new_subject.valid?).to eq(true)
+      expect(new_subject).to have(0).error_on(:end_date)
     end
 
-    it 'is valid if after start_date' do
+    it 'if after start_date has zero errors on end_date' do
       new_subject.end_date = new_subject.start_date + 1
 
-      expect(new_subject.valid?).to eq(true)
+      expect(new_subject).to have(0).error_on(:end_date)
     end
   end
 end
