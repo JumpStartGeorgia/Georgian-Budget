@@ -38,7 +38,11 @@ class APIResponse
 
   def budget_items
     if budget_item_fields.present?
-      budget_items = budget_type_class.with_most_recent_names
+      if budget_type_class == Total
+        budget_items = [Total.first]
+      else
+        budget_items = budget_type_class.with_most_recent_names
+      end
 
       return budget_items.map do |budget_item|
         budget_item_hash(budget_item)
