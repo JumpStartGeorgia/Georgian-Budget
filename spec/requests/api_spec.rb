@@ -18,7 +18,7 @@ RSpec.describe 'API' do
       it 'gets the ids and names of all programs' do
         program1 = FactoryGirl.create(:program).add_name(
           FactoryGirl.attributes_for(:name))
-          
+
         program2 = FactoryGirl.create(:program).add_name(
           FactoryGirl.attributes_for(:name))
 
