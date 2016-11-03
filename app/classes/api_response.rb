@@ -94,7 +94,7 @@ class APIResponse
       return nil
     end
 
-    finances = finances.with_missing_finances.sort_by { |finance| finance.start_date }
+    finances = finances.sort_by { |finance| finance.start_date }
 
     name = budget_item.name
 

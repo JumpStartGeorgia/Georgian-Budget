@@ -1,6 +1,5 @@
 class SpentFinance < ApplicationRecord
-  include TimePeriodableValidated
-  include WithMissingFinance
+  include TimePeriodable
 
   belongs_to :finance_spendable, polymorphic: true
 

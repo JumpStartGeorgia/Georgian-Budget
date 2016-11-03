@@ -1,6 +1,5 @@
-module TimePeriodableValidated
+module TimePeriodable
   extend ActiveSupport::Concern
-  include TimePeriodable
 
   included do
     validates_with StartEndDateValidator
@@ -13,12 +12,28 @@ module TimePeriodableValidated
     before_save :set_time_period_type
   end
 
+  def time_period_class
+    return Month if time_period_type == 'month'
+    return Quarter if time_period_type == 'quarter'
+
+    nil
+  end
+
+  def time_period
+    time_period_class.for_date(start_date)
+  end
+
+  def time_period=(time_period)
+    self.start_date = time_period.start_date
+    self.end_date = time_period.end_date
+  end
+
   private
 
   def validate_time_period_type_is_recognizable
     return if start_date.blank?
     return if end_date.blank?
-    
+
     if get_time_period_type_from_dates.nil?
       errors.add(:time_period_type, "of start and end date is unrecognized")
     end

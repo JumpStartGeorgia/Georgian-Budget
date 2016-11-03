@@ -38,32 +38,28 @@ RSpec.shared_examples_for 'FinancePlannable' do
   end
 
   let(:planned_finance1_q1_jan) do
-    planned_finance1.start_date = q1.start_date
-    planned_finance1.end_date = q1.end_date
+    planned_finance1.time_period = q1
     planned_finance1.announce_date = q1.start_date
 
     planned_finance1
   end
 
   let(:planned_finance1_q1_feb) do
-    planned_finance1b.start_date = q1.start_date
-    planned_finance1b.end_date = q1.end_date
+    planned_finance1b.time_period = q1
     planned_finance1b.announce_date = q1.start_date.next_month
 
     planned_finance1b
   end
 
   let(:planned_finance1_q2_april) do
-    planned_finance1c.start_date = q2.start_date
-    planned_finance1c.end_date = q2.end_date
+    planned_finance1c.time_period = q2
     planned_finance1c.announce_date = q2.start_date
 
     planned_finance1c
   end
 
   let(:planned_finance1_q3_july) do
-    planned_finance1d.start_date = q3.start_date
-    planned_finance1d.end_date = q3.end_date
+    planned_finance1d.time_period = q3
     planned_finance1d.announce_date = q3.start_date
 
     planned_finance1d
@@ -117,7 +113,9 @@ RSpec.shared_examples_for 'FinancePlannable' do
 
   describe '#planned_finances' do
     it 'gets most recently announced planned finances for the finance_plannable' do
-      planned_finance_attr1c[:start_date] = planned_finance_attr1[:start_date] + 1
+      next_quarter = Quarter.for_date(planned_finance_attr1[:start_date]).next
+      planned_finance_attr1c[:start_date] = next_quarter.start_date
+      planned_finance_attr1c[:end_date] = next_quarter.end_date
 
       added_planned_finance1
       added_planned_finance1b
@@ -139,7 +137,9 @@ RSpec.shared_examples_for 'FinancePlannable' do
       context 'including most recent and not most recent' do
         it 'ordered by start date and then announce date' do
           ## 1b has time period after 1
-          planned_finance_attr1b[:start_date] = planned_finance_attr1[:start_date] + 1
+          next_quarter = Quarter.for_date(planned_finance_attr1[:start_date]).next
+          planned_finance_attr1b[:start_date] = next_quarter.start_date
+          planned_finance_attr1b[:end_date] = next_quarter.end_date
 
           ## 1c was announced before 1
           planned_finance_attr1c[:announce_date] = planned_finance_attr1[:announce_date] - 1

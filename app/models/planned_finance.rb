@@ -1,6 +1,5 @@
 class PlannedFinance < ApplicationRecord
-  include TimePeriodableValidated
-  include WithMissingFinance
+  include TimePeriodable
 
   belongs_to :finance_plannable, polymorphic: true
 

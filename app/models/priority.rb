@@ -16,12 +16,13 @@ class Priority < ApplicationRecord
 
   def update_spent_finances
     program_spent_finances = SpentFinance.select(
-      'SUM(amount) AS amount, start_date, end_date'
+      'SUM(amount) AS amount, start_date, end_date, time_period_type'
     ).where(
       finance_spendable: programs
     ).group(
       :start_date,
-      :end_date
+      :end_date,
+      :time_period_type
     )
 
     program_spent_finances.each do |program_spent_finance|
@@ -36,9 +37,9 @@ class Priority < ApplicationRecord
     # Get the unique time period and announce date combinations for
     # this priority's programs' planned finances.
     planned_finance_time_period_announce_dates = PlannedFinance.select(
-      :start_date, :end_date, :announce_date
+      :start_date, :end_date, :announce_date, :time_period_type
     ).where(finance_plannable: programs)
-    .group(:start_date, :end_date, :announce_date)
+    .group(:start_date, :end_date, :announce_date, :time_period_type)
 
     planned_finance_time_period_announce_dates.each do |new_planned_finance_dates|
       create_planned_finance_with_dates(new_planned_finance_dates)

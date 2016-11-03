@@ -1,12 +1,10 @@
 require 'rails_helper'
-require Rails.root.join('spec', 'modules', 'time_periodable_spec')
 require Rails.root.join('spec', 'validators', 'start_end_date_validator_spec')
-require Rails.root.join('spec', 'models', 'concerns', 'with_missing_finances_spec')
+require Rails.root.join('spec', 'models', 'concerns', 'time_periodable_spec')
 
 RSpec.describe SpentFinance do
   it_behaves_like 'TimePeriodable'
   include_examples 'StartEndDateValidator'
-  include_examples 'WithMissingFinances'
 
   let(:new_spent_finance) do
     FactoryGirl.build(:spent_finance)

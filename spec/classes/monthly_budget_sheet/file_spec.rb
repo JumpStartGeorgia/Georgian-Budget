@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe MonthlyBudgetSheet::File do
-  let(:total) { FactoryGirl.create(:total, code: '00') }
+  let(:total) { FactoryGirl.create(:total) }
 
   it 'gets the right values for January, 2012' do
     january_2012_sheet = Rails.root.join(
