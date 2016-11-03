@@ -4,7 +4,6 @@ class SpentFinance < ApplicationRecord
 
   belongs_to :finance_spendable, polymorphic: true
 
-  validates :amount, presence: true
   validates :finance_spendable, presence: true
   validates :end_date,
             uniqueness: {
