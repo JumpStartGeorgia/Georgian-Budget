@@ -69,9 +69,9 @@ module MonthlyBudgetSheet
     end
 
     def save_spent_finance
-      if spent_finance_data.present?
-        budget_item.add_spent_finance(spent_finance_data)
-      else
+      budget_item.add_spent_finance(spent_finance_data)
+
+      unless spent_finance_data[:amount].present?
         add_warning 'Could not get the spent finance amount'
       end
     end
@@ -92,9 +92,9 @@ module MonthlyBudgetSheet
     end
 
     def save_planned_finance
-      if planned_finance_data.present?
-        budget_item.add_planned_finance(planned_finance_data)
-      else
+      budget_item.add_planned_finance(planned_finance_data)
+
+      unless planned_finance_data[:amount].present?
         add_warning 'Could not get the planned finance amount'
       end
     end
