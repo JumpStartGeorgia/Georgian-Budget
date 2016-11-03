@@ -46,10 +46,6 @@ module Nameable
     transaction do
       name_attributes[:nameable] = self
 
-      if self.respond_to?(:override_name_attributes)
-        name_attributes = self.override_name_attributes(name_attributes)
-      end
-
       name = Name.create!(name_attributes)
 
       merge_new_name(name)
