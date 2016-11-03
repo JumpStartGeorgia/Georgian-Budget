@@ -68,6 +68,14 @@ module MonthlyBudgetSheet
       }
     end
 
+    def name_text_ka
+      budget_item.class == Total ? 'მთლიანი სახელმწიფო ბიუჯეტი' : name_text
+    end
+
+    def name_text_en
+      budget_item.class == Total ? 'Complete Government Budget' : ''
+    end
+
     def save_spent_finance
       budget_item.add_spent_finance(spent_finance_data)
 
