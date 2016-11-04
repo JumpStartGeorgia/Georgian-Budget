@@ -86,7 +86,7 @@ class BudgetFiles
     @monthly_sheets = monthly_sheet_paths.map do |monthly_sheet_path|
       MonthlyBudgetSheet::File.new_from_file(monthly_sheet_path)
     end.sort do |sheet1, sheet2|
-      sheet1.start_date <=> sheet2.start_date
+      sheet1.publish_date <=> sheet2.publish_date
     end
   end
 
