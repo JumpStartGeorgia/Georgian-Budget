@@ -25,6 +25,8 @@ class BudgetFiles
   def initialize(args)
     @start_time = Time.now
     @num_monthly_sheets_processed = 0
+    @end_messages = []
+    @time_prettifier = TimePrettifier.new
     @budget_item_translations = get_budget_item_translations(args)
     @monthly_sheets = get_monthly_sheets(args)
     @priorities_list = get_priorities_list(args)
@@ -32,16 +34,16 @@ class BudgetFiles
   end
 
   def upload
-    start_messages
+    print_start_messages
 
     upload_monthly_sheets if monthly_sheets.present?
-    priorities_list.save if priorities_list.present?
-    priority_associations_list.save if priority_associations_list.present?
-    budget_item_translations.save if budget_item_translations.present?
+    save_priorities_list if priorities_list.present?
+    save_priority_associations_list if priority_associations_list.present?
+    save_budget_item_translations if budget_item_translations.present?
     save_priority_finances
     save_quarterly_spent_finances
 
-    end_messages
+    print_end_messages
   end
 
   def self.budget_files_dir
@@ -52,13 +54,15 @@ class BudgetFiles
     Rails.root.join('budget_files', 'repo')
   end
 
-  attr_accessor :num_monthly_sheets_processed
+  attr_accessor :num_monthly_sheets_processed,
+                :end_messages
 
   attr_reader :monthly_sheets,
               :budget_item_translations,
               :priorities_list,
               :priority_associations_list,
-              :start_time
+              :start_time,
+              :time_prettifier
 
   private
 
@@ -99,46 +103,97 @@ class BudgetFiles
     )
   end
 
-  def start_messages
-    puts "\nBEGIN: Budget Uploader\n\n"
-  end
-
-  def end_messages
-    puts "\nEND: Budget Uploader"
-    puts "Time elapsed: #{pretty_time(total_elapsed_time)}"
-    puts "Number of monthly budget sheets processed: #{num_monthly_sheets_processed}"
-    puts "Average time per monthly budget sheet: #{pretty_time(average_time_per_spreadsheet)}"
-  end
-
   def upload_monthly_sheets
-    monthly_sheets.each do |monthly_sheet|
-      ActiveRecord::Base.transaction do
-        monthly_sheet.save_data
-      end
+    puts "\nSaving monthly budget spreadsheet data"
+    time_prettifier.run do
+      monthly_sheets.each do |monthly_sheet|
+        ActiveRecord::Base.transaction do
+          monthly_sheet.save_data
+        end
 
-      self.num_monthly_sheets_processed = num_monthly_sheets_processed + 1
+        self.num_monthly_sheets_processed = num_monthly_sheets_processed + 1
+      end
     end
+    finished_message = "Finished saving monthly budget spreadsheet data in #{time_prettifier.elapsed_prettified}"
+
+    puts finished_message
+    end_messages << finished_message
+    end_messages << "Number of monthly budget sheets processed: #{num_monthly_sheets_processed}"
+    end_messages << "Average time per monthly budget sheet: #{time_prettifier.prettify(time_prettifier.elapsed/num_monthly_sheets_processed)}"
+  end
+
+  def save_priorities_list
+    puts "\nSaving priorities list"
+    time_prettifier.run do
+      priorities_list.save
+    end
+
+    finished_message = "Finished saving priorities list in #{time_prettifier.elapsed_prettified}"
+
+    puts finished_message
+    end_messages << finished_message
+  end
+
+  def save_priority_associations_list
+    puts "\nSaving priority associations list"
+    time_prettifier.run do
+      priority_associations_list.save
+    end
+
+    finished_message = "Finished priority associations list in #{time_prettifier.elapsed_prettified}"
+
+    puts finished_message
+    end_messages << finished_message
+  end
+
+  def save_budget_item_translations
+    puts "\nSaving budget item translations list"
+    time_prettifier.run do
+      budget_item_translations.save
+    end
+
+    finished_message = "Finished saving budget item translations in #{time_prettifier.elapsed_prettified}"
+
+    puts finished_message
+    end_messages << finished_message
   end
 
   def save_priority_finances
-    Priority.all.each(&:update_finances)
+    puts "\nSaving priority finances"
+    time_prettifier.run do
+      Priority.all.each(&:update_finances)
+    end
+    finished_message = "Finished saving priority finances in #{time_prettifier.elapsed_prettified}"
+    puts finished_message
+
+    end_messages << finished_message
   end
 
   def save_quarterly_spent_finances
-    SpentFinanceAggregator.new.create_quarterly_from_monthly
+    puts "\nSaving quarterly spent finances"
+    time_prettifier.run do
+      SpentFinanceAggregator.new.create_quarterly_from_monthly
+    end
+
+    finished_message = "Finished saving quarterly spent finances in #{time_prettifier.elapsed_prettified}"
+    puts finished_message
+    end_messages << finished_message
   end
 
-  def pretty_time(time = 0)
-    Time.at(time).utc.strftime("%H:%M:%S").to_s
+  def print_start_messages
+    puts "\nBEGIN: Budget Uploader"
+  end
+
+  def print_end_messages
+    puts "\nEND: Budget Uploader"
+    puts "-----Report-----"
+    end_messages << "Total time elapsed: #{time_prettifier.prettify(total_elapsed_time)}"
+
+    end_messages.each { |end_message| puts end_message }
   end
 
   def elapsed_since_start
     Time.at(total_elapsed_time).utc.strftime("%H:%M:%S").to_s
-  end
-
-  def average_time_per_spreadsheet
-    return 0 if num_monthly_sheets_processed == 0
-    total_elapsed_time/num_monthly_sheets_processed
   end
 
   def total_elapsed_time
