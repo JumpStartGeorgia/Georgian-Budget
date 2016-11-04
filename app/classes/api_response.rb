@@ -6,6 +6,7 @@ class APIResponse
 
     if filters.present?
       @budget_item_type = filters['budget_item_type'] if filters['budget_item_type'].present?
+      @time_period_type = filters['time_period_type'] if filters['time_period_type'].present?
       @finance_type = filters['finance_type'] if filters['finance_type'].present?
     end
 
@@ -34,7 +35,11 @@ class APIResponse
 
   attr_accessor :errors
 
-  attr_reader :budget_item_ids, :finance_type, :budget_item_fields, :budget_item_type
+  attr_reader :budget_item_ids,
+              :finance_type,
+              :time_period_type,
+              :budget_item_fields,
+              :budget_item_type
 
   def budget_items
     if budget_item_fields.present?
@@ -94,7 +99,13 @@ class APIResponse
       return nil
     end
 
-    finances = finances.quarterly.sort_by { |finance| finance.start_date }
+    if ['monthly', 'quarterly', 'yearly'].include? time_period_type
+      finances = finances.send(time_period_type)
+    else
+      add_error("Time period type #{time_period_type} is not available")
+    end
+
+    finances = finances.sort_by { |finance| finance.start_date }
 
     name = budget_item.name
 

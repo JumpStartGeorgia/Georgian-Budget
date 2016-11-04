@@ -30,7 +30,8 @@ class ApiController < ApplicationController
       budget_item_ids: [],
       filters: [
         :finance_type,
-        :budget_item_type
+        :budget_item_type,
+        :time_period_type
       ]
     )
   end
