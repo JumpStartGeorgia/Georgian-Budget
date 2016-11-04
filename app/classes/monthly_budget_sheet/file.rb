@@ -11,7 +11,7 @@ module MonthlyBudgetSheet
     def initialize(args = {})
       @spreadsheet_path = args[:spreadsheet_path]
       @excel_data = args[:excel_data]
-      @start_date = args[:start_date]
+      @publish_date = args[:publish_date]
 
       @code_column = nil
       @name_column = nil
@@ -29,6 +29,11 @@ module MonthlyBudgetSheet
       I18n.locale = 'ka'
 
       data_rows.each_with_index do |row_data, index|
+        remaining_rows = data_rows.count - index
+        if remaining_rows % 100 == 0
+          puts "#{remaining_rows} remaining rows to process in #{month} spreadsheet"
+        end
+
         row = create_row(row_data)
 
         set_columns(row) if !columns_set? && row.contains_column_names?
@@ -44,7 +49,7 @@ module MonthlyBudgetSheet
             # save the previous budget item
             ItemSaver.new(
               current_item,
-              start_date: start_date,
+              start_date: publish_date,
               warnings: warnings
             ).save_data_from_monthly_sheet_item
           end
@@ -61,35 +66,38 @@ module MonthlyBudgetSheet
       output_warnings
     end
 
-    def output_warnings
-      return if warnings.empty?
-
-      puts "\nWARNINGS for Monthly Budget Spreadsheet #{Month.for_date(start_date)}"
-      warnings.each { |warning| puts "WARNING: #{warning}" }
-    end
-
     def data_rows
-      get_excel_data unless excel_data.present?
-      excel_data[0]
+      @data_rows ||= excel_data[0]
     end
 
-    def excel_data
-      @excel_data ||= get_excel_data
+    def month
+      Month.for_date(publish_date)
     end
 
-    def start_date
-      @start_date ||= get_start_date
+    def publish_date
+      @publish_date ||= get_publish_date
     end
 
     attr_reader :spreadsheet_path,
                 :warnings
+
+    private
 
     attr_accessor :code_column,
                   :name_column,
                   :spent_finance_column,
                   :planned_finance_column
 
-    private
+    def output_warnings
+      return if warnings.empty?
+
+      puts "\nWARNINGS for Monthly Budget Spreadsheet #{month}"
+      warnings.each { |warning| puts "WARNING: #{warning}" }
+    end
+
+    def excel_data
+      @excel_data ||= get_excel_data
+    end
 
     def get_excel_data
       require 'rubyXL'
@@ -119,7 +127,7 @@ module MonthlyBudgetSheet
       )
     end
 
-    def get_start_date
+    def get_publish_date
       Date.new(date_regex_match[2].to_i, date_regex_match[1].to_i, 1)
     end
 
