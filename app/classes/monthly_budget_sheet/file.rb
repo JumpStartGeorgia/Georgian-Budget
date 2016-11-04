@@ -143,7 +143,7 @@ module MonthlyBudgetSheet
       /monthly_spreadsheet.*?(\w+)\.(\w+).xlsx/
     end
 
-    def file_name_glob
+    def self.file_name_glob
       '**/monthly_spreadsheet*.xlsx'
     end
   end
