@@ -74,10 +74,8 @@ RSpec.describe Month do
   describe '#to_s' do
     context 'when month is 2015, 01' do
       it 'returns "January, 2015"' do
-        I18n.locale = 'en'
         month = Month.for_date(Date.new(2015, 1, 25))
         expect(month.to_s).to eq('January, 2015')
-        I18n.locale = 'ka'
       end
     end
   end

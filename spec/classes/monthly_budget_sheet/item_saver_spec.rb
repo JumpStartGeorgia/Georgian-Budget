@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 describe MonthlyBudgetSheet::ItemSaver do
+  before :example do
+    I18n.locale = 'ka'
+  end
+
   describe '#save_data_from_monthly_sheet_item' do
     let(:monthly_sheet_item) do
       monthly_sheet_item = instance_double(

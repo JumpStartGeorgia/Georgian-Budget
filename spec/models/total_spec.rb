@@ -24,7 +24,6 @@ RSpec.describe Total do
 
     context "when I18n.locale is 'en'" do
       it 'returns correct name' do
-        I18n.locale = 'en'
         expect(total.name).to eq('Complete National Budget')
       end
     end
