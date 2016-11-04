@@ -4,12 +4,14 @@ module MonthlyBudgetSheet
       Dir.glob(Pathname.new(folder).join(self.file_name_glob))
     end
 
-    def initialize(spreadsheet_path)
-      @spreadsheet_path = spreadsheet_path
-      @excel_data = nil
-      @start_date = Date.new(year, month).beginning_of_month
-      @end_date = Date.new(year, month).end_of_month
-      @locale = 'ka'
+    def self.new_from_file(spreadsheet_path)
+      new(spreadsheet_path: spreadsheet_path)
+    end
+
+    def initialize(args = {})
+      @spreadsheet_path = args[:spreadsheet_path]
+      @excel_data = args[:excel_data]
+      @start_date = args[:start_date]
 
       @code_column = nil
       @name_column = nil
@@ -24,7 +26,7 @@ module MonthlyBudgetSheet
 
       current_item = nil
 
-      I18n.locale = locale
+      I18n.locale = 'ka'
 
       data_rows.each_with_index do |row_data, index|
         row = create_row(row_data)
@@ -71,33 +73,28 @@ module MonthlyBudgetSheet
       excel_data[0]
     end
 
+    def excel_data
+      @excel_data ||= get_excel_data
+    end
+
+    def start_date
+      @start_date ||= get_start_date
+    end
+
     attr_reader :spreadsheet_path,
-                :starting_row,
-                :start_date,
-                :end_date,
-                :locale,
                 :warnings
 
-    attr_accessor :excel_data,
-                  :code_column,
+    attr_accessor :code_column,
                   :name_column,
                   :spent_finance_column,
                   :planned_finance_column
 
-    def month
-      date_regex_match[1].to_i
-    end
-
-    def year
-      date_regex_match[2].to_i
-    end
+    private
 
     def get_excel_data
       require 'rubyXL'
-      self.excel_data = RubyXL::Parser.parse(spreadsheet_path)
+      RubyXL::Parser.parse(spreadsheet_path)
     end
-
-    private
 
     def set_columns(row)
       @code_column = row.column_number_for_values(['ორგანიზაც. კოდი', 'ორგანიზაც კოდი'])
@@ -122,6 +119,10 @@ module MonthlyBudgetSheet
       )
     end
 
+    def get_start_date
+      Date.new(date_regex_match[2].to_i, date_regex_match[1].to_i, 1)
+    end
+
     def date_regex_match
       match = filename_date_regex.match(spreadsheet_path)
       raise 'Cannot parse date from filename. Format of file should be monthly_spreadsheet.mm.yyyy' if match.nil?
@@ -133,7 +134,7 @@ module MonthlyBudgetSheet
       /monthly_spreadsheet.*?(\w+)\.(\w+).xlsx/
     end
 
-    def self.file_name_glob
+    def file_name_glob
       '**/monthly_spreadsheet*.xlsx'
     end
   end

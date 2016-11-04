@@ -13,7 +13,7 @@ RSpec.describe MonthlyBudgetSheet::File do
       'monthly_spreadsheet-01.2012.xlsx'
     ).to_s
 
-    MonthlyBudgetSheet::File.new(january_2012_sheet).save_data
+    MonthlyBudgetSheet::File.new_from_file(january_2012_sheet).save_data
 
     expect(Total.first.spent_finances.last.amount).to eq(488834301.67)
   end
@@ -39,7 +39,7 @@ RSpec.describe MonthlyBudgetSheet::File do
       'monthly_spreadsheet-02.2012.xlsx'
     ).to_s
 
-    MonthlyBudgetSheet::File.new(february_2012_sheet).save_data
+    MonthlyBudgetSheet::File.new_from_file(february_2012_sheet).save_data
     total.reload
 
     expect(total.spent_finances.last.amount).to eq(530429467.19)
@@ -69,7 +69,7 @@ RSpec.describe MonthlyBudgetSheet::File do
       'monthly_spreadsheet-04.2014.xlsx'
     ).to_s
 
-    MonthlyBudgetSheet::File.new(april_2014_sheet).save_data
+    MonthlyBudgetSheet::File.new_from_file(april_2014_sheet).save_data
 
     total.reload
 
@@ -95,7 +95,7 @@ RSpec.describe MonthlyBudgetSheet::File do
       'monthly_spreadsheet-08.2014.xlsx'
     ).to_s
 
-    MonthlyBudgetSheet::File.new(august_2014_sheet).save_data
+    MonthlyBudgetSheet::File.new_from_file(august_2014_sheet).save_data
 
     total.reload
 
@@ -126,7 +126,7 @@ RSpec.describe MonthlyBudgetSheet::File do
       'monthly_spreadsheet-09.2014.xlsx'
     ).to_s
 
-    MonthlyBudgetSheet::File.new(september_2014_sheet).save_data
+    MonthlyBudgetSheet::File.new_from_file(september_2014_sheet).save_data
 
     total.reload
     expect(total.spent_finances.last.amount.to_f).to eq(830795862.26)
