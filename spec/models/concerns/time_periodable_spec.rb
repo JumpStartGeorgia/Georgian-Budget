@@ -61,4 +61,50 @@ RSpec.shared_examples_for 'TimePeriodable' do
       end
     end
   end
+
+  describe '' do
+    before :example do
+      FactoryGirl.create(
+        :spent_finance,
+        start_date: Date.new(2012, 1, 1),
+        end_date: Date.new(2012, 1, 31))
+
+      FactoryGirl.create(
+        :spent_finance,
+        start_date: Date.new(2012, 1, 1),
+        end_date: Date.new(2012, 3, 31))
+
+      FactoryGirl.create(
+        :spent_finance,
+        start_date: Date.new(2012, 1, 1),
+        end_date: Date.new(2012, 12, 31))
+    end
+
+    describe '#monthly' do
+      it 'gets only time periodables with time period type "month"' do
+        monthly_time_periodables = described_class.monthly
+
+        expect(monthly_time_periodables.length).to eq(1)
+        expect(monthly_time_periodables[0].time_period_type).to eq('month')
+      end
+    end
+
+    describe '#quarterly' do
+      it 'gets only time periodables with time period type "quarter"' do
+        quarterly_time_periodables = described_class.quarterly
+
+        expect(quarterly_time_periodables.length).to eq(1)
+        expect(quarterly_time_periodables[0].time_period_type).to eq('quarter')
+      end
+    end
+
+    describe '#yearly' do
+      it 'gets only time periodables with time period type "year"' do
+        yearly_time_periodables = described_class.yearly
+
+        expect(yearly_time_periodables.length).to eq(1)
+        expect(yearly_time_periodables[0].time_period_type).to eq('year')
+      end
+    end
+  end
 end

@@ -5,11 +5,25 @@ module TimePeriodable
     validates_with StartEndDateValidator
     validate :validate_time_period_type_is_recognizable
 
-    def self.with_time_period(time_period)
+    before_save :set_time_period_type
+  end
+
+  module ClassMethods
+    def with_time_period(time_period)
       where(start_date: time_period.start_date, end_date: time_period.end_date)
     end
 
-    before_save :set_time_period_type
+    def monthly
+      where(time_period_type: 'month')
+    end
+
+    def quarterly
+      where(time_period_type: 'quarter')
+    end
+
+    def yearly
+      where(time_period_type: 'year')
+    end
   end
 
   def time_period_class
