@@ -11,6 +11,7 @@ module MonthlyBudgetSheet
     def initialize(args = {})
       @spreadsheet_path = args[:spreadsheet_path]
       @excel_data = args[:excel_data]
+      @data_rows = args[:data_rows]
       @publish_date = args[:publish_date]
 
       @code_column = nil
