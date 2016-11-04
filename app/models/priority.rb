@@ -62,6 +62,12 @@ class Priority < ApplicationRecord
     .order(:finance_plannable_type, :finance_plannable_id, :start_date, :end_date, announce_date: :desc)
     .map(&:id)
 
-    amount = PlannedFinance.find(program_planned_finance_ids).map(&:amount).sum
+    amounts = PlannedFinance.find(program_planned_finance_ids).map(&:amount)
+
+    if amounts.length == 1
+      return amounts[0]
+    else
+      return amounts.select { |amount| amount.present? }.sum
+    end
   end
 end

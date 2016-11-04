@@ -42,12 +42,16 @@ RSpec.describe Priority, type: :model do
 
       context 'with spent finances' do
         let(:program1_spent_finance1_amount) { 241 }
-        let(:program1_spent_finance2_amount) { 343 }
-
         let(:program2_spent_finance1_amount) { 2414 }
+
+        let(:program1_spent_finance2_amount) { 343 }
+        let(:program2_spent_finance2_amount) { nil }
+
+        let(:program1_spent_finance3_amount) { nil }
 
         let(:spent_finance_time_period1) { Month.for_date(Date.new(2012, 1, 1)) }
         let(:spent_finance_time_period2) { Month.for_date(Date.new(2012, 7, 1)) }
+        let(:spent_finance_time_period3) { Month.for_date(Date.new(2013, 1, 1)) }
 
         before :example do
           program1.add_spent_finance(
@@ -61,6 +65,14 @@ RSpec.describe Priority, type: :model do
           program1.add_spent_finance(
             amount: program1_spent_finance2_amount,
             time_period: spent_finance_time_period2)
+
+          program2.add_spent_finance(
+            amount: program2_spent_finance2_amount,
+            time_period: spent_finance_time_period2)
+
+          program1.add_spent_finance(
+            amount: program1_spent_finance3_amount,
+            time_period: spent_finance_time_period3)
         end
 
         it "sets priority's spent finances to program spent finance sums" do
@@ -77,86 +89,124 @@ RSpec.describe Priority, type: :model do
 
           expect(priority.spent_finances[1].amount).to eq(
             program1_spent_finance2_amount)
+
+          expect(priority.spent_finances[2].time_period).to eq(
+            spent_finance_time_period3)
+
+          expect(priority.spent_finances[2].amount).to eq(
+            program1_spent_finance3_amount)
         end
       end
 
       context 'with planned finances' do
-        let(:planned_finance_time_period1) { Quarter.for_date(Date.new(2012, 1, 1)) }
+        context 'and four planned finances are in same quarter' do
+          let(:planned_finance_time_period1) { Quarter.for_date(Date.new(2012, 1, 1)) }
 
-        let(:planned_finance_q1_jan) { priority.all_planned_finances[0] }
-        let(:planned_finance_announce_date1a) { Date.new(2012, 1, 1) }
-        let(:program1_planned_finance1a_amount) { 434559 }
+          let(:planned_finance_q1_jan) { priority.all_planned_finances[0] }
+          let(:planned_finance_announce_date1a) { Date.new(2012, 1, 1) }
+          let(:program1_planned_finance1a_amount) { 434559 }
 
-        let(:planned_finance_q1_feb) { priority.all_planned_finances[1] }
-        let(:planned_finance_announce_date1b) { Date.new(2012, 2, 1) }
-        let(:program1_planned_finance1b_amount) { 343 }
-        let(:program2_planned_finance1b_amount) { 2414 }
+          let(:planned_finance_q1_feb) { priority.all_planned_finances[1] }
+          let(:planned_finance_announce_date1b) { Date.new(2012, 2, 1) }
+          let(:program1_planned_finance1b_amount) { 343 }
+          let(:program2_planned_finance1b_amount) { 2414 }
 
-        let(:planned_finance_q1_march) { priority.all_planned_finances[2] }
-        let(:planned_finance_announce_date1c) { Date.new(2012, 3, 1) }
-        let(:program2_planned_finance1c_amount) { 23111 }
+          let(:planned_finance_q1_march) { priority.all_planned_finances[2] }
+          let(:planned_finance_announce_date1c) { Date.new(2012, 3, 1) }
+          let(:program2_planned_finance1c_amount) { 23111 }
 
-        let(:planned_finance_time_period2) { Quarter.for_date(Date.new(2012, 10, 1)) }
+          before :example do
+            program1.add_planned_finance(
+              time_period: planned_finance_time_period1,
+              announce_date: planned_finance_announce_date1a,
+              amount: program1_planned_finance1a_amount)
 
-        let(:planned_finance_q4_oct) { priority.all_planned_finances[3] }
-        let(:planned_finance_announce_date2) { Date.new(2012, 10, 1) }
-        let(:program1_planned_finance2_amount) { 2222 }
+            program1.add_planned_finance(
+              time_period: planned_finance_time_period1,
+              announce_date: planned_finance_announce_date1b,
+              amount: program1_planned_finance1b_amount)
 
-        before :each do
-          program1.add_planned_finance(
-            time_period: planned_finance_time_period1,
-            announce_date: planned_finance_announce_date1a,
-            amount: program1_planned_finance1a_amount)
+            program2.add_planned_finance(
+              time_period: planned_finance_time_period1,
+              announce_date: planned_finance_announce_date1b,
+              amount: program2_planned_finance1b_amount)
 
-          program1.add_planned_finance(
-            time_period: planned_finance_time_period1,
-            announce_date: planned_finance_announce_date1b,
-            amount: program1_planned_finance1b_amount)
+            program2.add_planned_finance(
+              time_period: planned_finance_time_period1,
+              announce_date: planned_finance_announce_date1c,
+              amount: program2_planned_finance1c_amount)
+          end
 
-          program2.add_planned_finance(
-            time_period: planned_finance_time_period1,
-            announce_date: planned_finance_announce_date1b,
-            amount: program2_planned_finance1b_amount)
+          it 'creates planned finance without at the time unannounced program plans' do
+            priority.update_finances
 
-          program2.add_planned_finance(
-            time_period: planned_finance_time_period1,
-            announce_date: planned_finance_announce_date1c,
-            amount: program2_planned_finance1c_amount)
+            expect(planned_finance_q1_jan.amount).to eq(
+              program1_planned_finance1a_amount)
+          end
 
-          program1.add_planned_finance(
-            time_period: planned_finance_time_period2,
-            announce_date: planned_finance_announce_date2,
-            amount: program1_planned_finance2_amount)
+          it 'creates planned finance with program plans announced on same date when available' do
+            priority.update_finances
+
+            expect(planned_finance_q1_feb.amount).to eq(
+              program1_planned_finance1b_amount +
+              program2_planned_finance1b_amount)
+          end
+
+          it 'creates planned finance with most recent program plans for time period' do
+            priority.update_finances
+
+            expect(planned_finance_q1_march.amount).to eq(
+              program1_planned_finance1b_amount +
+              program2_planned_finance1c_amount)
+          end
         end
 
-        it 'creates planned finance without at the time unannounced program plans' do
-          priority.update_finances
+        context 'when two programs have planned finances for quarter but one has nil amount' do
+          let(:planned_finance_time_period2) { Quarter.for_date(Date.new(2012, 10, 1)) }
 
-          expect(planned_finance_q1_jan.amount).to eq(
-            program1_planned_finance1a_amount)
+          let(:planned_finance_announce_date2) { Date.new(2012, 10, 1) }
+          let(:program1_planned_finance2_amount) { 2222 }
+          let(:program2_planned_finance2_amount) { nil }
+
+          before :each do
+            program1.add_planned_finance(
+              time_period: planned_finance_time_period2,
+              announce_date: planned_finance_announce_date2,
+              amount: program1_planned_finance2_amount)
+
+            program2.add_planned_finance(
+              time_period: planned_finance_time_period2,
+              announce_date: planned_finance_announce_date2,
+              amount: program2_planned_finance2_amount)
+          end
+
+          it 'creates planned finance for quarter from non-nil finance' do
+            priority.update_finances
+
+            expect(priority.all_planned_finances[0].amount).to eq(
+              program1_planned_finance2_amount)
+          end
         end
 
-        it 'creates planned finance with program plans announced on same date when available' do
-          priority.update_finances
+        context 'when only one program has planned finance for quarter and amount is nil' do
+          let(:q3) { Quarter.for_date(q3_august_announce_date) }
 
-          expect(planned_finance_q1_feb.amount).to eq(
-            program1_planned_finance1b_amount +
-            program2_planned_finance1b_amount)
-        end
+          let(:q3_august_announce_date) { Date.new(2012, 8, 1) }
+          let(:program1_planned_finance_q3_august_amount) { nil }
 
-        it 'creates planned finance with most recent program plans for time period' do
-          priority.update_finances
+          before :example do
+            program1.add_planned_finance(
+              time_period: q3,
+              announce_date: q3_august_announce_date,
+              amount: program1_planned_finance_q3_august_amount)
+          end
 
-          expect(planned_finance_q1_march.amount).to eq(
-            program1_planned_finance1b_amount +
-            program2_planned_finance1c_amount)
-        end
+          it 'creates planned finance with nil amount' do
+            priority.update_finances
 
-        it 'creates planned finance from only one program if one is available' do
-          priority.update_finances
-
-          expect(planned_finance_q4_oct.amount).to eq(
-            program1_planned_finance2_amount)
+            expect(priority.all_planned_finances[0].amount).to eq(
+              program1_planned_finance_q3_august_amount)
+          end
         end
       end
     end
