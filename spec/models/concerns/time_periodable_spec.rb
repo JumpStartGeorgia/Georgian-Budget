@@ -3,15 +3,8 @@ require 'rails_helper'
 RSpec.shared_examples_for 'TimePeriodable' do
   let(:described_class_sym) { described_class.to_s.underscore.to_sym }
 
-  let(:start_date) { Date.new(2015, 01, 01) }
-  let(:end_date) { Date.new(2015, 01, 31) }
-
   let(:time_periodable1) do
-    FactoryGirl.create(
-      described_class_sym,
-      start_date: start_date,
-      end_date: end_date
-    )
+    FactoryGirl.build(described_class_sym)
   end
 
   describe '#time_period=' do

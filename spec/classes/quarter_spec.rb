@@ -196,4 +196,13 @@ RSpec.describe Quarter do
       end
     end
   end
+
+  describe '.valid_dates?' do
+    it 'returns false for year dates' do
+      expect(Quarter.dates_valid?(
+        Date.new(2012, 1, 1),
+        Date.new(2012, 12, 31)
+      )).to eq(false)
+    end
+  end
 end

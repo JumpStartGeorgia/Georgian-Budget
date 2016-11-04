@@ -15,6 +15,7 @@ module TimePeriodable
   def time_period_class
     return Month if time_period_type == 'month'
     return Quarter if time_period_type == 'quarter'
+    return Year if time_period_type == 'year'
 
     nil
   end
@@ -46,6 +47,7 @@ module TimePeriodable
   def get_time_period_type_from_dates
     return 'month' if Month.dates_valid?(start_date, end_date)
     return 'quarter' if Quarter.dates_valid?(start_date, end_date)
+    return 'year' if Year.dates_valid?(start_date, end_date)
 
     nil
   end
