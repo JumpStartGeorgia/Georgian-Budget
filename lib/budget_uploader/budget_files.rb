@@ -39,6 +39,7 @@ class BudgetFiles
     priority_associations_list.save if priority_associations_list.present?
     budget_item_translations.save if budget_item_translations.present?
     save_priority_finances
+    save_quarterly_spent_finances
 
     end_messages
   end
@@ -121,6 +122,10 @@ class BudgetFiles
 
   def save_priority_finances
     Priority.all.each(&:update_finances)
+  end
+
+  def save_quarterly_spent_finances
+    SpentFinanceAggregator.new.create_quarterly_from_monthly
   end
 
   def pretty_time(time = 0)

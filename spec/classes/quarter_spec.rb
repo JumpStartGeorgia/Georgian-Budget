@@ -205,4 +205,45 @@ RSpec.describe Quarter do
       )).to eq(false)
     end
   end
+
+  describe '.for_dates' do
+    context 'when argument is empty array' do
+      it 'returns empty array' do
+        expect(Quarter.for_dates([])).to eq([])
+      end
+    end
+
+    context 'when argument is array of one date' do
+      it 'returns array of quarter for that date' do
+        expect(Quarter.for_dates([
+          Date.new(2012, 12, 1)
+        ])).to eq([
+          Quarter.for_date(Date.new(2012, 10, 1)),
+        ])
+      end
+    end
+
+    context 'when argument is array of two dates in different quarters' do
+      it 'returns array of quarters for both of those dates' do
+        expect(Quarter.for_dates([
+          Date.new(2012, 12, 1),
+          Date.new(2013, 5, 1)
+        ])).to eq([
+          Quarter.for_date(Date.new(2012, 10, 1)),
+          Quarter.for_date(Date.new(2013, 4, 1))
+        ])
+      end
+    end
+
+    context 'when argument is array of two dates in same quarter' do
+      it 'returns an array containing the quarter for those dates' do
+        expect(Quarter.for_dates([
+          Date.new(2012, 12, 1),
+          Date.new(2012, 12, 1)
+        ])).to eq([
+          Quarter.for_date(Date.new(2012, 10, 1))
+        ])
+      end
+    end
+  end
 end

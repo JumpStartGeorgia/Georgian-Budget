@@ -43,33 +43,46 @@ RSpec.describe 'BudgetFiles' do
         end
 
         context 'spent finances:' do
-          it 'saves first spent finance' do
-            total_spent_finance1 = total.spent_finances[0]
-            expect(total_spent_finance1.amount.to_f).to eq(656549486.69)
-            expect(total_spent_finance1.start_date).to eq(Date.new(2015, 1, 1))
-            expect(total_spent_finance1.end_date).to eq(Date.new(2015, 1, 31))
+          it 'saves correct number of monthly spent finances' do
+            expect(total.spent_finances.monthly.length).to eq(2)
           end
 
-          it 'saves second spent finance' do
-            total_spent_finance2 = total.spent_finances[1]
-            expect(total_spent_finance2.amount.to_f).to eq(641341973.31)
-            expect(total_spent_finance2.start_date).to eq(Date.new(2015, 2, 1))
-            expect(total_spent_finance2.end_date).to eq(Date.new(2015, 2, 28))
+          it 'saves january spent finance' do
+            finance = total.spent_finances.monthly[0]
+            expect(finance.amount.to_f).to eq(656549486.69)
+            expect(finance.start_date).to eq(Date.new(2015, 1, 1))
+            expect(finance.end_date).to eq(Date.new(2015, 1, 31))
           end
 
-          it 'saves correct number of spent finances' do
-            expect(total.spent_finances.length).to eq(2)
+          it 'saves february spent finance' do
+            finance = total.spent_finances.monthly[1]
+            expect(finance.amount.to_f).to eq(641341973.31)
+            expect(finance.start_date).to eq(Date.new(2015, 2, 1))
+            expect(finance.end_date).to eq(Date.new(2015, 2, 28))
+          end
+
+          it 'saves correct number of quarterly spent finances' do
+            expect(total.spent_finances.quarterly.length).to eq(1)
+          end
+
+          it 'saves quarterly spent finance' do
+            finance = total.spent_finances.quarterly[0]
+
+            expect(finance.amount.to_f).to eq(656549486.69 + 641341973.31)
+            expect(finance.start_date).to eq(Date.new(2015, 1, 1))
+            expect(finance.end_date).to eq(Date.new(2015, 3, 31))
           end
         end
 
         context 'planned finances:' do
           it 'saves first planned finance' do
-            total_planned_finance1 = total.all_planned_finances[0]
-            expect(total_planned_finance1.amount.to_f).to eq(2162575900)
-            expect(total_planned_finance1.start_date).to eq(Date.new(2015, 1, 1))
-            expect(total_planned_finance1.end_date).to eq(Date.new(2015, 3, 31))
-            expect(total_planned_finance1.announce_date).to eq(Date.new(2015, 1, 1))
-            expect(total_planned_finance1.most_recently_announced).to eq(true)
+            finance = total.all_planned_finances[0]
+
+            expect(finance.amount.to_f).to eq(2162575900)
+            expect(finance.start_date).to eq(Date.new(2015, 1, 1))
+            expect(finance.end_date).to eq(Date.new(2015, 3, 31))
+            expect(finance.announce_date).to eq(Date.new(2015, 1, 1))
+            expect(finance.most_recently_announced).to eq(true)
           end
 
           it 'saves correct number of planned finances' do
@@ -98,23 +111,35 @@ RSpec.describe 'BudgetFiles' do
         end
 
         context 'spent finances:' do
-          it 'saves correct number of spent finances' do
-            expect(spending_agency1.spent_finances.length).to eq(2)
+          it 'saves correct number of monthly spent finances' do
+            expect(spending_agency1.spent_finances.monthly.length).to eq(2)
           end
 
-          it 'saves spent finance 1' do
-            spending_agency1_spent_finance1 = spending_agency1.spent_finances[0]
-            expect(spending_agency1_spent_finance1.amount.to_f).to eq(3532432.91)
-            expect(spending_agency1_spent_finance1.start_date).to eq(Date.new(2015, 1, 1))
-            expect(spending_agency1_spent_finance1.end_date).to eq(Date.new(2015, 1, 31))
+          it 'saves January spent finance' do
+            finance = spending_agency1.spent_finances.monthly[0]
+            expect(finance.amount.to_f).to eq(3532432.91)
+            expect(finance.start_date).to eq(Date.new(2015, 1, 1))
+            expect(finance.end_date).to eq(Date.new(2015, 1, 31))
           end
 
-          it 'saves spent finance 2' do
-            spending_agency1_spent_finance2 = spending_agency1.spent_finances[1]
+          it 'saves February spent finance' do
+            finance = spending_agency1.spent_finances.monthly[1]
 
-            expect(spending_agency1_spent_finance2.amount.to_f).to eq(3753083.38)
-            expect(spending_agency1_spent_finance2.start_date).to eq(Date.new(2015, 2, 1))
-            expect(spending_agency1_spent_finance2.end_date).to eq(Date.new(2015, 2, 28))
+            expect(finance.amount.to_f).to eq(3753083.38)
+            expect(finance.start_date).to eq(Date.new(2015, 2, 1))
+            expect(finance.end_date).to eq(Date.new(2015, 2, 28))
+          end
+
+          it 'saves correct number of quarterly spent finances' do
+            expect(spending_agency1.spent_finances.quarterly.length).to eq(1)
+          end
+
+          it 'saves quarter 1 spent finance' do
+            finance = spending_agency1.spent_finances.quarterly[0]
+
+            expect(finance.amount.to_f).to eq(3532432.91 + 3753083.38)
+            expect(finance.start_date).to eq(Date.new(2015, 1, 1))
+            expect(finance.end_date).to eq(Date.new(2015, 3, 31))
           end
         end
 
@@ -346,11 +371,21 @@ RSpec.describe 'BudgetFiles' do
         .to eq(Date.new(2012, 1, 1))
       end
 
-      it "sets education priority's spent finances" do
-        spent_finances = education_priority.spent_finances
+      it "sets education priority's monthly spent finances" do
+        monthly_spent_finances = education_priority.spent_finances.monthly
 
-        expect(spent_finances[0].amount).to eq(100)
-        expect(spent_finances[0].time_period).to eq(@january_2012)
+        expect(monthly_spent_finances.length).to eq(1)
+        expect(monthly_spent_finances[0].amount).to eq(100)
+        expect(monthly_spent_finances[0].time_period).to eq(@january_2012)
+      end
+
+      it "sets education priority's quarterly spent finances" do
+        quarterly_spent_finances = education_priority.spent_finances.quarterly
+
+        expect(quarterly_spent_finances.length).to eq(1)
+        expect(quarterly_spent_finances[0].amount).to eq(100)
+        expect(quarterly_spent_finances[0].time_period).to eq(
+          Quarter.for_date(Date.new(2012, 1, 1)))
       end
 
       it "sets education priority's planned finances" do

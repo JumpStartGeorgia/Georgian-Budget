@@ -65,17 +65,17 @@ RSpec.shared_examples_for 'TimePeriodable' do
   describe '' do
     before :example do
       FactoryGirl.create(
-        :spent_finance,
+        described_class_sym,
         start_date: Date.new(2012, 1, 1),
         end_date: Date.new(2012, 1, 31))
 
       FactoryGirl.create(
-        :spent_finance,
+        described_class_sym,
         start_date: Date.new(2012, 1, 1),
         end_date: Date.new(2012, 3, 31))
 
       FactoryGirl.create(
-        :spent_finance,
+        described_class_sym,
         start_date: Date.new(2012, 1, 1),
         end_date: Date.new(2012, 12, 31))
     end

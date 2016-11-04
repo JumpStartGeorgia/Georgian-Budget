@@ -38,9 +38,10 @@ class Quarter
   end
 
   def ==(other_quarter)
-    return false if start_date != other_quarter.start_date
-    true
+    other_quarter.class == self.class && other_quarter.state == state
   end
+
+  alias_method :eql?, :==
 
   def next
     new_month = (start_date.month + 3)%12
@@ -55,6 +56,18 @@ class Quarter
     return false unless end_date == end_date_for_start_date(start_date)
 
     true
+  end
+
+  def self.for_dates(dates)
+    dates.map { |date| for_date(date) }.uniq
+  end
+
+  def hash
+    state.hash
+  end
+
+  def state
+    [start_date, end_date]
   end
 
   private
