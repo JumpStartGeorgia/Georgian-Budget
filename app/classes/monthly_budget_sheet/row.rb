@@ -6,7 +6,6 @@ module MonthlyBudgetSheet
       @name_column = args[:name_column] || 1
       @spent_finance_column = args[:spent_finance_column] || 6
       @planned_finance_column = args[:planned_finance_column] || 2
-      @cell_values = []
     end
 
     # returns true if this is the header row of an item
@@ -29,7 +28,6 @@ module MonthlyBudgetSheet
     end
 
     def contains_value?(value)
-      cell_values = get_cell_values unless cell_values.present?
       cell_values.include?(value)
     end
 
@@ -47,16 +45,6 @@ module MonthlyBudgetSheet
     def column_number_for_value(value)
       cell = cells.find { |cell| clean_cell_value(cell) == value }
       cell.present? ? cell.column : nil
-    end
-
-    def clean_cell_value(cell)
-      return nil unless cell.present?
-      value = cell.value
-
-      return nil unless value.present?
-      return value unless value.is_a? String
-
-      value.strip().gsub(/\s+/, ' ')
     end
 
     # returns true if item has code and name
@@ -117,7 +105,7 @@ module MonthlyBudgetSheet
     end
 
     def cells
-      data.cells
+      @cells ||= data.cells
     end
 
     attr_reader :data,
@@ -126,14 +114,22 @@ module MonthlyBudgetSheet
                 :spent_finance_column,
                 :planned_finance_column
 
-    attr_accessor :cell_values
-
     private
 
-    def get_cell_values
-      cells.map do |cell|
+    def cell_values
+      @cell_values ||= cells.map do |cell|
         clean_cell_value(cell)
       end
+    end
+
+    def clean_cell_value(cell)
+      return nil unless cell.present?
+      value = cell.value
+
+      return nil unless value.present?
+      return value unless value.is_a? String
+
+      value.strip().gsub(/\s+/, ' ')
     end
   end
 end
