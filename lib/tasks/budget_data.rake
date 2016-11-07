@@ -86,7 +86,10 @@ namespace :budget_data do
     CSV.open(csv_file_path, 'wb') do |csv|
       csv << headers
 
-      PossibleDuplicatePair.all.each do |possible_duplicate_pair|
+      PossibleDuplicatePair
+      .all
+      .order(pair_type: :desc)
+      .each do |possible_duplicate_pair|
         item1 = possible_duplicate_pair.item1
         item2 = possible_duplicate_pair.item2
 
