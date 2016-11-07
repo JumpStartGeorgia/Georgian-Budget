@@ -81,17 +81,17 @@ module Nameable
     more_recent_sibling = names[new_name_index + 1]
 
     if more_recent_sibling.present? && more_recent_sibling.text == new_name.text
-      merge_siblings(new_name, more_recent_sibling)
+      merge_name_siblings(new_name, more_recent_sibling)
     end
 
     earlier_sibling = names[new_name_index - 1]
 
     if new_name_index > 0 && earlier_sibling.text == new_name.text
-      merge_siblings(new_name, earlier_sibling)
+      merge_name_siblings(new_name, earlier_sibling)
     end
   end
 
-  def merge_siblings(name1, name2)
+  def merge_name_siblings(name1, name2)
     if name1.start_date < name2.start_date
       name2.destroy
     else

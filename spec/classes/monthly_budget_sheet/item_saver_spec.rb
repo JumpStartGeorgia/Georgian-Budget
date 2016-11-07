@@ -136,8 +136,10 @@ describe MonthlyBudgetSheet::ItemSaver do
         context 'and previous program matches neither code nor name' do
           before :example do
             previous_program
-            .add_code(code_number: '01 02')
-            .add_name(
+            .add_code(
+              start_date: Date.new(2012, 1, 1),
+              number: '01 02'
+            ).add_name(
               start_date: Date.new(2012, 1, 1),
               text: "#{current_program_name_text}aaa"
             )
@@ -168,7 +170,10 @@ describe MonthlyBudgetSheet::ItemSaver do
         context 'and previous program matches code but not name' do
           before :example do
             previous_program
-            .add_code(code_number: current_program_code_number)
+            .add_code(
+              start_date: Date.new(2012, 1, 1),
+              number: current_program_code_number
+            )
             .add_name(
               start_date: Date.new(2012, 1, 1),
               text: "#{current_program_name_text}aaa"
@@ -189,7 +194,10 @@ describe MonthlyBudgetSheet::ItemSaver do
         context 'and previous program matches name but not code' do
           before :example do
             previous_program
-            .add_code(code_number: '01 02')
+            .add_code(
+              start_date: Date.new(2012, 1, 1),
+              number: '01 02'
+            )
             .add_name(
               start_date: Date.new(2012, 1, 1),
               text: "#{current_program_name_text}aaa"
@@ -202,8 +210,10 @@ describe MonthlyBudgetSheet::ItemSaver do
         context 'and previous program matches code and name' do
           before :example do
             previous_program
-            .add_code(code_number: current_program_code_number)
-            .add_name(
+            .add_code(
+              start_date: Date.new(2012, 1, 1),
+              number: current_program_code_number
+            ).add_name(
               start_date: Date.new(2012, 1, 1),
               text: current_program_name_text
             )

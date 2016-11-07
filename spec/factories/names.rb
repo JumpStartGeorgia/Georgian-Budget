@@ -7,7 +7,7 @@ FactoryGirl.define do
     sequence :start_date do |n|
       Date.new(2016, 1, 1) + n
     end
-    
+
     association :nameable, factory: :program
   end
 end

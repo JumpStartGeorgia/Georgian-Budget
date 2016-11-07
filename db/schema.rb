@@ -10,10 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161103110636) do
+ActiveRecord::Schema.define(version: 20161107113454) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "codes", force: :cascade do |t|
+    t.date     "start_date"
+    t.string   "number"
+    t.string   "codeable_type"
+    t.integer  "codeable_id"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+    t.index ["codeable_type", "codeable_id"], name: "index_codes_on_codeable_type_and_codeable_id", using: :btree
+    t.index ["start_date"], name: "index_codes_on_start_date", using: :btree
+  end
 
   create_table "name_translations", force: :cascade do |t|
     t.integer  "name_id",    null: false
