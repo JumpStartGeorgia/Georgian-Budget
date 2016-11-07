@@ -116,6 +116,8 @@ class APIResponse
     end
 
     {
+      id: id,
+      type: budget_item.class.to_s.underscore,
       chart_name: I18n.t("activerecord.models.#{finance_type}.other"),
       name: name,
       time_periods: time_periods,
