@@ -37,10 +37,10 @@ ka:
         en: En
         ka: ქა
     time_periods:
-      quarter_1: პირველი მეოთხედი, %{year}
-      quarter_2: მეორე მეოთხედი, %{year}
-      quarter_3: მესამე მეოთხედი, %{year}
-      quarter_4: მეოთხე მეოთხედი, %{year}
+      quarter_1: პირველი კვარტალი, %{year}
+      quarter_2: მეორე კვარტალი, %{year}
+      quarter_3: მესამე კვარტალი, %{year}
+      quarter_4: მეოთხე კვარტალი, %{year}
     msgs:
       does_not_exist: თქვენ ცდილობთ ისეთ გვერდზე შეშვლას, რომელიც არ არსებობს.
       not_authorized: თქვენ არ ხართ ავტორიზებული, რომ ნახოთ ეს გვერდი.
