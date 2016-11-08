@@ -30,7 +30,7 @@ class BudgetItemFetcher
   def fetch_created_item
     return fetch_or_create_total if klass == Total
 
-    item = fetch_by_code
+    item = fetch_by_code_then_name
     return item if item.present?
 
     item = fetch_by_name if klass == SpendingAgency
@@ -46,7 +46,7 @@ class BudgetItemFetcher
     nil
   end
 
-  def fetch_by_code
+  def fetch_by_code_then_name
     klass.where(code: code_number).find do |possible_item|
       Name.texts_represent_same_budget_item?(name_text, possible_item.name)
     end
