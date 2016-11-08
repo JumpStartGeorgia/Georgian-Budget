@@ -408,27 +408,33 @@ RSpec.describe 'BudgetFiles' do
 
     context 'with english translations list' do
       before :context do
+        start_date_2015_jan_1 = Date.new(2015, 1, 1)
+
         @priority = FactoryGirl.create(
           :priority
         ).add_name(
           text_ka: 'უკატეგორიო',
-          start_date: Date.new(2015, 1, 1)
+          start_date: start_date_2015_jan_1
         )
 
         @spending_agency = FactoryGirl.create(
-          :spending_agency,
-          code: '35 00'
+          :spending_agency
+        ).add_code(
+          number: '35 00',
+          start_date: start_date_2015_jan_1
         ).add_name(
           text_ka: 'საქართველოს შრომის, ჯანმრთელობისა და სოციალური დაცვის სამინისტრო',
-          start_date: Date.new(2015, 1, 1)
+          start_date: start_date_2015_jan_1
         )
 
         @program = FactoryGirl.create(
-          :program,
-          code: '23 01'
+          :program
+        ).add_code(
+          number: '23 01',
+          start_date: start_date_2015_jan_1
         ).add_name(
           text_ka: 'სახელმწიფო ფინანსების მართვა',
-          start_date: Date.new(2015, 1, 1)
+          start_date: start_date_2015_jan_1
         )
 
         BudgetFiles.new(
