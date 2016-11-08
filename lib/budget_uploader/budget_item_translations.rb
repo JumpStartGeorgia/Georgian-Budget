@@ -14,6 +14,7 @@ class BudgetItemTranslations
       english_name = row[3]
 
       next if georgian_name.blank?
+      next if english_name.blank?
 
       names_to_translate = names.select do |name|
         (name.text_ka == georgian_name) ||
