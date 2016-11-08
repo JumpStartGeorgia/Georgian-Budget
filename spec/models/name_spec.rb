@@ -103,5 +103,12 @@ RSpec.describe Name, type: :model do
 
       expect(Name.texts_represent_same_budget_item?(text1, text2)).to eq(true)
     end
+
+    it 'returns true if difference is small dash vs. strange long dash' do
+      text1 = 'Name - 1'
+      text2 = 'Name – 1'
+
+      expect(Name.texts_represent_same_budget_item?(text1, text2)).to eq(true)
+    end
   end
 end

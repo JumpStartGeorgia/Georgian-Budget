@@ -26,6 +26,7 @@ class Name < ApplicationRecord
       text
       .gsub('—', ' ')
       .gsub('-', ' ')
+      .gsub('–', ' ')
       .gsub(',', ' ')
       .gsub('(', ' ')
       .gsub(')', ' ')
