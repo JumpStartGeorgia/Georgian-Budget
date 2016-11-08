@@ -54,6 +54,34 @@ RSpec.describe Name, type: :model do
     end
   end
 
+  describe '#text' do
+    it 'cannot be empty string' do
+      I18n.locale = 'ka'
+      name = FactoryGirl.build(:name, text: '')
+
+      expect(name.valid?).to eq(false)
+      expect(name).to have(1).errors_on(:text_ka)
+    end
+  end
+
+  describe '#text_en' do
+    it 'cannot be empty string' do
+      name = FactoryGirl.build(:name, text_en: '')
+
+      expect(name.valid?).to eq(false)
+      expect(name).to have(1).errors_on(:text_en)
+    end
+  end
+
+  describe '#text_ka' do
+    it 'cannot be empty string' do
+      name = FactoryGirl.build(:name, text_ka: '')
+
+      expect(name.valid?).to eq(false)
+      expect(name).to have(1).errors_on(:text_ka)
+    end
+  end
+
   describe '.texts_represent_same_budget_item?' do
     it 'returns false if text is different' do
       text1 = 'Name1'

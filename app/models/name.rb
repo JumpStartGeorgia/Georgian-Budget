@@ -6,6 +6,7 @@ class Name < ApplicationRecord
 
   validates :start_date, uniqueness: { scope: [:nameable_type, :nameable_id] }, presence: true
   validates :nameable, presence: true
+  validate :validate_text_not_empty_string
 
   def text=(initial_text)
     self[:text] = Name.clean_text(initial_text)
@@ -26,7 +27,7 @@ class Name < ApplicationRecord
       text
       .gsub('—', ' ')
       .gsub('-', ' ')
-      .gsub('–', ' ')
+      .gsub('–', ' ') # this is a different kind of dash
       .gsub(',', ' ')
       .gsub('(', ' ')
       .gsub(')', ' ')
@@ -39,5 +40,10 @@ class Name < ApplicationRecord
     text
     .gsub(/\s+/, ' ')
     .strip
+  end
+
+  def validate_text_not_empty_string
+    errors.add(:text_ka, 'cannot be an empty string') if text_ka == ''
+    errors.add(:text_en, 'cannot be an empty string') if text_en == ''
   end
 end
