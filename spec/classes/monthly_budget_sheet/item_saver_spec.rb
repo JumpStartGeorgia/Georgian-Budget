@@ -203,8 +203,6 @@ describe MonthlyBudgetSheet::ItemSaver do
               text: "#{current_program_name_text}aaa"
             )
           end
-
-          it 'adds data to previous program'
         end
 
         context 'and previous program matches code and name' do
