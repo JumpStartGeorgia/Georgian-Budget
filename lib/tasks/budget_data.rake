@@ -109,28 +109,14 @@ namespace :budget_data do
 
   desc 'Get list of unique budget item names to be translated'
   task get_georgian_names_to_be_translated: :environment do
-    ids_sql = <<-STRING
-      SELECT * FROM names
-      WHERE NAMES.id IN (
-        SELECT DISTINCT ON (georgian_translations.text)
-               names.id AS id
-        FROM names LEFT JOIN
-          (SELECT * FROM name_translations
-           WHERE name_translations.locale = 'en') AS english_translations
-        ON names.id = english_translations.name_id
-        JOIN
-          (SELECT * FROM name_translations
-           WHERE name_translations.locale = 'ka') AS georgian_translations
-        ON names.id = georgian_translations.name_id
-        WHERE english_translations.name_id IS NULL
-        ORDER BY georgian_translations.text
-      )
-      ORDER BY CASE WHEN names.nameable_type = 'Priority' THEN '1'
-                    WHEN names.nameable_type = 'SpendingAgency' THEN '2'
-                    ELSE names.nameable_type END ASC
-    STRING
+    # inefficient, but there aren't enough names for it to matter
+    names = Name.all.select { |name| name.text_en == nil }
 
-    names = Name.find_by_sql(ids_sql)
+    if names.count == 0
+      puts 'All names translated!'
+    else
+      puts "There are #{names.count} names left to translate into English"
+    end
 
     CSV.open(Rails.root.join('tmp', 'georgian_budget_names_to_be_translated.csv'), 'wb') do |csv|
       csv << ["Budget Item Code", "Georgian Name", "Budget Item Type", "English Translation"]

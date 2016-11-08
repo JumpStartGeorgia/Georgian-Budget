@@ -52,6 +52,45 @@ RSpec.describe Name, type: :model do
       name = FactoryGirl.create(:name, text: ' my name ')
       expect(name.text).to eq('my name')
     end
+
+    it 'converts new line characters to space characters' do
+      name = FactoryGirl.create(:name, text: "my\nname")
+      expect(name.text).to eq('my name')
+    end
+  end
+
+  describe '#text_en=' do
+    it 'cleans text of extra spaces' do
+      name = FactoryGirl.create(:name, text_en: 'my  name')
+      expect(name.text_en).to eq('my name')
+    end
+
+    it 'strips text of surrounding space' do
+      name = FactoryGirl.create(:name, text_en: ' my name ')
+      expect(name.text_en).to eq('my name')
+    end
+
+    it 'converts new line characters to space characters' do
+      name = FactoryGirl.create(:name, text_en: "my\nname")
+      expect(name.text_en).to eq('my name')
+    end
+  end
+
+  describe '#text_ka=' do
+    it 'cleans text of extra spaces' do
+      name = FactoryGirl.create(:name, text_ka: 'my  name')
+      expect(name.text_ka).to eq('my name')
+    end
+
+    it 'strips text of surrounding space' do
+      name = FactoryGirl.create(:name, text_ka: ' my name ')
+      expect(name.text_ka).to eq('my name')
+    end
+
+    it 'converts new line characters to space characters' do
+      name = FactoryGirl.create(:name, text_ka: "my\nname")
+      expect(name.text_ka).to eq('my name')
+    end
   end
 
   describe '#text' do

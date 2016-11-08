@@ -8,9 +8,7 @@ class Name < ApplicationRecord
   validates :nameable, presence: true
   validate :validate_text_not_empty_string
 
-  def text=(initial_text)
-    self[:text] = Name.clean_text(initial_text)
-  end
+  before_save :clean_texts
 
   def self.texts_represent_same_budget_item?(text1, text2)
     unless (text1.is_a? String) && (text2.is_a? String)
@@ -21,6 +19,11 @@ class Name < ApplicationRecord
   end
 
   private
+
+  def clean_texts
+    self.text_en = Name.clean_text(text_en)
+    self.text_ka = Name.clean_text(text_ka)
+  end
 
   def self.aggressively_clean_text(text)
     clean_text(
@@ -37,6 +40,8 @@ class Name < ApplicationRecord
   end
 
   def self.clean_text(text)
+    return nil if text.nil?
+
     text
     .gsub(/\s+/, ' ')
     .strip

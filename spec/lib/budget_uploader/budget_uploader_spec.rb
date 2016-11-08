@@ -437,6 +437,13 @@ RSpec.describe 'BudgetFiles' do
           start_date: start_date_2015_jan_1
         )
 
+        @long_dash_agency = FactoryGirl.create(
+          :spending_agency
+        ).add_name(
+          text_ka: 'სახელმწიფო რწმუნებულის – გუბერნატორის ადმინისტრაცია აბაშის, ზუგდიდის, მარტვილის, მესტიის, სენაკის, ჩხოროწყუს, წალენჯიხის, ხობის მუნიციპალიტეტებსა და თვითმმართველ ქალაქ ფოთში',
+          start_date: start_date_2015_jan_1
+        )
+
         BudgetFiles.new(
           budget_item_translations: BudgetFiles.english_translations_file
         ).upload
@@ -457,6 +464,10 @@ RSpec.describe 'BudgetFiles' do
 
       it 'saves English translation of program' do
         expect(@program.name_en).to eq('Public Funds Management')
+      end
+
+      it 'saves English translation of program with long dash that is listed in CSV as -' do
+        expect(@long_dash_agency.name_en).to eq('Administration of the State Representative – Governor in ABASHA, ZUGDIDI, MARTVILI, MESTIA, SENAKI, CHKHOROTSKU, TSALENJIKHA, KHOBI Municipalities and the Local Self-Governing City of POTI')
       end
     end
   end
