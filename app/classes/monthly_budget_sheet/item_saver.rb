@@ -73,7 +73,7 @@ module MonthlyBudgetSheet
     end
 
     def name_text_en
-      ''
+      nil
     end
 
     def save_spent_finance
