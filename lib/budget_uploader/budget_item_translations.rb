@@ -4,6 +4,7 @@ class BudgetItemTranslations
   end
 
   def save
+    I18n.locale = 'en'
     names = Name.includes(:translations)
 
     require('csv')
@@ -24,7 +25,7 @@ class BudgetItemTranslations
       next unless names_to_translate.present?
 
       names_to_translate.each do |name_to_translate|
-        name_to_translate.text_en = english_name
+        name_to_translate.text = english_name
         name_to_translate.save
       end
     end
