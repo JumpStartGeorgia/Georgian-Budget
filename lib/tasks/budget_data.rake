@@ -106,6 +106,39 @@ namespace :budget_data do
       end
     end
   end
+
+  desc 'Get list of unique budget item names to be translated'
+  task get_georgian_names_to_be_translated: :environment do
+    ids_sql = <<-STRING
+      SELECT * FROM names
+      WHERE NAMES.id IN (
+        SELECT DISTINCT ON (georgian_translations.text)
+               names.id AS id
+        FROM names LEFT JOIN
+          (SELECT * FROM name_translations
+           WHERE name_translations.locale = 'en') AS english_translations
+        ON names.id = english_translations.name_id
+        JOIN
+          (SELECT * FROM name_translations
+           WHERE name_translations.locale = 'ka') AS georgian_translations
+        ON names.id = georgian_translations.name_id
+        WHERE english_translations.name_id IS NULL
+        ORDER BY georgian_translations.text
+      )
+      ORDER BY CASE WHEN names.nameable_type = 'Priority' THEN '1'
+                    WHEN names.nameable_type = 'SpendingAgency' THEN '2'
+                    ELSE names.nameable_type END ASC
+    STRING
+
+    names = Name.find_by_sql(ids_sql)
+
+    CSV.open(Rails.root.join('tmp', 'georgian_budget_names_to_be_translated.csv'), 'wb') do |csv|
+      csv << ["Budget Item Code", "Georgian Name", "Budget Item Type", "English Translation"]
+      names.each do |name|
+        csv << [name.nameable.code, name.text_ka, name.nameable_type, name.text_en]
+      end
+    end
+  end
 end
 
 def stop_if_production
