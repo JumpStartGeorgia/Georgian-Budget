@@ -68,29 +68,31 @@ namespace :budget_data do
   end
 
   desc 'Export CSV of possible duplicate budget items'
-  task export_possible_duplicate_budget_items: :environment do
-    csv_file_path = Rails.root.join('tmp', 'possible_duplicate_budget_items.csv')
+  task :export_possible_duplicate_budget_items, [:locale] => :environment do |t, args|
+    I18n.locale = args[:locale]
 
-    headers = [
-      'Budget Item Type',
-      'Budget Item 1 Code',
-      'Budget Item 2 Code',
-      'Budget Item 1 Name',
-      'Budget Item 2 Name',
-      'Budget Item 1 Dates',
-      'Budget Item 2 Dates',
-      'Marked on Date',
-      'Merge? (yes / no)'
-    ]
+    file_name = "possible_duplicate_budget_items_#{I18n.locale}.csv"
+    csv_file_path = Rails.root.join('tmp', file_name)
+
+    possible_duplicate_pairs = PossibleDuplicatePair
+    .all
+    .order(pair_type: :desc)
 
     require 'csv'
     CSV.open(csv_file_path, 'wb') do |csv|
-      csv << headers
+      csv << [
+        'Budget Item Type',
+        'Budget Item 1 Code',
+        'Budget Item 2 Code',
+        'Budget Item 1 Name',
+        'Budget Item 2 Name',
+        'Budget Item 1 Dates',
+        'Budget Item 2 Dates',
+        'Marked on Date',
+        'Merge? (yes / no)'
+      ]
 
-      PossibleDuplicatePair
-      .all
-      .order(pair_type: :desc)
-      .each do |possible_duplicate_pair|
+      possible_duplicate_pairs.each do |possible_duplicate_pair|
         item1 = possible_duplicate_pair.item1
         item2 = possible_duplicate_pair.item2
 
@@ -107,6 +109,10 @@ namespace :budget_data do
         ]
       end
     end
+
+    puts "Finished exporting CSV of possible duplicate pairs"
+    puts "File path: #{csv_file_path}"
+    puts "Number of Possible Duplicate Pairs: #{possible_duplicate_pairs.count}"
   end
 
   desc 'Get list of unique budget item names to be translated'
