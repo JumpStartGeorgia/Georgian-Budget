@@ -79,6 +79,7 @@ namespace :budget_data do
       'Budget Item 2 Name',
       'Budget Item 1 Dates',
       'Budget Item 2 Dates',
+      'Marked on Date',
       'Merge? (yes / no)'
     ]
 
@@ -95,12 +96,13 @@ namespace :budget_data do
 
         csv << [
           possible_duplicate_pair.pair_type,
-          item1.code,
-          item2.code,
-          item1.name_ka,
-          item2.name_ka,
+          possible_duplicate_pair.item1_code_when_found,
+          possible_duplicate_pair.item2_code_when_found,
+          possible_duplicate_pair.item1_name_when_found,
+          possible_duplicate_pair.item2_name_when_found,
           "#{item1.start_date} - #{item1.end_date}",
           "#{item2.start_date} - #{item2.end_date}",
+          possible_duplicate_pair.date_when_found,
           ''
         ]
       end

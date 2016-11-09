@@ -17,6 +17,26 @@ class PossibleDuplicatePair < ApplicationRecord
   validate :validate_items_have_same_type
   validate :validate_does_not_have_equivalent_but_reversed_pair
 
+  def date_when_found
+    item2.codes.first.start_date
+  end
+
+  def item1_code_when_found
+    item1.code_on_date(date_when_found).number
+  end
+
+  def item2_code_when_found
+    item2.code_on_date(date_when_found).number
+  end
+
+  def item1_name_when_found
+    item1.name_on_date(date_when_found).text
+  end
+
+  def item2_name_when_found
+    item2.name_on_date(date_when_found).text
+  end
+
   private
 
   def validate_item2_is_not_item1
