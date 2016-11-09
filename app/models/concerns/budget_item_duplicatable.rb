@@ -43,10 +43,10 @@ module BudgetItemDuplicatable
   def get_possible_duplicates
     possible_duplicates_array = []
 
-    code_duplicate = self.class.where(code: code).where.not(id: self).last
+    code_duplicate = self.class.where(code: code).where.not(id: self).order(:start_date).last
     possible_duplicates_array << code_duplicate if code_duplicate.present?
 
-    name_duplicate = self.class.find_by_name(name).where.not(id: self).last
+    name_duplicate = self.class.find_by_name(name).where.not(id: self).order(:start_date).last
     possible_duplicates_array << name_duplicate if name_duplicate.present?
 
     possible_duplicates_array

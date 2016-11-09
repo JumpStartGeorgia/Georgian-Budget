@@ -3,79 +3,78 @@ require 'rails_helper'
 RSpec.shared_examples_for 'BudgetItemDuplicatable' do
   let(:described_class_sym) { described_class.to_s.underscore.to_sym }
 
+  let(:earlier_saved_code_attr) { FactoryGirl.attributes_for(:code) }
+  let(:later_saved_code_attr) { FactoryGirl.attributes_for(:code) }
+  let(:new_code_attr) { FactoryGirl.attributes_for(:code) }
+
+  let(:earlier_saved_name_attr) { FactoryGirl.attributes_for(:name) }
+  let(:later_saved_name_attr) { FactoryGirl.attributes_for(:name) }
+  let(:new_name_attr) { FactoryGirl.attributes_for(:name) }
+
   let(:previously_saved_budget_item1) do
-    FactoryGirl.create(
-      described_class_sym,
-      code: '')
+    FactoryGirl.create(described_class_sym)
   end
 
   let(:previously_saved_budget_item2) do
-    FactoryGirl.create(
-      described_class_sym,
-      code: '')
+    FactoryGirl.create(described_class_sym)
   end
 
-  let(:budget_item) do
-    FactoryGirl.create(
-      described_class_sym,
-      code: '01 01')
+  let(:new_budget_item) do
+    FactoryGirl.create(described_class_sym)
   end
 
   describe '#save_possible_duplicates' do
     context 'when no other budget_items have same code or name' do
-      it 'returns empty array' do
+      it 'does not save any possible duplicates' do
         previously_saved_budget_item1
         previously_saved_budget_item2
 
-        budget_item.save_possible_duplicates
+        new_budget_item.add_code(new_code_attr)
+        new_budget_item.add_name(new_name_attr)
 
-        expect(
-          previously_saved_budget_item1.possible_duplicates.include?(budget_item) ||
-          previously_saved_budget_item2.possible_duplicates.include?(budget_item)
-        ).to eq(false)
+        new_budget_item.save_possible_duplicates
+
+        expect(new_budget_item.possible_duplicates).to eq([])
       end
     end
 
     context 'when two other budget_items have same code' do
       it 'returns the more recent budget_item in an array' do
-        previously_saved_budget_item1.code = budget_item.code
-        previously_saved_budget_item1.save!
+        earlier_saved_code_attr[:number] = new_code_attr[:number]
+        previously_saved_budget_item1.add_code(earlier_saved_code_attr)
 
-        previously_saved_budget_item2.code = budget_item.code
-        previously_saved_budget_item2.save!
+        later_saved_code_attr[:number] = new_code_attr[:number]
+        previously_saved_budget_item2.add_code(later_saved_code_attr)
 
-        budget_item.save_possible_duplicates
+        previously_saved_budget_item1.update_column(
+          :start_date,
+          previously_saved_budget_item2.start_date + 1)
 
-        expect(
-          previously_saved_budget_item1.possible_duplicates.include?(budget_item) ||
-          previously_saved_budget_item2.possible_duplicates.include?(budget_item)
-        ).to eq(true)
+        new_budget_item.add_code(new_code_attr)
+
+        new_budget_item.save_possible_duplicates
+
+        expect(new_budget_item.possible_duplicates).to eq([previously_saved_budget_item1])
       end
     end
 
     context 'when two other budget_items have same name' do
-      it 'returns the more recently named budget_item in an array' do
-        name_text = 'fjiepwjfipejw'
-        previously_saved_budget_item1.add_name(
-          start_date: Date.new(2012, 2, 1),
-          text: name_text)
+      it 'returns the budget_item with more recent start date in an array' do
+        earlier_saved_name_attr[:text] = new_name_attr[:text]
+        previously_saved_budget_item1.add_name(earlier_saved_name_attr)
 
-        previously_saved_budget_item2.add_name(
-          start_date: Date.new(2012, 3, 1),
-          text: name_text)
+        later_saved_name_attr[:text] = new_name_attr[:text]
+        previously_saved_budget_item2.add_name(later_saved_name_attr)
 
-        previously_saved_budget_item2.reload.save_possible_duplicates
+        previously_saved_budget_item1.update_column(
+          :start_date,
+          previously_saved_budget_item2.start_date + 1)
 
-        budget_item.add_name(
-          start_date: Date.new(2013, 1, 1),
-          text: name_text)
+        new_budget_item.add_name(new_name_attr)
 
-        budget_item.save_possible_duplicates
+        new_budget_item.save_possible_duplicates
 
-        expect(
-          previously_saved_budget_item1.possible_duplicates.include?(budget_item) ||
-          previously_saved_budget_item2.possible_duplicates.include?(budget_item)
-        ).to eq(true)
+        expect(new_budget_item.possible_duplicates).to eq([previously_saved_budget_item1])
       end
     end
   end
@@ -84,14 +83,14 @@ RSpec.shared_examples_for 'BudgetItemDuplicatable' do
     context 'when budget_item is item1 in one duplicate pair and item2 in another' do
       it 'returns array with both duplicate budget_items' do
         PossibleDuplicatePair.create(
-          item1: budget_item,
+          item1: new_budget_item,
           item2: previously_saved_budget_item1)
 
         PossibleDuplicatePair.create(
           item1: previously_saved_budget_item2,
-          item2: budget_item)
+          item2: new_budget_item)
 
-        expect(budget_item.possible_duplicates)
+        expect(new_budget_item.possible_duplicates)
         .to match_array([previously_saved_budget_item1, previously_saved_budget_item2])
       end
     end
