@@ -22,15 +22,21 @@ class PossibleDuplicatePair < ApplicationRecord
   end
 
   def item1_code_when_found
+    code = item1.code_on_date(date_when_found - 1)
+    return code.number if code.present?
+
     item1.code_on_date(date_when_found).number
+  end
+
+  def item1_name_when_found
+    name = item1.name_on_date(date_when_found - 1)
+    return name.text if name.present?
+
+    item1.name_on_date(date_when_found).text
   end
 
   def item2_code_when_found
     item2.code_on_date(date_when_found).number
-  end
-
-  def item1_name_when_found
-    item1.name_on_date(date_when_found).text
   end
 
   def item2_name_when_found
