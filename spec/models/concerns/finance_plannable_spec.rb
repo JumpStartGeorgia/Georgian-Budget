@@ -163,10 +163,42 @@ RSpec.shared_examples_for 'FinancePlannable' do
   end
 
   describe '#add_planned_finance' do
-    context 'when new planned finance is unique for time period' do
-      it 'sets most_recently_announced to true' do
+    context 'when start date is after added spent finance start date' do
+      it 'updates start date to spent finance start date' do
+        month = Month.for_date(Date.new(2012, 1, 1))
+
+        finance_plannable1.start_date = month.start_date + 1
+        finance_plannable1.save
+
+        planned_finance_attr1[:start_date] = month.start_date
+        planned_finance_attr1[:end_date] = month.end_date
+
         finance_plannable1.add_planned_finance(planned_finance_attr1)
+
+        finance_plannable1.reload
+        expect(finance_plannable1.start_date).to eq(month.start_date)
       end
+    end
+
+    context 'when end date is before added spent finance end date' do
+      it 'updates end date to spent finance end date' do
+        month = Month.for_date(Date.new(2012, 1, 1))
+
+        finance_plannable1.end_date = month.end_date - 1
+        finance_plannable1.save
+
+        planned_finance_attr1[:start_date] = month.start_date
+        planned_finance_attr1[:end_date] = month.end_date
+
+        finance_plannable1.add_planned_finance(planned_finance_attr1)
+
+        finance_plannable1.reload
+        expect(finance_plannable1.end_date).to eq(month.end_date)
+      end
+    end
+
+    context 'when new planned finance is unique for time period' do
+      it 'sets most_recently_announced to true'
     end
 
     context 'when new planned finance has earlier announced sibling for same time period' do

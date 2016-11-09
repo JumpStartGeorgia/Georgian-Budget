@@ -29,9 +29,18 @@ RSpec.describe 'BudgetFiles' do
 
       context 'total:' do
         let(:total) { Total.first }
+        let(:q1_2015) { Quarter.for_date(Date.new(2015, 1, 1)) }
 
         it 'saves total code' do
           expect(total.code).to eq('00')
+        end
+
+        it 'saves total start date' do
+          expect(total.start_date).to eq(q1_2015.start_date)
+        end
+
+        it 'saves total end date' do
+          expect(total.end_date).to eq(q1_2015.end_date)
         end
 
         it 'saves total English name' do

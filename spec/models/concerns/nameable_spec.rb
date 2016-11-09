@@ -126,6 +126,20 @@ RSpec.shared_examples_for 'Nameable' do
       end
     end
 
+    context 'when nameable has start date after name start date' do
+      it "updates nameable's start date to name start date" do
+        nameable1.start_date = Date.new(2012, 1, 2)
+        nameable1.save
+
+        name_attr1a[:start_date] = Date.new(2012, 1, 1)
+
+        nameable1.add_name(name_attr1a)
+
+        nameable1.reload
+        expect(nameable1.start_date).to eq(Date.new(2012, 1, 1))
+      end
+    end
+
     context 'when nameable has no names' do
       it 'causes nameable to have one name' do
         nameable1.add_name(name_attr1a)

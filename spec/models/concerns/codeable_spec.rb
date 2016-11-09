@@ -32,6 +32,20 @@ RSpec.shared_examples_for 'Codeable' do
       end
     end
 
+    context 'when code start date is before codeable start date' do
+      it 'updates codeable start date to code start date' do
+        codeable1.start_date = Date.new(2012, 1, 2)
+        codeable1.save
+
+        new_code_attr[:start_date] = Date.new(2012, 1, 1)
+
+        codeable1.add_code(new_code_attr)
+
+        codeable1.reload
+        expect(codeable1.start_date).to eq(Date.new(2012, 1, 1))
+      end
+    end
+
     context 'when codeable has no other codes' do
       it 'causes codeable to have 1 code' do
         codeable1.add_code(new_code_attr)

@@ -13,6 +13,7 @@ module Codeable
 
       merge_new_code(new_code)
       update_column(:code, codes.last.number)
+      DatesUpdater.new(self, new_code).update
 
       args[:return_code] ? new_code : self
     end

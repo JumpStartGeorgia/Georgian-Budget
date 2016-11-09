@@ -50,6 +50,7 @@ module Nameable
 
       merge_new_name(name)
       update_names_is_most_recent
+      DatesUpdater.new(self, name).update
 
       return self
     end

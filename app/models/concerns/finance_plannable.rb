@@ -61,6 +61,7 @@ module FinancePlannable
 
       planned_finance = merge_new_planned_finance(new_planned_finance)
       update_most_recently_announced_with(planned_finance)
+      DatesUpdater.new(self, planned_finance).update
 
       return planned_finance if args[:return_finance]
 

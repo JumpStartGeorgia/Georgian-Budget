@@ -13,6 +13,8 @@ module FinanceSpendable
       spent_finance_attributes[:finance_spendable] = self
       spent_finance = SpentFinance.create!(spent_finance_attributes)
 
+      DatesUpdater.new(self, spent_finance).update
+
       return self
     end
   end

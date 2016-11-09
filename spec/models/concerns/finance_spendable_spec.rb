@@ -61,6 +61,40 @@ RSpec.shared_examples_for 'FinanceSpendable' do
       end
     end
 
+    context 'when start date is after added spent finance start date' do
+      it 'updates start date to spent finance start date' do
+        month = Month.for_date(Date.new(2012, 1, 1))
+
+        finance_spendable1.start_date = month.start_date + 1
+        finance_spendable1.save
+
+        spent_finance_attr1a[:start_date] = month.start_date
+        spent_finance_attr1a[:end_date] = month.end_date
+        
+        finance_spendable1.add_spent_finance(spent_finance_attr1a)
+
+        finance_spendable1.reload
+        expect(finance_spendable1.start_date).to eq(month.start_date)
+      end
+    end
+
+    context 'when end date is before added spent finance end date' do
+      it 'updates end date to spent finance end date' do
+        month = Month.for_date(Date.new(2012, 1, 1))
+
+        finance_spendable1.end_date = month.end_date - 1
+        finance_spendable1.save
+
+        spent_finance_attr1a[:start_date] = month.start_date
+        spent_finance_attr1a[:end_date] = month.end_date
+
+        finance_spendable1.add_spent_finance(spent_finance_attr1a)
+
+        finance_spendable1.reload
+        expect(finance_spendable1.end_date).to eq(month.end_date)
+      end
+    end
+
     context 'when spent finance is valid' do
       it 'causes finance spendable to have one spent finances' do
         finance_spendable1.add_spent_finance(spent_finance_attr1a)
