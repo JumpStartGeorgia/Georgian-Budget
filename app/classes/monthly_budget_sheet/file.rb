@@ -18,8 +18,6 @@ module MonthlyBudgetSheet
       @name_column = nil
       @spent_finance_column = nil
       @planned_finance_column = nil
-
-      @warnings = []
     end
 
     def save_data
@@ -50,8 +48,7 @@ module MonthlyBudgetSheet
             # save the previous budget item
             ItemSaver.new(
               current_item,
-              start_date: publish_date,
-              warnings: warnings
+              start_date: publish_date
             ).save_data_from_monthly_sheet_item
           end
 
@@ -63,8 +60,6 @@ module MonthlyBudgetSheet
           current_item.totals_row = row
         end
       end
-
-      output_warnings
     end
 
     def data_rows
@@ -79,8 +74,7 @@ module MonthlyBudgetSheet
       @publish_date ||= get_publish_date
     end
 
-    attr_reader :spreadsheet_path,
-                :warnings
+    attr_reader :spreadsheet_path
 
     private
 
@@ -88,13 +82,6 @@ module MonthlyBudgetSheet
                   :name_column,
                   :spent_finance_column,
                   :planned_finance_column
-
-    def output_warnings
-      return if warnings.empty?
-
-      puts "\nWARNINGS for Monthly Budget Spreadsheet #{month}"
-      warnings.each { |warning| puts "WARNING: #{warning}" }
-    end
 
     def excel_data
       @excel_data ||= get_excel_data
