@@ -21,6 +21,70 @@ RSpec.shared_examples_for 'Codeable' do
     end
   end
 
+  describe '#code_on_date' do
+    let(:jan_1_2012) { Date.new(2012, 1, 1) }
+
+    context 'when codeable has no codes' do
+      it 'returns nil' do
+        expect(codeable1.code_on_date(jan_1_2012)).to eq(nil)
+      end
+    end
+
+    context 'when codeable has one code with start date before arg date' do
+      it 'returns that code' do
+        new_code_attr[:start_date] = jan_1_2012 - 1
+        code = codeable1.add_code(new_code_attr, return_code: true)
+
+        expect(
+          codeable1.code_on_date(jan_1_2012)
+        ).to eq(code)
+      end
+    end
+
+    context 'when codeable has one code with start date on arg date' do
+      it 'returns that code' do
+        new_code_attr[:start_date] = jan_1_2012
+        code = codeable1.add_code(new_code_attr, return_code: true)
+
+        expect(
+          codeable1.code_on_date(jan_1_2012)
+        ).to eq(code)
+      end
+    end
+
+    context 'when codeable has one code with start date after arg date' do
+      it 'returns nil' do
+        new_code_attr[:start_date] = jan_1_2012 + 1
+        codeable1.add_code(new_code_attr)
+
+        expect(
+          codeable1.code_on_date(jan_1_2012)
+        ).to eq(nil)
+      end
+    end
+
+    context 'when codeable has three codes' do
+      context 'with start dates before, on, and after arg date' do
+        it 'returns code with start date on arg date' do
+          already_saved_code_attr1[:start_date] = jan_1_2012 - 1
+          codeable1.add_code(already_saved_code_attr1)
+
+          already_saved_code_attr2[:start_date] = jan_1_2012
+          jan_1_2012_code = codeable1.add_code(
+            already_saved_code_attr2,
+            return_code: true)
+
+          new_code_attr[:start_date] = jan_1_2012 + 1
+          codeable1.add_code(new_code_attr)
+
+          expect(
+            codeable1.code_on_date(jan_1_2012)
+          ).to eq(jan_1_2012_code)
+        end
+      end
+    end
+  end
+
   describe '#add_code' do
     context 'when code is invalid' do
       it 'raises error' do

@@ -19,6 +19,10 @@ module Codeable
     end
   end
 
+  def code_on_date(date)
+    codes.where('start_date <= ?', date).last
+  end
+
   private
 
   def merge_new_code(new_code)

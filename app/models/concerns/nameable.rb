@@ -42,7 +42,11 @@ module Nameable
     recent_name_object.text_en
   end
 
-  def add_name(name_attributes)
+  def name_on_date(date)
+    names.where('start_date <= ?', date).last
+  end
+
+  def add_name(name_attributes, args = {})
     transaction do
       name_attributes[:nameable] = self
 
@@ -52,7 +56,7 @@ module Nameable
       update_names_is_most_recent
       DatesUpdater.new(self, name).update
 
-      return self
+      args[:return_name] ? name : self
     end
   end
 

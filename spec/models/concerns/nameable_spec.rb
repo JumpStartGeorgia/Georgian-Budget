@@ -93,6 +93,70 @@ RSpec.shared_examples_for 'Nameable' do
     end
   end
 
+  describe '#name_on_date' do
+    let(:jan_1_2012) { Date.new(2012, 1, 1) }
+
+    context 'when nameable has no names' do
+      it 'returns nil' do
+        expect(nameable1.name_on_date(jan_1_2012)).to eq(nil)
+      end
+    end
+
+    context 'when nameable has one name with start date before arg date' do
+      it 'returns that name' do
+        name_attr1c[:start_date] = jan_1_2012 - 1
+        name = nameable1.add_name(name_attr1c, return_name: true)
+
+        expect(
+          nameable1.name_on_date(jan_1_2012)
+        ).to eq(name)
+      end
+    end
+
+    context 'when nameable has one name with start date on arg date' do
+      it 'returns that name' do
+        name_attr1c[:start_date] = jan_1_2012
+        name = nameable1.add_name(name_attr1c, return_name: true)
+
+        expect(
+          nameable1.name_on_date(jan_1_2012)
+        ).to eq(name)
+      end
+    end
+
+    context 'when nameable has one name with start date after arg date' do
+      it 'returns nil' do
+        name_attr1c[:start_date] = jan_1_2012 + 1
+        nameable1.add_name(name_attr1c)
+
+        expect(
+          nameable1.name_on_date(jan_1_2012)
+        ).to eq(nil)
+      end
+    end
+
+    context 'when nameable has three names' do
+      context 'with start dates before, on, and after arg date' do
+        it 'returns name with start date on arg date' do
+          name_attr1a[:start_date] = jan_1_2012 - 1
+          nameable1.add_name(name_attr1a)
+
+          name_attr1b[:start_date] = jan_1_2012
+          jan_1_2012_name = nameable1.add_name(
+            name_attr1b,
+            return_name: true)
+
+          name_attr1c[:start_date] = jan_1_2012 + 1
+          nameable1.add_name(name_attr1c)
+
+          expect(
+            nameable1.name_on_date(jan_1_2012)
+          ).to eq(jan_1_2012_name)
+        end
+      end
+    end
+  end
+
   describe '.find_by_name' do
     it 'returns nameables with name' do
       nameable1.add_name(name_attr1a)
