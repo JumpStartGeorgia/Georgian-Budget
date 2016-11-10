@@ -28,11 +28,11 @@ module MonthlyBudgetSheet
       budget_item = args[:budget_item]
       {
         time_period: month,
-        amount: NonCumulativeFinanceCalculator.calculate(
+        amount: NonCumulativeFinanceCalculator.new(
           finances: budget_item.spent_finances,
           cumulative_amount: spent_finance_cumulative,
           start_date: start_date
-        )
+        ).calculate
       }
     end
 
@@ -41,11 +41,11 @@ module MonthlyBudgetSheet
       {
         time_period: quarter,
         announce_date: start_date,
-        amount: NonCumulativeFinanceCalculator.calculate(
+        amount: NonCumulativeFinanceCalculator.new(
           finances: budget_item.planned_finances,
           start_date: start_date,
           cumulative_amount: planned_finance_cumulative
-        )
+        ).calculate
       }
     end
 
