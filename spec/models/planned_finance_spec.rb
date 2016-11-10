@@ -139,24 +139,6 @@ RSpec.describe PlannedFinance do
     end
   end
 
-  describe '.year_cumulative_up_to' do
-    it 'gets amount planned between beginning of the year and provided date' do
-      # in 2014
-      planned_finance1.save!
-
-      # in 2015
-      planned_finance1b.save!
-      planned_finance1c.save!
-      planned_finance1d.save!
-
-      amount_planned = PlannedFinance.all.year_cumulative_up_to(
-        planned_finance1c.end_date
-      )
-
-      expect(amount_planned).to eq(planned_finance1b.amount + planned_finance1c.amount)
-    end
-  end
-
   describe '.before' do
     it 'gets the planned finances before a certain date' do
       planned_finance1.save!

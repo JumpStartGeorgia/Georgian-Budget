@@ -69,24 +69,6 @@ RSpec.describe SpentFinance do
     end
   end
 
-  describe '.year_cumulative_up_to' do
-    it 'gets amount spent between beginning of the year and provided date' do
-      # in 2014
-      spent_finance1.save!
-
-      # in 2015
-      spent_finance1b.save!
-      spent_finance1c.save!
-      spent_finance1d.save!
-
-      amount_spent = SpentFinance.all.year_cumulative_up_to(
-        spent_finance1c.end_date
-      )
-
-      expect(amount_spent).to eq(spent_finance1b.amount + spent_finance1c.amount)
-    end
-  end
-
   describe '.before' do
     it 'gets the spent finances before a certain date' do
       spent_finance1.save!

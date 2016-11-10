@@ -18,7 +18,7 @@ module MonthlyBudgetSheet
     def calculate
       return nil if data_missing?
 
-      previously_spent = finances.year_cumulative_up_to(start_date)
+      previously_spent = finances.after(Date.new(start_date.year, 1, 1)).before(start_date).total
       cumulative_amount - previously_spent
     end
 

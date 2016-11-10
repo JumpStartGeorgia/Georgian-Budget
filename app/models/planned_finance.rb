@@ -23,10 +23,6 @@ class PlannedFinance < ApplicationRecord
     self.finance_plannable = new_parent
   end
 
-  def self.year_cumulative_up_to(date)
-    after(Date.new(date.year, 1, 1)).before(date).total
-  end
-
   def self.before(date)
     where('end_date <= ?', date)
   end
