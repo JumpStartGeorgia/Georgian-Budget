@@ -49,14 +49,21 @@ module Nameable
   def add_name(name_attributes, args = {})
     transaction do
       name_attributes[:nameable] = self
+      new_name = Name.create!(name_attributes)
 
-      name = Name.create!(name_attributes)
+      update_with_new_name(new_name)
 
-      merge_new_name(name)
-      update_names_is_most_recent
-      DatesUpdater.new(self, name).update
+      args[:return_name] ? new_name : self
+    end
+  end
 
-      args[:return_name] ? name : self
+  def take_name(new_name, args = {})
+    transaction do
+      new_name.update_attributes!(nameable: self)
+      
+      update_with_new_name(new_name)
+
+      args[:return_name] ? new_name : self
     end
   end
 
@@ -66,6 +73,12 @@ module Nameable
   end
 
   private
+
+  def update_with_new_name(new_name)
+    merge_new_name(new_name)
+    update_names_is_most_recent
+    DatesUpdater.new(self, new_name).update
+  end
 
   def update_names_is_most_recent
     names.reload

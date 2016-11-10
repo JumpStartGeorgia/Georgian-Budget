@@ -378,6 +378,25 @@ RSpec.shared_examples_for 'Nameable' do
     end
   end
 
+  describe '#take_name' do
+    let(:name) { FactoryGirl.create(:name) }
+
+    it "takes name away from name's old nameable" do
+      old_nameable = name.nameable
+      nameable1.take_name(name)
+
+      expect(old_nameable.names.count).to eq(0)
+    end
+
+    context 'when nameable has no names' do
+      it 'causes nameable to have one name' do
+        nameable1.take_name(name)
+
+        expect(nameable1.names.count).to eq(1)
+      end
+    end
+  end
+
   describe '.with_most_recent_names' do
     it 'loads each nameable with its most recent name object' do
       nameable1
