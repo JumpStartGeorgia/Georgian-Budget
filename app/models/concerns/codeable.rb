@@ -8,12 +8,19 @@ module Codeable
   def add_code(code_attributes, args = {})
     transaction do
       code_attributes[:codeable] = self
-
       new_code = Code.create!(code_attributes)
 
-      merge_new_code(new_code)
-      update_column(:code, codes.last.number)
-      DatesUpdater.new(self, new_code).update
+      update_with_new_code(new_code)
+
+      args[:return_code] ? new_code : self
+    end
+  end
+
+  def take_code(new_code, args = {})
+    transaction do
+      new_code.update_attributes!(codeable: self)
+
+      update_with_new_code(new_code)
 
       args[:return_code] ? new_code : self
     end
@@ -24,6 +31,12 @@ module Codeable
   end
 
   private
+
+  def update_with_new_code(new_code)
+    merge_new_code(new_code)
+    update_column(:code, codes.last.number)
+    DatesUpdater.new(self, new_code).update
+  end
 
   def merge_new_code(new_code)
     codes.reload

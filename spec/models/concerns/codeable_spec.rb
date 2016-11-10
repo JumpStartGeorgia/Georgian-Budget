@@ -245,4 +245,23 @@ RSpec.shared_examples_for 'Codeable' do
       end
     end
   end
+
+  describe '#take_code' do
+    context 'when codeable has no codes' do
+      it 'increases codeable code amount to 1' do
+        codeable1.take_code(FactoryGirl.create(:code))
+
+        expect(codeable1.codes.count).to eq(1)
+      end
+
+      it "takes code away from old code's codeable" do
+        code = FactoryGirl.create(:code)
+        old_codeable = code.codeable
+
+        codeable1.take_code(code)
+
+        expect(old_codeable.codes.count).to eq(0)
+      end
+    end
+  end
 end
