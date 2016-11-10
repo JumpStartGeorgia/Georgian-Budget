@@ -70,7 +70,7 @@ RSpec.shared_examples_for 'FinanceSpendable' do
 
         spent_finance_attr1a[:start_date] = month.start_date
         spent_finance_attr1a[:end_date] = month.end_date
-        
+
         finance_spendable1.add_spent_finance(spent_finance_attr1a)
 
         finance_spendable1.reload
@@ -101,6 +101,26 @@ RSpec.shared_examples_for 'FinanceSpendable' do
         finance_spendable1.reload
 
         expect(finance_spendable1.spent_finances.length).to eq(1)
+      end
+    end
+  end
+
+  describe '#take_spent_finance' do
+    let(:spent_finance) { FactoryGirl.create(:spent_finance) }
+
+    it 'takes spent finance away from its old finance spendable' do
+      old_finance_spendable = spent_finance.finance_spendable
+
+      finance_spendable1.take_spent_finance(spent_finance)
+
+      expect(old_finance_spendable.spent_finances.count).to eq(0)
+    end
+
+    context 'when finance spendable has no spent finances' do
+      it 'causes finance spendable to have one spent finance' do
+        finance_spendable1.take_spent_finance(spent_finance)
+
+        expect(finance_spendable1.spent_finances.count).to eq(1)
       end
     end
   end

@@ -11,8 +11,9 @@ class ItemMerger
     merge_priority(giver.priority)
     merge_codes(giver.codes)
     merge_names(giver.names)
+    merge_spent_finances(giver.spent_finances)
 
-    giver.destroy
+    giver.reload.destroy
   end
 
   private
@@ -39,6 +40,17 @@ class ItemMerger
   def merge_names(new_names)
     new_names.each do |new_name|
       receiver.take_name(new_name)
+    end
+  end
+
+  def merge_spent_finances(new_spent_finances)
+    return if new_spent_finances.blank?
+
+    new_spent_finances.each do |new_spent_finance|
+      receiver.take_spent_finance(
+        new_spent_finance,
+        calculate_non_cumulative_amount: new_spent_finance == new_spent_finances.monthly.first
+      )
     end
   end
 end

@@ -8,14 +8,30 @@ module FinanceSpendable
              dependent: :destroy
   end
 
-  def add_spent_finance(spent_finance_attributes)
+  def add_spent_finance(spent_finance_attributes, args = {})
     transaction do
       spent_finance_attributes[:finance_spendable] = self
-      spent_finance = SpentFinance.create!(spent_finance_attributes)
+      new_spent_finance = SpentFinance.create!(spent_finance_attributes)
 
-      DatesUpdater.new(self, spent_finance).update
+      update_with_new_spent_finance(new_spent_finance)
 
-      return self
+      args[:return_spent_finance] ? new_spent_finance : self
     end
+  end
+
+  def take_spent_finance(new_spent_finance, args = {})
+    transaction do
+      new_spent_finance.update_attributes!(finance_spendable: self)
+
+      update_with_new_spent_finance(new_spent_finance)
+
+      args[:return_spent_finance] ? new_spent_finance : self
+    end
+  end
+
+  private
+
+  def update_with_new_spent_finance(new_spent_finance)
+    DatesUpdater.new(self, new_spent_finance).update
   end
 end
