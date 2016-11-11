@@ -104,7 +104,7 @@ RSpec.shared_examples_for 'FinanceSpendable' do
       end
     end
 
-    context 'and finance spendable has earlier spent finance in same year' do
+    context 'when finance spendable has earlier spent finance in same year' do
       before :example do
         jan_2012 = Month.for_date(Date.new(2012, 1, 1))
         spent_finance_attr1a[:start_date] = jan_2012.start_date
@@ -117,7 +117,7 @@ RSpec.shared_examples_for 'FinanceSpendable' do
       end
 
       context 'when cumulative_within argument is year' do
-        it 'removes amount from spent finance amount' do
+        it 'calculates the cumulative amount' do
           finance_spendable1.add_spent_finance(
             spent_finance_attr1b,
             cumulative_within: Year

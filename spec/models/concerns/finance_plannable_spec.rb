@@ -3,9 +3,8 @@ require 'rails_helper'
 RSpec.shared_examples_for 'FinancePlannable' do
   let(:described_class_sym) { described_class.to_s.underscore.to_sym }
 
-  let(:q1) { Quarter.for_date(Date.new(2015, 1, 1)) }
-  let(:q2) { Quarter.for_date(Date.new(2015, 4, 1)) }
-  let(:q3) { Quarter.for_date(Date.new(2015, 7, 1)) }
+  let(:q1_2015) { Quarter.for_date(Date.new(2015, 1, 1)) }
+  let(:q2_2015) { Quarter.for_date(Date.new(2015, 4, 1)) }
 
   let(:finance_plannable1) { FactoryGirl.create(described_class_sym) }
 
@@ -35,34 +34,6 @@ RSpec.shared_examples_for 'FinancePlannable' do
       :planned_finance,
       finance_plannable: finance_plannable1
     )
-  end
-
-  let(:planned_finance1_q1_jan) do
-    planned_finance1.time_period = q1
-    planned_finance1.announce_date = q1.start_date
-
-    planned_finance1
-  end
-
-  let(:planned_finance1_q1_feb) do
-    planned_finance1b.time_period = q1
-    planned_finance1b.announce_date = q1.start_date.next_month
-
-    planned_finance1b
-  end
-
-  let(:planned_finance1_q2_april) do
-    planned_finance1c.time_period = q2
-    planned_finance1c.announce_date = q2.start_date
-
-    planned_finance1c
-  end
-
-  let(:planned_finance1_q3_july) do
-    planned_finance1d.time_period = q3
-    planned_finance1d.announce_date = q3.start_date
-
-    planned_finance1d
   end
 
   let(:planned_finance_attr1) do
@@ -312,11 +283,38 @@ RSpec.shared_examples_for 'FinancePlannable' do
         end
       end
     end
+
+    context 'when cumulative_within argument is set to Year' do
+      context 'and there is an earlier planned finance in the same year' do
+        before :example do
+          planned_finance_attr1[:start_date] = q1_2015.start_date
+          planned_finance_attr1[:end_date] = q1_2015.end_date
+          planned_finance_attr1[:announce_date] = q1_2015.start_date
+
+          finance_plannable1.add_planned_finance(planned_finance_attr1)
+        end
+
+        it 'removes that earlier amount from calculated amount' do
+          planned_finance_attr1b[:start_date] = q2_2015.start_date
+          planned_finance_attr1b[:end_date] = q2_2015.end_date
+          planned_finance_attr1b[:announce_date] = q2_2015.start_date
+
+          finance_plannable1.add_planned_finance(
+            planned_finance_attr1b,
+            cumulative_within: Year
+          )
+
+          expect(finance_plannable1.all_planned_finances[1].amount).to eq(
+            planned_finance_attr1b[:amount] - planned_finance_attr1[:amount]
+          )
+        end
+      end
+    end
   end
 
   describe '#take_planned_finance' do
     let(:planned_finance) { FactoryGirl.create(:planned_finance) }
-    
+
     it 'takes the planned finance away from its old finance plannable' do
       old_finance_plannable = planned_finance.finance_plannable
 

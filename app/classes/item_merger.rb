@@ -12,7 +12,7 @@ class ItemMerger
     merge_codes(giver.codes)
     merge_names(giver.names)
     merge_spent_finances(giver.spent_finances)
-    merge_planned_finances(giver.planned_finances)
+    merge_planned_finances(giver.all_planned_finances)
 
     giver.reload.destroy
   end
@@ -62,8 +62,18 @@ class ItemMerger
   def merge_planned_finances(new_planned_finances)
     return if new_planned_finances.blank?
 
+    first_new_quarter_plan = new_planned_finances.quarterly.first
+
+    cumulative_within_year = first_new_quarter_plan.blank? ? []
+      : new_planned_finances.with_time_period(first_new_quarter_plan.time_period)
+
     new_planned_finances.each do |new_planned_finance|
-      receiver.take_planned_finance(new_planned_finance)
+      calculate_cumulative = cumulative_within_year.include?(new_planned_finance)
+
+      receiver.take_planned_finance(
+        new_planned_finance,
+        cumulative_within: calculate_cumulative ? Year : nil
+      )
     end
   end
 end

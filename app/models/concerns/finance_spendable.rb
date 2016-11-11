@@ -29,6 +29,8 @@ module FinanceSpendable
     end
   end
 
+  private
+
   def update_with_new_spent_finance(new_spent_finance, args = {})
     if args[:cumulative_within].present?
       new_spent_finance.update_attributes!(

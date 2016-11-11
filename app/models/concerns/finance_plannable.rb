@@ -59,7 +59,7 @@ module FinancePlannable
       params[:finance_plannable] = self
       new_planned_finance = PlannedFinance.create!(params)
 
-      planned_finance = update_with_new_planned_finance(new_planned_finance)
+      planned_finance = update_with_new_planned_finance(new_planned_finance, args)
 
       return planned_finance if args[:return_finance]
 
@@ -71,7 +71,7 @@ module FinancePlannable
     transaction do
       new_planned_finance.update_attributes!(finance_plannable: self)
 
-      planned_finance = update_with_new_planned_finance(new_planned_finance)
+      planned_finance = update_with_new_planned_finance(new_planned_finance, args)
 
       return planned_finance if args[:return_finance]
 
@@ -81,7 +81,18 @@ module FinancePlannable
 
   private
 
-  def update_with_new_planned_finance(new_planned_finance)
+  def update_with_new_planned_finance(new_planned_finance, args = {})
+    if args[:cumulative_within].present?
+      new_planned_finance.update_attributes!(
+        amount: NonCumulativeFinanceCalculator.new(
+          finances: planned_finances,
+          cumulative_amount: new_planned_finance.amount,
+          time_period: new_planned_finance.time_period,
+          cumulative_within: args[:cumulative_within]
+        ).calculate
+      )
+    end
+
     planned_finance = merge_new_planned_finance(new_planned_finance)
     update_most_recently_announced_with(planned_finance)
     DatesUpdater.new(self, planned_finance).update

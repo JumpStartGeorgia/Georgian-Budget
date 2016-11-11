@@ -238,6 +238,105 @@ RSpec.describe ItemMerger do
       end
     end
 
+    context 'when receiver has two and giver has three planned finances' do
+      let(:receiver) { FactoryGirl.create(:program) }
+      let(:giver) { FactoryGirl.create(:program) }
+
+      let(:receiver_planned_f_q4_2012_oct) do
+        time_period = Quarter.for_date(Date.new(2012, 10, 1))
+
+        FactoryGirl.attributes_for(
+          :planned_finance,
+          start_date: time_period.start_date,
+          end_date: time_period.end_date,
+          announce_date: time_period.start_date
+        )
+      end
+
+      let(:receiver_planned_f_q1_2013_jan) do
+        time_period = Quarter.for_date(Date.new(2013, 1, 1))
+
+        FactoryGirl.attributes_for(
+          :planned_finance,
+          start_date: time_period.start_date,
+          end_date: time_period.end_date,
+          announce_date: time_period.start_date
+        )
+      end
+
+      let(:giver_planned_f_q2_2013_april) do
+        time_period = Quarter.for_date(Date.new(2013, 4, 1))
+
+        FactoryGirl.attributes_for(
+          :planned_finance,
+          start_date: time_period.start_date,
+          end_date: time_period.end_date,
+          announce_date: time_period.start_date
+        )
+      end
+
+      let(:giver_planned_f_q2_2013_may) do
+        time_period = Quarter.for_date(Date.new(2013, 4, 1))
+
+        FactoryGirl.attributes_for(
+          :planned_finance,
+          start_date: time_period.start_date,
+          end_date: time_period.end_date,
+          announce_date: time_period.start_date.next_month
+        )
+      end
+
+      let(:giver_planned_f_q3_2013_july) do
+        time_period = Quarter.for_date(Date.new(2013, 7, 1))
+
+        FactoryGirl.attributes_for(
+          :planned_finance,
+          start_date: time_period.start_date,
+          end_date: time_period.end_date,
+          announce_date: time_period.start_date
+        )
+      end
+
+      before :each do
+        receiver
+        .add_planned_finance(receiver_planned_f_q4_2012_oct)
+        .add_planned_finance(receiver_planned_f_q1_2013_jan)
+
+        giver
+        .add_planned_finance(giver_planned_f_q2_2013_april)
+        .add_planned_finance(giver_planned_f_q2_2013_may)
+        .add_planned_finance(giver_planned_f_q3_2013_july)
+      end
+
+      it 'causes receiver to have five planned finances' do
+        ItemMerger.new(receiver).merge(giver)
+
+        expect(receiver.all_planned_finances.count).to eq(5)
+      end
+
+      it "saves planned finances in giver's first quarter cumulatively within year" do
+        ItemMerger.new(receiver).merge(giver)
+
+        expect(receiver.all_planned_finances[2].amount).to eq(
+          giver_planned_f_q2_2013_april[:amount] -
+          receiver_planned_f_q1_2013_jan[:amount]
+        )
+
+        expect(receiver.all_planned_finances[3].amount).to eq(
+          giver_planned_f_q2_2013_may[:amount] -
+          receiver_planned_f_q1_2013_jan[:amount]
+        )
+      end
+
+      it "saves planned finance in giver's second quarter non cumulatively" do
+        ItemMerger.new(receiver).merge(giver)
+
+        expect(receiver.all_planned_finances[4].amount).to eq(
+          giver_planned_f_q3_2013_july[:amount]
+        )
+      end
+    end
+
     context 'when receiver and giver each have one yearly planned finance' do
       let(:receiver) { FactoryGirl.create(:program) }
       let(:giver) { FactoryGirl.create(:program) }
