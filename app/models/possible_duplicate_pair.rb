@@ -17,6 +17,23 @@ class PossibleDuplicatePair < ApplicationRecord
   validate :validate_items_have_same_type
   validate :validate_does_not_have_equivalent_but_reversed_pair
 
+  def items=(items)
+    if items[0].start_date.blank? || items[1].start_date.blank?
+      self.item1 = items[0]
+      self.item2 = items[1]
+      return
+    elsif items[0].start_date < items[1].start_date
+      earlier_item = items[0]
+      later_item = items[1]
+    else
+      earlier_item = items[1]
+      later_item = items[0]
+    end
+
+    self.item1 = earlier_item
+    self.item2 = later_item
+  end
+
   def date_when_found
     item2.codes.first.start_date
   end

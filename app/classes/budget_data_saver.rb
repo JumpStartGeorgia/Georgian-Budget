@@ -13,7 +13,7 @@ class BudgetDataSaver
     save_planned_finance
 
     if budget_item_fetcher.created_new_item && budget_item.respond_to?(:save_possible_duplicates)
-      budget_item.save_possible_duplicates
+      budget_item.save_possible_duplicates(budget_item.get_possible_duplicates)
     end
   end
 

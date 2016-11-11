@@ -64,4 +64,40 @@ Rspec.describe PossibleDuplicatePair, type: :model do
       end
     end
   end
+
+  context '#create' do
+    context 'with items array' do
+      let(:earlier_item) do
+        FactoryGirl.create(
+          :program,
+          start_date: Date.new(2012, 1, 1)
+        )
+      end
+
+      let(:later_item) do
+        FactoryGirl.create(
+          :program,
+          start_date: Date.new(2012, 1, 2)
+        )
+      end
+
+      it 'saves item1 as item with earlier start date' do
+        pair = PossibleDuplicatePair.create(items: [
+          later_item,
+          earlier_item
+        ])
+
+        expect(pair.item1).to eq(earlier_item)
+      end
+
+      it 'saves item2 as item with later start date' do
+        pair = PossibleDuplicatePair.create(items: [
+          later_item,
+          earlier_item
+        ])
+
+        expect(pair.item2).to eq(later_item)
+      end
+    end
+  end
 end

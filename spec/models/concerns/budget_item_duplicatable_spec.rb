@@ -82,13 +82,15 @@ RSpec.shared_examples_for 'BudgetItemDuplicatable' do
   describe '#possible_duplicates' do
     context 'when budget_item is item1 in one duplicate pair and item2 in another' do
       it 'returns array with both duplicate budget_items' do
-        PossibleDuplicatePair.create(
-          item1: new_budget_item,
-          item2: previously_saved_budget_item1)
+        PossibleDuplicatePair.create(items: [
+          new_budget_item,
+          previously_saved_budget_item1
+        ])
 
-        PossibleDuplicatePair.create(
-          item1: previously_saved_budget_item2,
-          item2: new_budget_item)
+        PossibleDuplicatePair.create(items: [
+          previously_saved_budget_item2,
+          new_budget_item
+        ])
 
         expect(new_budget_item.possible_duplicates)
         .to match_array([previously_saved_budget_item1, previously_saved_budget_item2])

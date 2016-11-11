@@ -382,5 +382,32 @@ RSpec.describe ItemMerger do
         )
       end
     end
+
+    context 'when receiver has one and giver has two possible duplicates' do
+      context 'and one of the duplicates is the same' do
+        let(:receiver) { FactoryGirl.create(:program) }
+        let(:giver) { FactoryGirl.create(:program) }
+
+        let(:possible_duplicate1) { FactoryGirl.create(:program) }
+        let(:possible_duplicate2) { FactoryGirl.create(:program) }
+
+        before :each do
+          receiver.save_possible_duplicates([
+            possible_duplicate1
+          ])
+          
+          giver.save_possible_duplicates([
+            possible_duplicate1,
+            possible_duplicate2
+          ])
+        end
+
+        it 'causes receiver to have two possible duplicates' do
+          ItemMerger.new(receiver).merge(giver)
+
+          expect(receiver.possible_duplicates.count).to eq(2)
+        end
+      end
+    end
   end
 end

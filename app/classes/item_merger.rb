@@ -13,6 +13,7 @@ class ItemMerger
     merge_names(giver.names)
     merge_spent_finances(giver.spent_finances)
     merge_planned_finances(giver.all_planned_finances)
+    merge_possible_duplicates(giver.possible_duplicates)
 
     giver.reload.destroy
   end
@@ -74,6 +75,14 @@ class ItemMerger
         new_planned_finance,
         cumulative_within: calculate_cumulative ? Year : nil
       )
+    end
+  end
+
+  def merge_possible_duplicates(new_possible_duplicates)
+    return if new_possible_duplicates.blank?
+
+    new_possible_duplicates.each do |new_possible_duplicate|
+      PossibleDuplicatePair.create(items: [receiver, new_possible_duplicate])
     end
   end
 end
