@@ -313,41 +313,4 @@ RSpec.shared_examples_for 'FinancePlannable' do
       end
     end
   end
-
-  # describe '#add_planned_finance' do
-  #   context 'when finance_plannable has three planned finances' do
-  #     let(:planned_finance1_q1_jan) do
-  #
-  #     end
-  #     context 'with different time periods' do
-  #       it 'sets most_recently_announced to true for all three' do
-  #         planned_finance1_q1_jan
-  #         planned_finance1_q2_april
-  #         planned_finance1_q3_july
-  #
-  #         expect(planned_finance1_q1_jan.reload.most_recently_announced).to eq(true)
-  #         expect(planned_finance1_q2_april.most_recently_announced).to eq(true)
-  #         expect(planned_finance1_q3_july.most_recently_announced).to eq(true)
-  #       end
-  #     end
-  #
-  #     context 'and two have same time periods' do
-  #       it 'sets most_recently_announced to false for the older announce date'
-  #     end
-  #
-  #     context 'and all three have same time periods' do
-  #       it 'sets most_recently_announced to true only for most recent announce date' do
-  #
-  #       end
-  #     end
-  #   end
-  #
-  #   context 'when two finance_plannables each have a planned finance' do
-  #     context 'with same time periods' do
-  #       it 'sets most_recently_announced to true for both' do
-  #
-  #       end
-  #     end
-  #   end
-  # end
 end
