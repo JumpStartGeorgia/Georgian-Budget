@@ -32,7 +32,8 @@ RSpec.shared_examples_for 'BudgetItemDuplicatable' do
         new_budget_item.add_code(new_code_attr)
         new_budget_item.add_name(new_name_attr)
 
-        new_budget_item.save_possible_duplicates
+        new_budget_item.save_possible_duplicates(
+          new_budget_item.get_possible_duplicates)
 
         expect(new_budget_item.possible_duplicates).to eq([])
       end
@@ -52,7 +53,8 @@ RSpec.shared_examples_for 'BudgetItemDuplicatable' do
 
         new_budget_item.add_code(new_code_attr)
 
-        new_budget_item.save_possible_duplicates
+        new_budget_item.save_possible_duplicates(
+          new_budget_item.get_possible_duplicates)
 
         expect(new_budget_item.possible_duplicates).to eq([previously_saved_budget_item1])
       end
@@ -72,7 +74,8 @@ RSpec.shared_examples_for 'BudgetItemDuplicatable' do
 
         new_budget_item.add_name(new_name_attr)
 
-        new_budget_item.save_possible_duplicates
+        new_budget_item.save_possible_duplicates(
+          new_budget_item.get_possible_duplicates)
 
         expect(new_budget_item.possible_duplicates).to eq([previously_saved_budget_item1])
       end
