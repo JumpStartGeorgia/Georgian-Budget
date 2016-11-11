@@ -18,5 +18,21 @@ class Year
     true
   end
 
+  def next
+    Year.new(start_date.year + 1)
+  end
+
+  def previous
+    Year.new(start_date.year - 1)
+  end
+
+  def ==(o)
+    self.class == o.class && self.state == o.state
+  end
+
+  def state
+    [start_date, end_date]
+  end
+
   attr_reader :start_date, :end_date
 end

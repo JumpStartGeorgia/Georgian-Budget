@@ -50,6 +50,10 @@ class Quarter
     Quarter.for_date(Date.new(new_year, new_month, 1))
   end
 
+  def previous
+    Quarter.for_date(start_date - 1)
+  end
+
   def self.dates_valid?(start_date, end_date)
     return false unless start_date.day == 1
     return false unless [1, 4, 7, 10].include? start_date.month

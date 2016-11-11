@@ -133,4 +133,13 @@ RSpec.describe Month do
       end
     end
   end
+
+  describe '#previous' do
+    context 'when month is January 2015' do
+      it 'returns December 2014' do
+        expect(Month.for_date(Date.new(2015, 1, 1)).previous)
+        .to eq(Month.for_date(Date.new(2014, 12, 1)))
+      end
+    end
+  end
 end

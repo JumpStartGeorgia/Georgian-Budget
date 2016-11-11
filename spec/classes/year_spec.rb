@@ -52,4 +52,22 @@ RSpec.describe Year do
       )).to eq(false)
     end
   end
+
+  describe '#next' do
+    context 'when year is 2014' do
+      it 'returns 2015 year instance' do
+        expect(Year.for_date(Date.new(2014, 1, 1)).next)
+        .to eq(Year.for_date(Date.new(2015, 1, 1)))
+      end
+    end
+  end
+
+  describe '#previous' do
+    context 'when year is 2014' do
+      it 'returns 2013 year instance' do
+        expect(Year.for_date(Date.new(2014, 1, 1)).previous)
+        .to eq(Year.for_date(Date.new(2013, 1, 1)))
+      end
+    end
+  end
 end

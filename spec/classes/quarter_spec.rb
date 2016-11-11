@@ -69,6 +69,15 @@ RSpec.describe Quarter do
     end
   end
 
+  describe '#previous' do
+    context 'when quarter is quarter 1 2015' do
+      it 'returns quarter 4 2014' do
+        expect(Quarter.for_date(Date.new(2015, 1, 1)).previous)
+        .to eq(Quarter.for_date(Date.new(2014, 10, 1)))
+      end
+    end
+  end
+
   describe '#to_s' do
     context 'when quarter is first quarter of 2015' do
       it 'returns "Quarter #1, 2015"' do

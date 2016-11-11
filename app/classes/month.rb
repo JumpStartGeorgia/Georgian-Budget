@@ -55,6 +55,10 @@ class Month
     Month.for_date(start_date.next_month)
   end
 
+  def previous
+    Month.for_date(start_date - 1)
+  end
+
   def to_hash
     {
       start_date: start_date,
