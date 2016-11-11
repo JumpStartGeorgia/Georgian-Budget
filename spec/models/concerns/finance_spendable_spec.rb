@@ -103,6 +103,32 @@ RSpec.shared_examples_for 'FinanceSpendable' do
         expect(finance_spendable1.spent_finances.length).to eq(1)
       end
     end
+
+    context 'and finance spendable has earlier spent finance in same year' do
+      before :example do
+        jan_2012 = Month.for_date(Date.new(2012, 1, 1))
+        spent_finance_attr1a[:start_date] = jan_2012.start_date
+        spent_finance_attr1a[:end_date] = jan_2012.end_date
+        finance_spendable1.add_spent_finance(spent_finance_attr1a)
+
+        feb_2012 = Month.for_date(Date.new(2012, 2, 1))
+        spent_finance_attr1b[:start_date] = feb_2012.start_date
+        spent_finance_attr1b[:end_date] = feb_2012.end_date
+      end
+
+      context 'when cumulative_within argument is year' do
+        it 'removes amount from spent finance amount' do
+          finance_spendable1.add_spent_finance(
+            spent_finance_attr1b,
+            cumulative_within: Year
+          )
+
+          expect(finance_spendable1.spent_finances.last.amount).to eq(
+            spent_finance_attr1b[:amount] - spent_finance_attr1a[:amount]
+          )
+        end
+      end
+    end
   end
 
   describe '#take_spent_finance' do

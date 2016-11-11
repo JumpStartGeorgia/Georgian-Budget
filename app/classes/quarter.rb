@@ -1,4 +1,4 @@
-class Quarter
+class Quarter < TimePeriod
   def initialize(start_date, end_date)
     @start_date = start_date
     @end_date = end_date

@@ -31,7 +31,8 @@ module MonthlyBudgetSheet
         amount: NonCumulativeFinanceCalculator.new(
           finances: budget_item.spent_finances,
           cumulative_amount: spent_finance_cumulative,
-          start_date: start_date
+          time_period: month,
+          cumulative_within: Year
         ).calculate
       }
     end
@@ -43,8 +44,9 @@ module MonthlyBudgetSheet
         announce_date: start_date,
         amount: NonCumulativeFinanceCalculator.new(
           finances: budget_item.planned_finances,
-          start_date: start_date,
-          cumulative_amount: planned_finance_cumulative
+          cumulative_amount: planned_finance_cumulative,
+          time_period: quarter,
+          cumulative_within: Year
         ).calculate
       }
     end

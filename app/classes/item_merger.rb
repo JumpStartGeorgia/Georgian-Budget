@@ -46,10 +46,14 @@ class ItemMerger
   def merge_spent_finances(new_spent_finances)
     return if new_spent_finances.blank?
 
+    cumulative_within_year = [new_spent_finances.monthly.first]
+
     new_spent_finances.each do |new_spent_finance|
+      calculate_cumulative = cumulative_within_year.include?(new_spent_finance)
+
       receiver.take_spent_finance(
         new_spent_finance,
-        calculate_non_cumulative_amount: new_spent_finance == new_spent_finances.monthly.first
+        cumulative_within: calculate_cumulative ? Year : nil
       )
     end
   end

@@ -1,4 +1,4 @@
-class Year
+class Year < TimePeriod
   def initialize(year_num)
     @start_date = Date.new(year_num, 1, 1)
     @end_date = Date.new(year_num, 12, 31)

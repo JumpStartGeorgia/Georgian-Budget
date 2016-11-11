@@ -14,22 +14,22 @@ module TimePeriodable
     end
 
     def monthly
-      where(time_period_type: 'month')
+      where(time_period_type: Month.type_to_s)
     end
 
     def quarterly
-      where(time_period_type: 'quarter')
+      where(time_period_type: Quarter.type_to_s)
     end
 
     def yearly
-      where(time_period_type: 'year')
+      where(time_period_type: Year.type_to_s)
     end
   end
 
   def time_period_class
-    return Month if time_period_type == 'month'
-    return Quarter if time_period_type == 'quarter'
-    return Year if time_period_type == 'year'
+    return Month if time_period_type == Month.type_to_s
+    return Quarter if time_period_type == Quarter.type_to_s
+    return Year if time_period_type == Year.type_to_s
 
     nil
   end
@@ -59,9 +59,9 @@ module TimePeriodable
   end
 
   def get_time_period_type_from_dates
-    return 'month' if Month.dates_valid?(start_date, end_date)
-    return 'quarter' if Quarter.dates_valid?(start_date, end_date)
-    return 'year' if Year.dates_valid?(start_date, end_date)
+    return Month.type_to_s if Month.dates_valid?(start_date, end_date)
+    return Quarter.type_to_s if Quarter.dates_valid?(start_date, end_date)
+    return Year.type_to_s if Year.dates_valid?(start_date, end_date)
 
     nil
   end

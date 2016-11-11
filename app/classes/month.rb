@@ -1,4 +1,4 @@
-class Month
+class Month < TimePeriod
   def initialize(year, month)
     @year = year
     @month = month

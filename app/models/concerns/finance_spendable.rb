@@ -13,7 +13,7 @@ module FinanceSpendable
       spent_finance_attributes[:finance_spendable] = self
       new_spent_finance = SpentFinance.create!(spent_finance_attributes)
 
-      update_with_new_spent_finance(new_spent_finance)
+      update_with_new_spent_finance(new_spent_finance, args)
 
       args[:return_spent_finance] ? new_spent_finance : self
     end
@@ -23,15 +23,24 @@ module FinanceSpendable
     transaction do
       new_spent_finance.update_attributes!(finance_spendable: self)
 
-      update_with_new_spent_finance(new_spent_finance)
+      update_with_new_spent_finance(new_spent_finance, args)
 
       args[:return_spent_finance] ? new_spent_finance : self
     end
   end
 
-  private
+  def update_with_new_spent_finance(new_spent_finance, args = {})
+    if args[:cumulative_within].present?
+      new_spent_finance.update_attributes!(
+        amount: NonCumulativeFinanceCalculator.new(
+          finances: spent_finances,
+          cumulative_amount: new_spent_finance.amount,
+          time_period: new_spent_finance.time_period,
+          cumulative_within: args[:cumulative_within]
+        ).calculate
+      )
+    end
 
-  def update_with_new_spent_finance(new_spent_finance)
     DatesUpdater.new(self, new_spent_finance).update
   end
 end
