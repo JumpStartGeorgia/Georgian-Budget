@@ -93,8 +93,6 @@ class ItemMerger
   def merge_possible_duplicates(new_possible_duplicates)
     return if new_possible_duplicates.blank?
 
-    new_possible_duplicates.each do |new_possible_duplicate|
-      PossibleDuplicatePair.create(items: [receiver, new_possible_duplicate])
-    end
+    receiver.save_possible_duplicates(new_possible_duplicates)
   end
 end
