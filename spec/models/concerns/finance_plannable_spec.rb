@@ -313,4 +313,24 @@ RSpec.shared_examples_for 'FinancePlannable' do
       end
     end
   end
+
+  describe '#take_planned_finance' do
+    let(:planned_finance) { FactoryGirl.create(:planned_finance) }
+    
+    it 'takes the planned finance away from its old finance plannable' do
+      old_finance_plannable = planned_finance.finance_plannable
+
+      finance_plannable1.take_planned_finance(planned_finance)
+
+      expect(old_finance_plannable.all_planned_finances.count).to eq(0)
+    end
+
+    context 'when finance plannable has no planned finances' do
+      it 'causes finance plannable to have one planned finance' do
+        finance_plannable1.take_planned_finance(planned_finance)
+
+        expect(finance_plannable1.all_planned_finances.count).to eq(1)
+      end
+    end
+  end
 end

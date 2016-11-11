@@ -117,7 +117,7 @@ RSpec.describe ItemMerger do
       end
     end
 
-    context 'when receiver object has april 2012 and april 2013 spent finances' do
+    context 'when receiver and giver each have two monthly spent finances' do
       let(:receiver) { FactoryGirl.create(:spending_agency) }
       let(:giver) { FactoryGirl.create(:spending_agency) }
 
@@ -141,64 +141,60 @@ RSpec.describe ItemMerger do
         )
       end
 
+      let(:giver_spent_f_may_2013) do
+        time_period = Month.for_date(Date.new(2013, 5, 1))
+
+        FactoryGirl.attributes_for(
+          :spent_finance,
+          start_date: time_period.start_date,
+          end_date: time_period.end_date
+        )
+      end
+
+      let(:giver_spent_f_june_2013) do
+        time_period = Month.for_date(Date.new(2013, 6, 1))
+
+        FactoryGirl.attributes_for(
+          :spent_finance,
+          start_date: time_period.start_date,
+          end_date: time_period.end_date
+        )
+      end
+
       before :each do
         receiver
         .add_spent_finance(receiver_spent_f_april_2012)
         .add_spent_finance(receiver_spent_f_april_2013)
+
+        giver
+        .add_spent_finance(giver_spent_f_may_2013)
+        .add_spent_finance(giver_spent_f_june_2013)
       end
 
-      context 'and giver object has may 2013 and june 2013 spent finances' do
-        let(:giver_spent_f_may_2013) do
-          time_period = Month.for_date(Date.new(2013, 5, 1))
+      it 'causes receiver object to have four monthly spent finances' do
+        ItemMerger.new(receiver).merge(giver)
 
-          FactoryGirl.attributes_for(
-            :spent_finance,
-            start_date: time_period.start_date,
-            end_date: time_period.end_date
-          )
-        end
+        expect(receiver.spent_finances.monthly.count).to eq(4)
+      end
 
-        let(:giver_spent_f_june_2013) do
-          time_period = Month.for_date(Date.new(2013, 6, 1))
+      it 'merges first monthly spent finance amount by as cumulative within year' do
+        ItemMerger.new(receiver).merge(giver)
 
-          FactoryGirl.attributes_for(
-            :spent_finance,
-            start_date: time_period.start_date,
-            end_date: time_period.end_date
-          )
-        end
+        expect(receiver.spent_finances.monthly[2].amount).to eq(
+          giver_spent_f_may_2013[:amount] - receiver_spent_f_april_2013[:amount]
+        )
+      end
 
-        before :each do
-          giver
-          .add_spent_finance(giver_spent_f_may_2013)
-          .add_spent_finance(giver_spent_f_june_2013)
-        end
+      it 'merges second monthly spent finance as non cumulative' do
+        ItemMerger.new(receiver).merge(giver)
 
-        it 'causes receiver object to have four monthly spent finances' do
-          ItemMerger.new(receiver).merge(giver)
-
-          expect(receiver.spent_finances.monthly.count).to eq(4)
-        end
-
-        it 'saves may 2013 finance amount by calculating non cumulative amount' do
-          ItemMerger.new(receiver).merge(giver)
-
-          expect(receiver.spent_finances.monthly[2].amount).to eq(
-            giver_spent_f_may_2013[:amount] - receiver_spent_f_april_2013[:amount]
-          )
-        end
-
-        it 'saves june 2013 finance amount directly from giver' do
-          ItemMerger.new(receiver).merge(giver)
-
-          expect(receiver.spent_finances.monthly[3].amount).to eq(
-            giver_spent_f_june_2013[:amount]
-          )
-        end
+        expect(receiver.spent_finances.monthly[3].amount).to eq(
+          giver_spent_f_june_2013[:amount]
+        )
       end
     end
 
-    context 'when receiver object has 2012 spent finance' do
+    context 'when receiver and giver each have one yearly spent finance' do
       let(:receiver) { FactoryGirl.create(:spending_agency) }
       let(:giver) { FactoryGirl.create(:spending_agency) }
 
@@ -212,38 +208,79 @@ RSpec.describe ItemMerger do
         )
       end
 
-      before :each do
-        receiver.add_spent_finance(receiver_spent_f_2012)
+      let(:giver_spent_f_2013) do
+        time_period = Year.for_date(Date.new(2013, 1, 1))
+
+        FactoryGirl.attributes_for(
+          :spent_finance,
+          start_date: time_period.start_date,
+          end_date: time_period.end_date
+        )
       end
 
-      context 'and giver object has 2013 spent finance' do
-        let(:giver_spent_f_2013) do
-          time_period = Year.for_date(Date.new(2013, 1, 1))
+      before :each do
+        receiver.add_spent_finance(receiver_spent_f_2012)
+        giver.add_spent_finance(giver_spent_f_2013)
+      end
 
-          FactoryGirl.attributes_for(
-            :spent_finance,
-            start_date: time_period.start_date,
-            end_date: time_period.end_date
-          )
-        end
+      it 'causes receiver to have two yearly spent finances' do
+        ItemMerger.new(receiver).merge(giver)
 
-        before :each do
-          giver.add_spent_finance(giver_spent_f_2013)
-        end
+        expect(receiver.spent_finances.yearly.count).to eq(2)
+      end
 
-        it 'causes receiver to have two yearly spent finances' do
-          ItemMerger.new(receiver).merge(giver)
+      it "takes giver's 2013 finance amount directly" do
+        ItemMerger.new(receiver).merge(giver)
 
-          expect(receiver.spent_finances.yearly.count).to eq(2)
-        end
+        expect(receiver.spent_finances.yearly.last.amount).to eq(
+          giver_spent_f_2013[:amount]
+        )
+      end
+    end
 
-        it "takes giver's 2013 finance amount directly" do
-          ItemMerger.new(receiver).merge(giver)
+    context 'when receiver and giver each have one yearly planned finance' do
+      let(:receiver) { FactoryGirl.create(:program) }
+      let(:giver) { FactoryGirl.create(:program) }
 
-          expect(receiver.spent_finances.yearly.last.amount).to eq(
-            giver_spent_f_2013[:amount]
-          )
-        end
+      let(:receiver_planned_f_2012) do
+        time_period = Year.for_date(Date.new(2012, 1, 1))
+
+        FactoryGirl.attributes_for(
+          :planned_finance,
+          start_date: time_period.start_date,
+          end_date: time_period.end_date,
+          announce_date: time_period.start_date
+        )
+      end
+
+      let(:giver_planned_f_2013) do
+        time_period = Year.for_date(Date.new(2013, 1, 1))
+
+        FactoryGirl.attributes_for(
+          :planned_finance,
+          start_date: time_period.start_date,
+          end_date: time_period.end_date,
+          announce_date: time_period.start_date
+        )
+      end
+
+      before :each do
+        receiver.add_planned_finance(receiver_planned_f_2012)
+        giver.add_planned_finance(giver_planned_f_2013)
+      end
+
+      it 'causes receiver to have two yearly planned finances' do
+        ItemMerger.new(receiver).merge(giver)
+
+        expect(receiver.planned_finances.yearly.count).to eq(2)
+      end
+
+      it "merges giver's planned finance as non cumulative" do
+        ItemMerger.new(receiver).merge(giver)
+
+        expect(receiver.planned_finances.yearly.last.amount).to eq(
+          giver_planned_f_2013[:amount]
+        )
       end
     end
   end

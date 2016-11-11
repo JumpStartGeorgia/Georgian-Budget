@@ -12,6 +12,7 @@ class ItemMerger
     merge_codes(giver.codes)
     merge_names(giver.names)
     merge_spent_finances(giver.spent_finances)
+    merge_planned_finances(giver.planned_finances)
 
     giver.reload.destroy
   end
@@ -55,6 +56,14 @@ class ItemMerger
         new_spent_finance,
         cumulative_within: calculate_cumulative ? Year : nil
       )
+    end
+  end
+
+  def merge_planned_finances(new_planned_finances)
+    return if new_planned_finances.blank?
+
+    new_planned_finances.each do |new_planned_finance|
+      receiver.take_planned_finance(new_planned_finance)
     end
   end
 end

@@ -59,9 +59,19 @@ module FinancePlannable
       params[:finance_plannable] = self
       new_planned_finance = PlannedFinance.create!(params)
 
-      planned_finance = merge_new_planned_finance(new_planned_finance)
-      update_most_recently_announced_with(planned_finance)
-      DatesUpdater.new(self, planned_finance).update
+      planned_finance = update_with_new_planned_finance(new_planned_finance)
+
+      return planned_finance if args[:return_finance]
+
+      self
+    end
+  end
+
+  def take_planned_finance(new_planned_finance, args = {})
+    transaction do
+      new_planned_finance.update_attributes!(finance_plannable: self)
+
+      planned_finance = update_with_new_planned_finance(new_planned_finance)
 
       return planned_finance if args[:return_finance]
 
@@ -70,6 +80,14 @@ module FinancePlannable
   end
 
   private
+
+  def update_with_new_planned_finance(new_planned_finance)
+    planned_finance = merge_new_planned_finance(new_planned_finance)
+    update_most_recently_announced_with(planned_finance)
+    DatesUpdater.new(self, planned_finance).update
+
+    return planned_finance
+  end
 
   # returns the newly merged finance
   def merge_new_planned_finance(new_planned_finance)
