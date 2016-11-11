@@ -8,6 +8,10 @@ class ItemMerger
       raise "Merging #{giver.class} into #{receiver.class} is not allowed; types must be the same"
     end
 
+    if receiver_after_giver?(giver)
+      raise "Cannot merge earlier item into later item; receiver must start before giver"
+    end
+
     merge_priority(giver.priority)
     merge_codes(giver.codes)
     merge_names(giver.names)
@@ -21,6 +25,14 @@ class ItemMerger
   private
 
   attr_reader :receiver
+
+  def receiver_after_giver?(giver)
+    receiver.respond_to?(:start_date) &&
+    giver.respond_to?(:start_date) &&
+    receiver.start_date.present? &&
+    giver.start_date.present? &&
+    receiver.start_date > giver.start_date
+  end
 
   def merge_priority(new_priority)
     return if new_priority.nil?

@@ -2,7 +2,6 @@ require 'rails_helper'
 
 RSpec.describe ItemMerger do
   describe '#merge' do
-
     it 'destroys giver object' do
       receiver = FactoryGirl.create(:program)
       giver = FactoryGirl.create(:program)
@@ -10,6 +9,24 @@ RSpec.describe ItemMerger do
       ItemMerger.new(receiver).merge(giver)
 
       expect(giver.persisted?).to eq(false)
+    end
+
+    context 'when receiver start date is after giver start date' do
+      it 'throws error' do
+        receiver = FactoryGirl.create(
+          :program,
+          start_date: Date.new(2012, 1, 2)
+        )
+
+        giver = FactoryGirl.create(
+          :program,
+          start_date: Date.new(2012, 1, 1)
+        )
+
+        expect do
+          ItemMerger.new(receiver).merge(giver)
+        end.to raise_error(RuntimeError)
+      end
     end
 
     context 'when receiver and giver do not have same class' do
@@ -69,7 +86,7 @@ RSpec.describe ItemMerger do
           .add_code(FactoryGirl.attributes_for(
             :code,
             number: '01 01',
-            start_date: Date.new(2012, 1, 1)
+            start_date: Date.new(2012, 2, 15)
           )).add_code(FactoryGirl.attributes_for(
             :code,
             number: '01 03',
@@ -102,7 +119,7 @@ RSpec.describe ItemMerger do
           .add_name(FactoryGirl.attributes_for(
             :name,
             text: 'Name 1',
-            start_date: Date.new(2012, 1, 1)
+            start_date: Date.new(2012, 2, 15)
           )).add_name(FactoryGirl.attributes_for(
             :name,
             text: 'Name 3',
@@ -395,7 +412,7 @@ RSpec.describe ItemMerger do
           receiver.save_possible_duplicates([
             possible_duplicate1
           ])
-          
+
           giver.save_possible_duplicates([
             possible_duplicate1,
             possible_duplicate2
