@@ -43,6 +43,13 @@ module TimePeriodable
     self.end_date = time_period.end_date
   end
 
+  def overlaps?(other)
+    return false if end_date < other.start_date
+    return false if start_date > other.end_date
+
+    true
+  end
+
   private
 
   def validate_time_period_type_is_recognizable

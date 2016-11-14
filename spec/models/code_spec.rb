@@ -152,4 +152,34 @@ RSpec.describe Code, type: :model do
       end
     end
   end
+
+  describe '#generation' do
+    context 'when code has two parts and ends with 00' do
+      it 'is 1' do
+        code = FactoryGirl.create(:code, number: '01 00')
+        expect(code.generation).to eq(1)
+      end
+    end
+
+    context 'when code has two parts and ends with 01' do
+      it 'is 2' do
+        code = FactoryGirl.create(:code, number: '01 01')
+        expect(code.generation).to eq(2)
+      end
+    end
+
+    context 'when code has three parts' do
+      it 'is 3' do
+        code = FactoryGirl.create(:code, number: '011 01 04')
+        expect(code.generation).to eq(3)
+      end
+    end
+
+    context 'when code has five parts' do
+      it 'is 5' do
+        code = FactoryGirl.create(:code, number: '0122 01 0143 08 4343434')
+        expect(code.generation).to eq(5)
+      end
+    end
+  end
 end

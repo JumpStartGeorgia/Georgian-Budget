@@ -18,6 +18,12 @@ class Code < ApplicationRecord
     .order(:start_date).last
   end
 
+  def generation
+    return 1 if represents_spending_agency?
+
+    number_parts.count
+  end
+
   private
 
   def parent_code_number
@@ -36,6 +42,10 @@ class Code < ApplicationRecord
 
   def number_parts
     number.split(' ')
+  end
+
+  def represents_spending_agency?
+    number_parts.count == 2 && number_parts[1] == '00'
   end
 
   def represents_top_level_program?

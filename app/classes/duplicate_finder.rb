@@ -38,17 +38,22 @@ class DuplicateFinder
   end
 
   def is_duplicate?(other_item)
-    return false unless name_matches?(other_item)
-    return false unless source_item.class == SpendingAgency || code_matches?(other_item)
-
-    true
+    name_matches?(other_item) && (
+      code_matches?(other_item) ||
+      code_generation_matches?(other_item)
+    )
   end
 
   def is_possible_duplicate?(other_item)
+    return false if items_overlap?(other_item)
     return true if name_matches?(other_item)
     return true if code_matches?(other_item)
 
     false
+  end
+
+  def items_overlap?(other_item)
+    ItemOverlapGuard.new(source_item, other_item).overlap?
   end
 
   def name_matches?(other_item)
@@ -61,6 +66,10 @@ class DuplicateFinder
 
   def code_matches?(other_item)
     source_item.code == other_item.code
+  end
+
+  def code_generation_matches?(other_item)
+    source_item.codes.last.generation == other_item.codes.last.generation
   end
 
   attr_reader :source_item, :possible_duplicates

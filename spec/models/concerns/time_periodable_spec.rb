@@ -7,6 +7,10 @@ RSpec.shared_examples_for 'TimePeriodable' do
     FactoryGirl.build(described_class_sym)
   end
 
+  let(:other_time_periodable) do
+    FactoryGirl.build(described_class_sym)
+  end
+
   describe '#time_period=' do
     it "sets start date to time period's start date" do
       time_periodable1.time_period = Quarter.for_date(Date.new(2011, 2, 2))
@@ -104,6 +108,80 @@ RSpec.shared_examples_for 'TimePeriodable' do
 
         expect(yearly_time_periodables.length).to eq(1)
         expect(yearly_time_periodables[0].time_period_type).to eq('year')
+      end
+    end
+  end
+
+  describe '#overlaps?' do
+    context 'when start date is on end date of other item' do
+      it 'returns true' do
+        time_periodable1.update_attributes(
+          start_date: Date.new(2012, 5, 4),
+          end_date: Date.new(2012, 5, 13)
+        )
+
+        other_time_periodable.update_attributes(
+          start_date: Date.new(2012, 5, 1),
+          end_date: Date.new(2012, 5, 4)
+        )
+
+        expect(
+          time_periodable1.overlaps?(other_time_periodable)
+        ).to eq(true)
+      end
+    end
+
+    context 'when end date is on start date of other item' do
+      it 'returns true' do
+        time_periodable1.update_attributes(
+          start_date: Date.new(2012, 5, 4),
+          end_date: Date.new(2012, 5, 13)
+        )
+
+        other_time_periodable.update_attributes(
+          start_date: Date.new(2012, 5, 13),
+          end_date: Date.new(2012, 5, 14)
+        )
+
+        expect(
+          time_periodable1.overlaps?(other_time_periodable)
+        ).to eq(true)
+      end
+    end
+
+    context 'when end date is the day before start date of other item' do
+      it 'returns false' do
+        time_periodable1.update_attributes(
+          start_date: Date.new(2012, 5, 4),
+          end_date: Date.new(2012, 5, 13)
+        )
+
+        other_time_periodable.update_attributes(
+          start_date: Date.new(2012, 5, 1),
+          end_date: Date.new(2012, 5, 3)
+        )
+
+        expect(
+          time_periodable1.overlaps?(other_time_periodable)
+        ).to eq(false)
+      end
+    end
+
+    context 'when start date is the day after the end date of other item' do
+      it 'returns false' do
+        time_periodable1.update_attributes(
+          start_date: Date.new(2012, 5, 4),
+          end_date: Date.new(2012, 5, 13)
+        )
+
+        other_time_periodable.update_attributes(
+          start_date: Date.new(2012, 5, 14),
+          end_date: Date.new(2012, 5, 15)
+        )
+
+        expect(
+          time_periodable1.overlaps?(other_time_periodable)
+        ).to eq(false)
       end
     end
   end
