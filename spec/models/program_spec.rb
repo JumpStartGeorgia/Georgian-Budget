@@ -4,6 +4,7 @@ require Rails.root.join('spec', 'models', 'concerns', 'nameable_spec')
 require Rails.root.join('spec', 'models', 'concerns', 'finance_spendable_spec')
 require Rails.root.join('spec', 'models', 'concerns', 'finance_plannable_spec')
 require Rails.root.join('spec', 'models', 'concerns', 'budget_item_duplicatable_spec')
+require Rails.root.join('spec', 'models', 'concerns', 'child_programmable_spec')
 
 RSpec.describe Program, type: :model do
   it_behaves_like 'Codeable'
@@ -11,6 +12,7 @@ RSpec.describe Program, type: :model do
   it_behaves_like 'FinanceSpendable'
   it_behaves_like 'FinancePlannable'
   it_behaves_like 'BudgetItemDuplicatable'
+  it_behaves_like 'ChildProgrammable'
 
   let(:new_program) { FactoryGirl.create(:program) }
   let(:new_code_attr) { FactoryGirl.attributes_for(:code) }

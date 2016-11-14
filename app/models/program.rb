@@ -4,6 +4,7 @@ class Program < ApplicationRecord
   include FinanceSpendable
   include FinancePlannable
   include BudgetItemDuplicatable
+  include ChildProgrammable
 
   belongs_to :priority
   belongs_to :parent, polymorphic: true
