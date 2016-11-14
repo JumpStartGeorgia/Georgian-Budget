@@ -15,9 +15,18 @@ class ItemMerger
     merge_priority(giver.priority) if receiver.respond_to?(:priority)
     merge_codes(giver.codes) if receiver.respond_to?(:take_code)
     merge_names(giver.names) if receiver.respond_to?(:take_name)
-    merge_spent_finances(giver.spent_finances)
-    merge_planned_finances(giver.all_planned_finances)
-    merge_child_programs(giver.child_programs)
+
+    if receiver.respond_to?(:take_spent_finance)
+      merge_spent_finances(giver.spent_finances)
+    end
+
+    if receiver.respond_to?(:take_planned_finance)
+      merge_planned_finances(giver.all_planned_finances)
+    end
+
+    if receiver.respond_to?(:child_programs)
+      merge_child_programs(giver.child_programs)
+    end
 
     if receiver.respond_to?(:save_possible_duplicates)
       merge_possible_duplicates(giver.possible_duplicates)
