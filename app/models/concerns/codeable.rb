@@ -33,9 +33,13 @@ module Codeable
   private
 
   def update_with_new_code(new_code)
-    merge_new_code(new_code)
-    update_column(:code, codes.last.number)
     DatesUpdater.new(self, new_code).update
+    new_code = merge_new_code(new_code)
+
+    unless code == codes.last.number
+      update_column(:code, codes.last.number)
+      update_parent if respond_to?(:update_parent)
+    end
   end
 
   def merge_new_code(new_code)
@@ -49,21 +53,25 @@ module Codeable
     more_recent_sibling = codes[new_code_index + 1]
 
     if more_recent_sibling.present? && more_recent_sibling.number == new_code.number
-      merge_code_siblings(new_code, more_recent_sibling)
+      new_code = merge_code_siblings(new_code, more_recent_sibling)
     end
 
     earlier_sibling = codes[new_code_index - 1]
 
     if new_code_index > 0 && earlier_sibling.number == new_code.number
-      merge_code_siblings(new_code, earlier_sibling)
+      new_code = merge_code_siblings(new_code, earlier_sibling)
     end
+
+    new_code
   end
 
   def merge_code_siblings(code1, code2)
     if code1.start_date <= code2.start_date
       code2.destroy
+      return code1
     else
       code1.destroy
+      return code2
     end
   end
 end

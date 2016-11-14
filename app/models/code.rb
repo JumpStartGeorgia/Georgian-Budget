@@ -5,6 +5,11 @@ class Code < ApplicationRecord
   validates :number, presence: true
   validates :codeable, presence: true
 
+  def parent_codeable
+    parent_codeable_code = parent_code
+    parent_codeable_code.present? ? parent_codeable_code.codeable : nil
+  end
+
   def parent_code
     return nil if parent_code_number.nil?
 

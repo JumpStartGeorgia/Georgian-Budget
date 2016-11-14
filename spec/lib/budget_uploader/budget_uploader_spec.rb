@@ -245,6 +245,10 @@ RSpec.describe 'BudgetFiles' do
           expect(program1.code).to eq('01 01')
         end
 
+        it 'saves parent agency' do
+          expect(program1.parent).to eq(SpendingAgency.find_by_code('01 00'))
+        end
+
         it 'saves correct start date of name' do
           expect(program1.recent_name_object.start_date).to eq(monthly_budgets_start_date)
         end
@@ -265,8 +269,22 @@ RSpec.describe 'BudgetFiles' do
           expect(program2.code).to eq('03 01')
         end
 
+        it 'saves parent' do
+          expect(program2.parent).to eq(SpendingAgency.find_by_code('03 00'))
+        end
+
         it 'saves correct start date for name' do
           expect(program2.recent_name_object.start_date).to eq(monthly_budgets_start_date)
+        end
+      end
+
+      context 'program (professional education)' do
+        let(:program) do
+          Program.find_by_code('32 03 01')
+        end
+
+        it 'saves parent' do
+          expect(program.parent).to eq(Program.find_by_code('32 03'))
         end
       end
     end
