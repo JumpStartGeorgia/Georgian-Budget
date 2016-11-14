@@ -1,54 +1,78 @@
 class BudgetDataSaver
   def initialize(data_holder)
     @data_holder = data_holder
-    @budget_item_fetcher = BudgetItemFetcher.new
   end
 
   def save_data
-    return unless budget_item.present?
-
     save_code
     save_name
     save_spent_finance
     save_planned_finance
 
-    if budget_item_fetcher.created_new_item && budget_item.respond_to?(:save_possible_duplicates)
-      budget_item.save_possible_duplicates(budget_item.get_possible_duplicates)
+    return if new_item.class == Priority
+
+    if new_item.class == Total
+      merge_items(Total.first) unless new_item == Total.first
+      return
+    end
+
+    exact_match, possible_duplicates = DuplicateFinder.new(new_item).find
+    .values_at(:exact_match, :possible_duplicates)
+
+    if exact_match.present?
+      merge_items(exact_match)
+    else
+      if new_item.respond_to?(:save_possible_duplicates)
+        new_item.save_possible_duplicates(possible_duplicates)
+      end
     end
   end
 
   private
 
-  def budget_item
-    @budget_item ||= budget_item_fetcher.fetch(
-      create_if_nil: true,
-      code_number: data_holder.code_number,
-      name_text: data_holder.name_text
-    )
+  def new_item
+    @new_item ||= klass.create
+  end
+
+  def klass
+    BudgetCodeMapper.class_for_code(data_holder.code_number)
   end
 
   def save_code
-    return unless budget_item.respond_to?(:add_code)
-    budget_item.add_code(data_holder.code_data)
+    return unless new_item.respond_to?(:add_code)
+    return unless data_holder.respond_to?(:code_data)
+    new_item.add_code(data_holder.code_data)
   end
 
   def save_name
-    return unless budget_item.respond_to?(:add_name)
-    budget_item.add_name(data_holder.name_data)
+    return unless new_item.respond_to?(:add_name)
+    return unless data_holder.respond_to?(:name_data)
+    new_item.add_name(data_holder.name_data)
   end
 
   def save_spent_finance
-    budget_item.add_spent_finance(
-      data_holder.spent_finance_data(budget_item: budget_item)
+    return unless data_holder.respond_to?(:spent_finance_data)
+    new_item.add_spent_finance(
+      data_holder.spent_finance_data
     )
   end
 
   def save_planned_finance
-    budget_item.add_planned_finance(
-      data_holder.planned_finance_data(budget_item: budget_item)
+    return unless data_holder.respond_to?(:planned_finance_data)
+    new_item.add_planned_finance(
+      data_holder.planned_finance_data
     )
   end
 
-  attr_reader :data_holder,
-              :budget_item_fetcher
+  def merge_items(other_item)
+    if other_item.start_date.blank? || new_item.start_date.blank?
+      ItemMerger.new(other_item).merge(new_item)
+    elsif other_item.start_date <= new_item.start_date
+      ItemMerger.new(other_item).merge(new_item)
+    else
+      ItemMerger.new(new_item).merge(other_item)
+    end
+  end
+
+  attr_reader :data_holder
 end

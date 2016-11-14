@@ -12,12 +12,15 @@ class ItemMerger
       raise "Cannot merge earlier item into later item; receiver must start before giver"
     end
 
-    merge_priority(giver.priority)
-    merge_codes(giver.codes)
-    merge_names(giver.names)
+    merge_priority(giver.priority) if receiver.respond_to?(:priority)
+    merge_codes(giver.codes) if receiver.respond_to?(:take_code)
+    merge_names(giver.names) if receiver.respond_to?(:take_name)
     merge_spent_finances(giver.spent_finances)
     merge_planned_finances(giver.all_planned_finances)
-    merge_possible_duplicates(giver.possible_duplicates)
+
+    if receiver.respond_to?(:save_possible_duplicates)
+      merge_possible_duplicates(giver.possible_duplicates)
+    end
 
     giver.reload.destroy
   end
@@ -46,12 +49,16 @@ class ItemMerger
   end
 
   def merge_codes(new_codes)
+    return if new_codes.blank?
+
     new_codes.each do |new_code|
       receiver.take_code(new_code)
     end
   end
 
   def merge_names(new_names)
+    return if new_names.blank?
+
     new_names.each do |new_name|
       receiver.take_name(new_name)
     end

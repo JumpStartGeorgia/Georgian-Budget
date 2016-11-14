@@ -24,30 +24,18 @@ module MonthlyBudgetSheet
       }
     end
 
-    def spent_finance_data(args)
-      budget_item = args[:budget_item]
+    def spent_finance_data
       {
         time_period: month,
-        amount: NonCumulativeFinanceCalculator.new(
-          finances: budget_item.spent_finances,
-          cumulative_amount: spent_finance_cumulative,
-          time_period: month,
-          cumulative_within: Year
-        ).calculate
+        amount: spent_finance_cumulative
       }
     end
 
-    def planned_finance_data(args)
-      budget_item = args[:budget_item]
+    def planned_finance_data
       {
         time_period: quarter,
         announce_date: start_date,
-        amount: NonCumulativeFinanceCalculator.new(
-          finances: budget_item.planned_finances,
-          cumulative_amount: planned_finance_cumulative,
-          time_period: quarter,
-          cumulative_within: Year
-        ).calculate
+        amount: planned_finance_cumulative
       }
     end
 
