@@ -426,5 +426,22 @@ RSpec.describe ItemMerger do
         end
       end
     end
+
+    context 'when giver has child programs' do
+      let(:receiver) { FactoryGirl.create(:program) }
+      let(:giver) { FactoryGirl.create(:program) }
+      let(:child1) { FactoryGirl.create(:program) }
+      let(:child2) { FactoryGirl.create(:program) }
+
+      it 'changes parent of those programs to receiver' do
+        receiver
+        giver
+        child1.update_attribute(:parent, giver)
+        child2.update_attribute(:parent, giver)
+
+        ItemMerger.new(receiver).merge(giver)
+        expect(receiver.child_programs).to include(child1, child2)
+      end
+    end
   end
 end

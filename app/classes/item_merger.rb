@@ -17,6 +17,7 @@ class ItemMerger
     merge_names(giver.names) if receiver.respond_to?(:take_name)
     merge_spent_finances(giver.spent_finances)
     merge_planned_finances(giver.all_planned_finances)
+    merge_child_programs(giver.child_programs)
 
     if receiver.respond_to?(:save_possible_duplicates)
       merge_possible_duplicates(giver.possible_duplicates)
@@ -101,5 +102,13 @@ class ItemMerger
     return if new_possible_duplicates.blank?
 
     receiver.save_possible_duplicates(new_possible_duplicates)
+  end
+
+  def merge_child_programs(new_child_programs)
+    return if new_child_programs.blank?
+
+    new_child_programs.each do |new_child_program|
+      new_child_program.update_attribute(:parent, receiver)
+    end
   end
 end
