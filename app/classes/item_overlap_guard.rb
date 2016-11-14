@@ -20,13 +20,13 @@ class ItemOverlapGuard
     return false if item2.spent_finances.send(time_period_type).blank?
 
     item1_start = item1.spent_finances.send(time_period_type).minimum(:start_date)
-    item2_start = item1.spent_finances.send(time_period_type).maximum(:end_date)
+    item1_end = item1.spent_finances.send(time_period_type).maximum(:end_date)
 
-    other_start = item2.spent_finances.send(time_period_type).minimum(:start_date)
-    other_end = item1.spent_finances.send(time_period_type).maximum(:end_date)
+    item2_start = item2.spent_finances.send(time_period_type).minimum(:start_date)
+    item2_end = item2.spent_finances.send(time_period_type).maximum(:end_date)
 
-    return true if item1_start <= other_end
-    return true if item2_start >= other_start
+    return true if item1_start <= item2_end && item1_end >= item2_start
+    return true if item1_end >= item2_start && item1_start <= item2_end
 
     false
   end
