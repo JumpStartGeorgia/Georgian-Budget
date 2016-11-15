@@ -2,7 +2,7 @@ class PermaIdCreator
   def self.for_budget_item(budget_item)
     new(Hash.new.tap do |hash|
       if budget_item.respond_to?(:name)
-        if budget_item.recent_name_object.present? && budget_item.name_ka.present?
+        if budget_item.name_ka.present?
           hash[:name] = budget_item.name_ka
         else
           hash[:missing_data] = true

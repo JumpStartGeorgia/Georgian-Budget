@@ -13,4 +13,8 @@ module PermaIdable
       perma_idable: self
     )
   end
+
+  def compute_perma_id
+    PermaIdCreator.for_budget_item(self).compute
+  end
 end

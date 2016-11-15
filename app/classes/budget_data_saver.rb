@@ -8,6 +8,7 @@ class BudgetDataSaver
     save_name
     save_spent_finance
     save_planned_finance
+    save_perma_id
 
     exact_match = DuplicateFinder.new(new_item).find_exact_match
 
@@ -56,6 +57,12 @@ class BudgetDataSaver
     new_item.add_planned_finance(
       data_holder.planned_finance_data
     )
+  end
+
+  def save_perma_id
+    return unless new_item.respond_to?(:perma_ids)
+
+    new_item.save_perma_id(new_item.compute_perma_id)
   end
 
   def merge_items(other_item)

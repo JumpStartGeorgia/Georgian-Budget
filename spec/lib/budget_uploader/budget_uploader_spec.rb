@@ -31,6 +31,13 @@ RSpec.describe 'BudgetFiles' do
         let(:total) { Total.first }
         let(:q1_2015) { Quarter.for_date(Date.new(2015, 1, 1)) }
 
+        it 'saves total perma_id' do
+          require 'digest/sha1'
+          expect(total.perma_ids[0].text).to eq(
+            Digest::SHA1.hexdigest '00_მთლიანი_სახელმწიფო_ბიუჯეტი'
+          )
+        end
+
         it 'saves total code' do
           expect(total.code).to eq('00')
         end
@@ -111,6 +118,13 @@ RSpec.describe 'BudgetFiles' do
           expect(spending_agency1_array.length).to eq(1)
         end
 
+        it 'saves perma_id' do
+          require 'digest/sha1'
+          expect(spending_agency1.perma_ids[0].text).to eq(
+            Digest::SHA1.hexdigest '01_00_საქართველოს_პარლამენტი_და_მასთან_არსებული_ორგანიზაციები'
+          )
+        end
+
         it 'saves correct code' do
           expect(spending_agency1.code).to eq('01 00')
         end
@@ -184,6 +198,13 @@ RSpec.describe 'BudgetFiles' do
           expect(spending_agency2.code).to eq('04 00')
         end
 
+        it 'saves perma_id' do
+          require 'digest/sha1'
+          expect(spending_agency2.perma_ids[0].text).to eq(
+            Digest::SHA1.hexdigest '04_00_საქართველოს_მთავრობის_ადმინისტრაცია'
+          )
+        end
+
         context 'planned finances:' do
           # this spending agency changes plans from january to february, so it
           # has two plans for the same quarter
@@ -225,6 +246,13 @@ RSpec.describe 'BudgetFiles' do
           expect(spending_agency2.code).to eq('02 00')
         end
 
+        it 'saves perma_id' do
+          require 'digest/sha1'
+          expect(spending_agency2.perma_ids[0].text).to eq(
+            Digest::SHA1.hexdigest '02_00_საქართველოს_პრეზიდენტის_ადმინისტრაცია'
+          )
+        end
+
         it 'saves correct start date for name' do
           expect(spending_agency2.recent_name_object.start_date).to eq(monthly_budgets_start_date)
         end
@@ -243,6 +271,13 @@ RSpec.describe 'BudgetFiles' do
 
         it 'saves code' do
           expect(program1.code).to eq('01 01')
+        end
+
+        it 'saves perma_id' do
+          require 'digest/sha1'
+          expect(program1.perma_ids[0].text).to eq(
+            Digest::SHA1.hexdigest '01_01_საკანონმდებლო_საქმიანობა'
+          )
         end
 
         it 'saves parent agency' do
@@ -265,6 +300,13 @@ RSpec.describe 'BudgetFiles' do
           expect(program2_array.length).to eq(1)
         end
 
+        it 'saves perma_id' do
+          require 'digest/sha1'
+          expect(program2.perma_ids[0].text).to eq(
+            Digest::SHA1.hexdigest '03_01_საქართველოს_ეროვნული_უშიშროების_საბჭოს_აპარატი'
+          )
+        end
+
         it 'saves code' do
           expect(program2.code).to eq('03 01')
         end
@@ -285,6 +327,13 @@ RSpec.describe 'BudgetFiles' do
 
         it 'saves parent' do
           expect(program.parent).to eq(Program.find_by_code('32 03'))
+        end
+
+        it 'saves perma_id' do
+          require 'digest/sha1'
+          expect(program.perma_ids[0].text).to eq(
+            Digest::SHA1.hexdigest '32_03_01_პროფესიული_განათლების_ხელმისაწვდომობის_და_ხარისხის_გაუმჯობესება'
+          )
         end
       end
     end

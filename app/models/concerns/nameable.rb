@@ -35,10 +35,12 @@ module Nameable
   end
 
   def name_ka
+    return nil if recent_name_object.blank?
     recent_name_object.text_ka
   end
 
   def name_en
+    return nil if recent_name_object.blank?
     recent_name_object.text_en
   end
 
@@ -60,7 +62,7 @@ module Nameable
   def take_name(new_name, args = {})
     transaction do
       new_name.update_attributes!(nameable: self)
-      
+
       update_with_new_name(new_name)
 
       args[:return_name] ? new_name : self
