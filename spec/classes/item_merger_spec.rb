@@ -443,5 +443,18 @@ RSpec.describe ItemMerger do
         expect(receiver.child_programs).to include(child1, child2)
       end
     end
+
+    context 'when giver has perma_ids' do
+      let(:receiver) { FactoryGirl.create(:program) }
+      let(:giver) { FactoryGirl.create(:program) }
+      
+      it 'changes perma_idable of those perma_ids to receiver' do
+        perma_id1 = FactoryGirl.create(:perma_id, perma_idable: giver)
+        perma_id2 = FactoryGirl.create(:perma_id, perma_idable: giver)
+
+        ItemMerger.new(receiver).merge(giver)
+        expect(receiver.perma_ids).to include(perma_id1, perma_id2)
+      end
+    end
   end
 end

@@ -32,6 +32,10 @@ class ItemMerger
       merge_possible_duplicates(giver.possible_duplicates)
     end
 
+    if receiver.respond_to?(:perma_ids)
+      merge_perma_ids(giver.perma_ids)
+    end
+
     giver.reload.destroy
   end
 
@@ -118,6 +122,14 @@ class ItemMerger
 
     new_child_programs.each do |new_child_program|
       new_child_program.update_attribute(:parent, receiver)
+    end
+  end
+
+  def merge_perma_ids(new_perma_ids)
+    return if new_perma_ids.blank?
+
+    new_perma_ids.each do |new_perma_id|
+      new_perma_id.update_attribute(:perma_idable, receiver)
     end
   end
 end
