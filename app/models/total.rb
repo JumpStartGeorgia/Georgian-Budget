@@ -1,6 +1,7 @@
 class Total < ApplicationRecord
   include FinanceSpendable
   include FinancePlannable
+  include PermaIdable
 
   def code
     '00'

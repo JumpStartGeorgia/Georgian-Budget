@@ -5,6 +5,7 @@ class SpendingAgency < ApplicationRecord
   include FinancePlannable
   include BudgetItemDuplicatable
   include ChildProgrammable
+  include PermaIdable
 
   belongs_to :priority
 end

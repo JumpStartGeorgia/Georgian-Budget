@@ -2,6 +2,7 @@ class Priority < ApplicationRecord
   include Nameable
   include FinanceSpendable
   include FinancePlannable
+  include PermaIdable
 
   has_many :programs
 

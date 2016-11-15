@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161114060448) do
+ActiveRecord::Schema.define(version: 20161115123646) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -64,6 +64,16 @@ ActiveRecord::Schema.define(version: 20161114060448) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "perma_ids", force: :cascade do |t|
+    t.string   "text"
+    t.string   "perma_idable_type"
+    t.integer  "perma_idable_id"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+    t.index ["perma_idable_type", "perma_idable_id"], name: "index_perma_ids_on_perma_idable_type_and_perma_idable_id", using: :btree
+    t.index ["text"], name: "index_perma_ids_on_text", using: :btree
+  end
+
   create_table "planned_finances", force: :cascade do |t|
     t.decimal  "amount",                  precision: 14, scale: 2
     t.date     "start_date"
@@ -92,7 +102,6 @@ ActiveRecord::Schema.define(version: 20161114060448) do
   create_table "priorities", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string   "code"
     t.date     "start_date"
     t.date     "end_date"
   end

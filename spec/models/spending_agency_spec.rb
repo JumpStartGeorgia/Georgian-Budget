@@ -5,6 +5,7 @@ require Rails.root.join('spec', 'models', 'concerns', 'finance_spendable_spec')
 require Rails.root.join('spec', 'models', 'concerns', 'finance_plannable_spec')
 require Rails.root.join('spec', 'models', 'concerns', 'budget_item_duplicatable_spec')
 require Rails.root.join('spec', 'models', 'concerns', 'child_programmable_spec')
+require Rails.root.join('spec', 'models', 'concerns', 'perma_idable_spec')
 
 RSpec.describe SpendingAgency, type: :model do
   it_behaves_like 'Codeable'
@@ -13,4 +14,5 @@ RSpec.describe SpendingAgency, type: :model do
   it_behaves_like 'FinancePlannable'
   it_behaves_like 'BudgetItemDuplicatable'
   it_behaves_like 'ChildProgrammable'
+  it_behaves_like 'PermaIdable'
 end
