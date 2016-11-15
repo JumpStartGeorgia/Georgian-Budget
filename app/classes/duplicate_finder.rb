@@ -5,7 +5,7 @@ class DuplicateFinder
 
   def find_exact_match
     return nil if source_item.class == Priority
-    
+
     if source_item.class == Total
       return Total.first unless source_item == Total.first
       return nil
@@ -30,18 +30,22 @@ class DuplicateFinder
     items_with_same_code = source_item.class
     .where(code: source_item.code)
     .where.not(id: source_item)
+    .where(source_item.class.arel_table[:start_date].lteq(source_item.end_date))
 
     items_with_same_name = source_item.class
     .find_by_name(source_item.name)
     .where.not(id: source_item)
+    .where(source_item.class.arel_table[:start_date].lteq(source_item.end_date))
 
     items_with_same_code + items_with_same_name
   end
 
   def is_duplicate?(other_item)
-    name_matches?(other_item) &&
-    code_generation_matches?(other_item) &&
-    !items_overlap?(other_item)
+    return false unless name_matches?(other_item)
+    return false unless code_generation_matches?(other_item)
+    return false if items_overlap?(other_item)
+
+    true
   end
 
   def is_possible_duplicate?(other_item)
