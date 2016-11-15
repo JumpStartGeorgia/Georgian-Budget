@@ -3,21 +3,30 @@ class DuplicateFinder
     @source_item = source_item
   end
 
-  def find
-    @exact_match = nil
-    @possible_duplicates = []
+  def find_exact_match
+    return nil if source_item.class == Priority
+    
+    if source_item.class == Total
+      return Total.first unless source_item == Total.first
+      return nil
+    end
 
-    find_exact_match
+    items_sharing_data.each do |possible_item|
+      return possible_item if is_duplicate?(possible_item)
+    end
 
-    return {
-      exact_match: exact_match,
-      possible_duplicates: possible_duplicates
-    }
+    nil
+  end
+
+  def find_possible_duplicates
+    items_sharing_data.select do |possible_item|
+      is_possible_duplicate?(possible_item)
+    end
   end
 
   private
 
-  def find_exact_match
+  def items_sharing_data
     items_with_same_code = source_item.class
     .where(code: source_item.code)
     .where.not(id: source_item)
@@ -26,22 +35,13 @@ class DuplicateFinder
     .find_by_name(source_item.name)
     .where.not(id: source_item)
 
-    possible_items = items_with_same_code + items_with_same_name
-
-    possible_items.each do |possible_item|
-      if is_duplicate?(possible_item)
-        self.exact_match = possible_item
-      elsif is_possible_duplicate?(possible_item)
-        possible_duplicates << possible_item
-      end
-    end
+    items_with_same_code + items_with_same_name
   end
 
   def is_duplicate?(other_item)
-    name_matches?(other_item) && (
-      code_matches?(other_item) ||
-      code_generation_matches?(other_item)
-    )
+    name_matches?(other_item) &&
+    code_generation_matches?(other_item) &&
+    !items_overlap?(other_item)
   end
 
   def is_possible_duplicate?(other_item)
@@ -72,6 +72,5 @@ class DuplicateFinder
     source_item.codes.last.generation == other_item.codes.last.generation
   end
 
-  attr_reader :source_item, :possible_duplicates
-  attr_accessor :exact_match
+  attr_reader :source_item
 end

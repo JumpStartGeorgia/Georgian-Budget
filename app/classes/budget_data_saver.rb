@@ -9,21 +9,15 @@ class BudgetDataSaver
     save_spent_finance
     save_planned_finance
 
-    return if new_item.class == Priority
-
-    if new_item.class == Total
-      merge_items(Total.first) unless new_item == Total.first
-      return
-    end
-
-    exact_match, possible_duplicates = DuplicateFinder.new(new_item).find
-    .values_at(:exact_match, :possible_duplicates)
+    exact_match = DuplicateFinder.new(new_item).find_exact_match
 
     if exact_match.present?
       merge_items(exact_match)
     else
       if new_item.respond_to?(:save_possible_duplicates)
-        new_item.save_possible_duplicates(possible_duplicates)
+        new_item.save_possible_duplicates(
+          DuplicateFinder.new(new_item).find_possible_duplicates
+        )
       end
     end
   end
