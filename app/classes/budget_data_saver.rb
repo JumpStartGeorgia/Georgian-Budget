@@ -7,7 +7,7 @@ class BudgetDataSaver
     save_code
     save_name
     save_spent_finance
-    save_planned_finance
+    save_planned_finances
     save_perma_id
 
     exact_match = DuplicateFinder.new(new_item).find_exact_match
@@ -52,11 +52,21 @@ class BudgetDataSaver
     )
   end
 
-  def save_planned_finance
+  # if there is just one planned finance hash (monthly spreadsheets), this
+  # method saves it. if there are multiple hashes (yearly spreadsheets),
+  # this method saves all of them.
+  def save_planned_finances
     return unless data_holder.respond_to?(:planned_finance_data)
-    new_item.add_planned_finance(
-      data_holder.planned_finance_data
-    )
+
+    planned_finance_data = data_holder.planned_finance_data
+
+    unless planned_finance_data.is_a? Array
+      planned_finance_data = [planned_finance_data]
+    end
+
+    planned_finance_data.each do |planned_finance_data_hash|
+      new_item.add_planned_finance(planned_finance_data_hash)
+    end
   end
 
   def save_perma_id

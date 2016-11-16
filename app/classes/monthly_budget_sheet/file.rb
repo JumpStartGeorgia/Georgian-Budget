@@ -121,7 +121,7 @@ module MonthlyBudgetSheet
 
     def date_regex_match
       match = filename_date_regex.match(spreadsheet_path)
-      raise 'Cannot parse date from filename. Format of file should be monthly_spreadsheet.mm.yyyy' if match.nil?
+      raise 'Cannot parse date from filename. Format of file should be monthly_spreadsheet-mm.yyyy.xlsx' if match.nil?
 
       match
     end

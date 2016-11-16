@@ -2,7 +2,7 @@ module BudgetCodeMapper
   def self.class_for_code(code)
     code_split = code.split(' ')
 
-    if code == '00'
+    if code == '00' || code == '00 00'
       return Total
     elsif code_split.length == 1
       return Priority

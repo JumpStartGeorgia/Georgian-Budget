@@ -10,6 +10,10 @@ class BudgetFiles
     budget_files_dir.join('monthly_spreadsheets')
   end
 
+  def self.yearly_spreadsheet_dir
+    budget_files_dir.join('yearly_spreadsheets')
+  end
+
   def self.english_translations_file
     budget_files_dir.join('budget_item_translations.csv').to_s
   end
@@ -29,6 +33,7 @@ class BudgetFiles
     @time_prettifier = TimePrettifier.new
     @budget_item_translations = get_budget_item_translations(args)
     @monthly_sheets = get_monthly_sheets(args)
+    @yearly_sheets = get_yearly_sheets(args)
     @priorities_list = get_priorities_list(args)
     @priority_associations_list = get_priority_associations_list(args)
   end
@@ -37,6 +42,7 @@ class BudgetFiles
     print_start_messages
 
     upload_monthly_sheets if monthly_sheets.present?
+    upload_yearly_sheets if yearly_sheets.present?
     save_priorities_list if priorities_list.present?
     save_priority_associations_list if priority_associations_list.present?
     save_budget_item_translations if budget_item_translations.present?
@@ -58,6 +64,7 @@ class BudgetFiles
                 :end_messages
 
   attr_reader :monthly_sheets,
+              :yearly_sheets,
               :budget_item_translations,
               :priorities_list,
               :priority_associations_list,
@@ -88,8 +95,24 @@ class BudgetFiles
 
     return nil unless monthly_sheet_paths.present?
 
-    @monthly_sheets = monthly_sheet_paths.map do |monthly_sheet_path|
+    monthly_sheet_paths.map do |monthly_sheet_path|
       MonthlyBudgetSheet::File.new_from_file(monthly_sheet_path)
+    end.sort do |sheet1, sheet2|
+      sheet1.publish_date <=> sheet2.publish_date
+    end
+  end
+
+  def get_yearly_sheets(args)
+    if args[:yearly_paths]
+      yearly_sheet_paths = args[:yearly_paths]
+    elsif args[:yearly_folder]
+      yearly_sheet_paths = YearlyBudgetSheet::File.file_paths(args[:yearly_folder])
+    end
+
+    return nil unless yearly_sheet_paths.present?
+
+    yearly_sheet_paths.map do |yearly_sheet_path|
+      YearlyBudgetSheet::File.new_from_file(yearly_sheet_path)
     end.sort do |sheet1, sheet2|
       sheet1.publish_date <=> sheet2.publish_date
     end
@@ -120,6 +143,29 @@ class BudgetFiles
     end_messages << finished_message
     end_messages << "Number of monthly budget sheets processed: #{num_monthly_sheets_processed}"
     end_messages << "Average time per monthly budget sheet: #{time_prettifier.prettify(time_prettifier.elapsed/num_monthly_sheets_processed)}"
+  end
+
+  def upload_yearly_sheets
+    puts "\nSaving yearly budget spreadsheet data"
+
+    num_yearly_sheets_processed = 0
+
+    time_prettifier.run do
+      yearly_sheets.each do |yearly_sheet|
+        ActiveRecord::Base.transaction do
+          yearly_sheet.save_data
+        end
+
+        num_yearly_sheets_processed = num_yearly_sheets_processed + 1
+      end
+    end
+
+    finished_message = "Finished saving yearly budget spreadsheet data in #{time_prettifier.elapsed_prettified}"
+
+    puts finished_message
+    end_messages << finished_message
+    end_messages << "Number of yearly budget sheets processed: #{num_yearly_sheets_processed}"
+    end_messages << "Average time per yearly budget sheet: #{time_prettifier.prettify(time_prettifier.elapsed/num_yearly_sheets_processed)}"
   end
 
   def save_priorities_list

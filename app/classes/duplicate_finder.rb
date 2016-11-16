@@ -11,6 +11,15 @@ class DuplicateFinder
       return nil
     end
 
+    perma_id_item = BudgetItem.find(
+      code: source_item.code,
+      name: source_item.name_ka
+    )
+
+    if perma_id_item.present? && perma_id_item != source_item
+      return perma_id_item
+    end
+
     items_sharing_data.each do |possible_item|
       return possible_item if is_duplicate?(possible_item)
     end

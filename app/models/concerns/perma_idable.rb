@@ -20,6 +20,8 @@ module PermaIdable
       text: text,
       perma_idable: self
     )
+
+    self
   end
 
   private

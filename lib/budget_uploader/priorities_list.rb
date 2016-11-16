@@ -49,7 +49,7 @@ class PrioritiesList
     priority.add_name(
       start_date: Date.new(2012, 1, 1),
       text_ka: row_name(row)
-    )
+    ).save_perma_id
   end
 
   def row_name(row)
