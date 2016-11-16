@@ -1,4 +1,8 @@
 class YearlyBudgetSheet::File
+  def self.file_paths(folder)
+    Dir.glob(Pathname.new(folder).join(self.file_name_glob))
+  end
+
   def self.new_from_file(path)
     new(spreadsheet_path: path)
   end
@@ -80,5 +84,9 @@ class YearlyBudgetSheet::File
   def get_excel_data
     require 'rubyXL'
     RubyXL::Parser.parse(spreadsheet_path)
+  end
+
+  def self.file_name_glob
+    '**/yearly_spreadsheet*formatted*.xlsx'
   end
 end
