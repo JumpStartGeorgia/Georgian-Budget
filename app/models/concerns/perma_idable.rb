@@ -7,19 +7,17 @@ module PermaIdable
              dependent: :destroy
   end
 
-  def perma_id
-    perma_ids.last
-  end
-
   def save_perma_id(args = {})
     text = args[:override_text].present? ?
            args[:override_text] :
            compute_perma_id
 
-    PermaId.create(
+    new_perma_id = PermaId.create(
       text: text,
       perma_idable: self
     )
+
+    update_attribute(:perma_id, new_perma_id.text) if new_perma_id.persisted?
 
     self
   end

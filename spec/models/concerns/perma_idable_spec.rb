@@ -21,7 +21,7 @@ RSpec.shared_examples_for 'PermaIdable' do
         perma_idable.save_perma_id(override_text: 'fdsf')
         perma_idable.save_perma_id(override_text: '28438438')
 
-        expect(perma_idable.perma_id).to eq(perma_idable.perma_ids.last)
+        expect(perma_idable.perma_id).to eq(perma_idable.perma_ids.last.text)
       end
     end
   end
