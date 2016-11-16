@@ -2,7 +2,7 @@ module Codeable
   extend ActiveSupport::Concern
 
   included do
-    has_many :codes, -> { order :start_date }, as: :codeable
+    has_many :codes, -> { order :start_date }, as: :codeable, dependent: :destroy
   end
 
   def add_code(code_attributes, args = {})
