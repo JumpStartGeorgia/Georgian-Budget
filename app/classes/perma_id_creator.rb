@@ -1,28 +1,7 @@
 class PermaIdCreator
-  def self.for_budget_item(budget_item)
-    new(Hash.new.tap do |hash|
-      if budget_item.respond_to?(:name)
-        if budget_item.name_ka.present?
-          hash[:name] = budget_item.name_ka
-        else
-          hash[:missing_data] = true
-        end
-      end
-
-      if budget_item.respond_to?(:code)
-        if budget_item.code.present?
-          hash[:code] = budget_item.code
-        else
-          hash[:missing_data] = true
-        end
-      end
-    end)
-  end
-
   def initialize(args)
     @name = args[:name]
     @code = args[:code]
-    @missing_data = args[:missing_data]
 
     if name.blank?
       raise 'Cannot create a perma id without a name'
@@ -30,13 +9,11 @@ class PermaIdCreator
   end
 
   def compute
-    return nil if missing_data
     computed_sha1
   end
 
   attr_reader :name,
-              :code,
-              :missing_data
+              :code
 
   private
 

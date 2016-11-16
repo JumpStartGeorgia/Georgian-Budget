@@ -213,4 +213,15 @@ RSpec.describe Priority, type: :model do
       end
     end
   end
+
+  describe '#save_perma_id' do
+    it 'saves computed perma_id to perma_ids' do
+      priority.add_name(FactoryGirl.attributes_for(:name, text_ka: 'a b'))
+      priority.save_perma_id
+
+      expect(priority.perma_id.text).to eq(
+        Digest::SHA1.hexdigest "a_b"
+      )
+    end
+  end
 end

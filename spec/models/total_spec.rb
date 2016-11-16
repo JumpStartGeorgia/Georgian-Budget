@@ -42,4 +42,14 @@ RSpec.describe Total do
       expect(total.name_en).to eq('Complete National Budget')
     end
   end
+
+  describe '#save_perma_id' do
+    it 'saves computed perma_id to perma_ids' do
+      total.save_perma_id
+
+      expect(total.perma_id.text).to eq(
+        Digest::SHA1.hexdigest "00_მთლიანი_სახელმწიფო_ბიუჯეტი"
+      )
+    end
+  end
 end

@@ -25,6 +25,9 @@ module PermaIdable
   private
 
   def compute_perma_id
-    PermaIdCreator.for_budget_item(self).compute
+    PermaIdCreator.new(Hash.new.tap do |hash|
+      hash[:name] = name_ka
+      hash[:code] = code if respond_to?(:code)
+    end).compute
   end
 end

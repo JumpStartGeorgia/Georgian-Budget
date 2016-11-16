@@ -94,4 +94,17 @@ RSpec.describe Program, type: :model do
       end
     end
   end
+
+  describe '#save_perma_id' do
+    it 'saves computed perma_id to perma_ids' do
+      new_program.add_code(FactoryGirl.attributes_for(:code, number: '00 1'))
+      new_program.add_name(FactoryGirl.attributes_for(:name, text_ka: 'a b'))
+
+      new_program.save_perma_id
+
+      expect(new_program.perma_id.text).to eq(
+        Digest::SHA1.hexdigest "00_1_a_b"
+      )
+    end
+  end
 end

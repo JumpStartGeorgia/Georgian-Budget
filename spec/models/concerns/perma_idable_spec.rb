@@ -18,42 +18,11 @@ RSpec.shared_examples_for 'PermaIdable' do
 
     context 'when perma_idable has multiple perma ids' do
       it 'returns last perma id' do
-        if perma_idable.respond_to?(:add_code)
-          perma_idable.add_code(FactoryGirl.attributes_for(:code, number: '00 1'))
-        end
-
-        if perma_idable.respond_to?(:add_name)
-          perma_idable.add_name(FactoryGirl.attributes_for(:name, text: 'a b'))
-        end
-
-        perma_idable.save_perma_id
-
-        if perma_idable.respond_to?(:add_name)
-          perma_idable.add_name(FactoryGirl.attributes_for(:name, text: 'a c'))
-        end
-
-        perma_idable.save_perma_id
+        perma_idable.save_perma_id(override_text: 'fdsf')
+        perma_idable.save_perma_id(override_text: '28438438')
 
         expect(perma_idable.perma_id).to eq(perma_idable.perma_ids.last)
       end
-    end
-  end
-
-  describe '#save_perma_id' do
-    it 'saves computed perma_id to perma_ids' do
-      if perma_idable.respond_to?(:add_code)
-        perma_idable.add_code(FactoryGirl.attributes_for(:code, number: '00 1'))
-      end
-
-      if perma_idable.respond_to?(:add_name)
-        perma_idable.add_name(FactoryGirl.attributes_for(:name, text: 'a b'))
-      end
-
-      perma_idable.save_perma_id
-
-      expect(perma_idable.perma_id.text).to eq(
-        Digest::SHA1.hexdigest "00_1_a_b"
-      )
     end
   end
 end
