@@ -53,7 +53,7 @@ module PriorityAssociations
     end
 
     def get_budget_item
-      klass.find_by_name(name).where(code: code)[0]
+      BudgetItem.find(name: name, code: code)
     end
 
     def klass

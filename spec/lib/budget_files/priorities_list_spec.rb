@@ -12,51 +12,50 @@ RSpec.describe 'BudgetFiles' do
         @january_2012 = Month.for_date(Date.new(2012, 1, 1))
         @quarter1_2012 = Quarter.for_date(Date.new(2012, 1, 1))
         # Setup parliament agency
-        @parliament = SpendingAgency.create(code: '01 00')
-        @parliament.add_name(
+        @parliament = SpendingAgency.create
+        .add_code(number: '01 00', start_date: Date.new(2012, 1, 1))
+        .add_name(
           text_ka: 'საქართველოს პარლამენტი და მასთან არსებული ორგანიზაციები',
-          start_date: Date.new(2012, 1, 1)
-        )
+          start_date: Date.new(2012, 1, 1))
+        .save_perma_id
+
 
         # Setup audit regulation program
-        @audit_regulation_program = Program.create(code: '01 02')
-        @audit_regulation_program.add_name(
+        @audit_regulation_program = Program.create
+        .add_code(number: '01 02', start_date: Date.new(2012, 1, 1))
+        .add_name(
           text_ka: 'აუდიტორული საქმიანობის სახელმწიფო რეგულირება',
-          start_date: Date.new(2012, 1, 1)
-        )
+          start_date: Date.new(2012, 1, 1))
+        .save_perma_id
 
         # Setup library program
-        @library_program = Program.create(code: '01 02')
-        @library_program.add_name(
+        @library_program = Program.create
+        .add_code(number: '01 02', start_date: Date.new(2013, 1, 1))
+        .add_name(
           text_ka: 'საბიბლიოთეკო საქმიანობა',
-          start_date: Date.new(2013, 1, 1)
-        )
-
-        @library_program.add_spent_finance(
+          start_date: Date.new(2013, 1, 1))
+        .save_perma_id
+        .add_spent_finance(
           time_period: @january_2012,
-          amount: 30
-        )
-
-        @library_program.add_planned_finance(
+          amount: 30)
+        .add_planned_finance(
           time_period: @quarter1_2012,
           announce_date: @quarter1_2012.start_date,
-          amount: 300
-        )
+          amount: 300)
 
-        @financier_qualifications_program = Program.create(code: '23 05')
+        @financier_qualifications_program = Program.create
+        .add_code(number: '23 05', start_date: Date.new(2012, 1, 1))
         .add_name(
           text_ka: 'საფინანსო სექტორში დასაქმებულთა კვალიფიკაციის ამაღლება',
-          start_date: Date.new(2012, 1, 1)
-        ).add_spent_finance(
+          start_date: Date.new(2012, 1, 1))
+        .save_perma_id
+        .add_spent_finance(
           time_period: @january_2012,
-          amount: 70
-        )
-
-        @financier_qualifications_program.add_planned_finance(
+          amount: 70)
+        .add_planned_finance(
           time_period: @quarter1_2012,
           announce_date: @quarter1_2012.start_date,
-          amount: 200
-        )
+          amount: 200)
 
         # Exercise
         BudgetFiles.new(
