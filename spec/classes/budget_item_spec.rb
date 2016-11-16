@@ -13,7 +13,7 @@ RSpec.describe BudgetItem do
 
     context 'if the perma_id exists' do
       it 'returns the perma_idable' do
-        perma_idable.save_perma_id(perma_id_text)
+        perma_idable.save_perma_id(override_text: perma_id_text)
 
         expect(BudgetItem.find_by_perma_id(perma_id_text))
         .to eq(perma_idable)
