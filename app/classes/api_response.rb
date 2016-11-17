@@ -60,7 +60,7 @@ class APIResponse
   def budget_item_hash(budget_item)
     hash = {}
 
-    hash['id'] = budget_item.id if budget_item_fields.include? 'id'
+    hash['id'] = budget_item.perma_id if budget_item_fields.include? 'id'
     hash['name'] = budget_item.name if budget_item_fields.include? 'name'
 
     hash

@@ -1,7 +1,11 @@
 FactoryGirl.define do
   factory :name do
-    sequence :text do |n|
-      "Nameable ##{n}"
+    sequence :text_en do |n|
+      "English Name ##{n}"
+    end
+
+    sequence :text_ka do |n|
+      "Georgian Name ##{n}"
     end
 
     sequence :start_date do |n|
