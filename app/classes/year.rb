@@ -34,5 +34,9 @@ class Year < TimePeriod
     [start_date, end_date]
   end
 
+  def to_s
+    start_date.year.to_s
+  end
+
   attr_reader :start_date, :end_date
 end
