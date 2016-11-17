@@ -4,7 +4,7 @@ namespace :budget_data do
   desc 'Upload all budget files'
   task upload: :environment do
     BudgetFiles.new(
-      # monthly_folder: BudgetFiles.monthly_spreadsheet_dir,
+      monthly_folder: BudgetFiles.monthly_spreadsheet_dir,
       yearly_folder: BudgetFiles.yearly_spreadsheet_dir,
       priorities_list: BudgetFiles.priorities_list,
       priority_associations_list: BudgetFiles.priority_associations_list,
