@@ -129,7 +129,7 @@ class ItemMerger
     return if new_perma_ids.blank?
 
     new_perma_ids.each do |new_perma_id|
-      new_perma_id.update_attribute(:perma_idable, receiver)
+      receiver.take_perma_id(new_perma_id)
     end
   end
 end

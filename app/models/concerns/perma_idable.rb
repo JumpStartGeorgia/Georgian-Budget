@@ -17,9 +17,19 @@ module PermaIdable
       perma_idable: self
     )
 
-    update_attribute(:perma_id, new_perma_id.text) if new_perma_id.persisted?
+    update_with_new_perma_id if new_perma_id.persisted?
 
     self
+  end
+
+  def take_perma_id(new_perma_id)
+    new_perma_id.update_attribute(:perma_idable, self)
+
+    update_with_new_perma_id if new_perma_id.persisted?
+  end
+
+  def update_with_new_perma_id
+    update_attribute(:perma_id, perma_ids.last.text)
   end
 
   private

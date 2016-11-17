@@ -25,4 +25,26 @@ RSpec.shared_examples_for 'PermaIdable' do
       end
     end
   end
+
+  describe '#take_perma_id' do
+    let(:old_perma_idable) { FactoryGirl.create(described_class_sym) }
+    let(:new_perma_idable) { FactoryGirl.create(described_class_sym) }
+
+    it 'it removes perma_id from original perma_idable' do
+      old_perma_idable.save_perma_id(override_text: 'fdsfdf')
+
+      new_perma_idable.take_perma_id(old_perma_idable.perma_ids.last)
+
+      expect(old_perma_idable.perma_ids.length).to eq(0)
+    end
+
+    it 'sets perma_id on new perma_idable' do
+      old_perma_idable.save_perma_id(override_text: 'fdsfdf')
+
+      new_perma_idable.take_perma_id(old_perma_idable.perma_ids.last)
+
+      expect(new_perma_idable.perma_ids.length).to eq(1)
+      expect(new_perma_idable.perma_id).to eq('fdsfdf')
+    end
+  end
 end

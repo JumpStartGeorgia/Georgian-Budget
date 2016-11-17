@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe do DuplicateFinder
   let(:previously_saved_item) { FactoryGirl.create(:program) }
+  let(:previously_saved_item2) { FactoryGirl.create(:program) }
   let(:source_item) { FactoryGirl.create(:program) }
 
   let(:source_item_code_attr) do
@@ -164,6 +165,24 @@ RSpec.describe do DuplicateFinder
         possible_duplicates = DuplicateFinder.new(source_item).find_possible_duplicates
 
         expect(possible_duplicates).to eq([])
+      end
+    end
+
+    context 'when there are multiple items with same code' do
+      it 'returns only the most recent in possible duplicates' do
+        previously_saved_item.add_code(FactoryGirl.attributes_for(:code,
+          number: source_item_code_attr[:number]))
+        previously_saved_item
+        .update_attribute(:start_date, Date.new(2011, 1, 1))
+
+        previously_saved_item2.add_code(FactoryGirl.attributes_for(:code,
+          number: source_item_code_attr[:number]))
+        previously_saved_item2
+        .update_attribute(:start_date, Date.new(2010, 1, 1))
+
+        possible_duplicates = DuplicateFinder.new(source_item).find_possible_duplicates
+
+        expect(possible_duplicates).to eq([previously_saved_item])
       end
     end
 

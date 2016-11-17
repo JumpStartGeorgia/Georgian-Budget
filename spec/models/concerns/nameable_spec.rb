@@ -64,7 +64,7 @@ RSpec.shared_examples_for 'Nameable' do
       .add_name(name_attr1b)
       .reload
 
-      expect(nameable1.name).to eq(name_attr1b[:text])
+      expect(nameable1.name).to eq(name_attr1b[:text_en])
     end
   end
 
@@ -89,7 +89,7 @@ RSpec.shared_examples_for 'Nameable' do
       .add_name(name_attr1b)
       .reload
 
-      expect(nameable1.recent_name_object.text).to eq(name_attr1b[:text])
+      expect(nameable1.recent_name_object.text).to eq(name_attr1b[:text_en])
     end
   end
 
@@ -162,10 +162,10 @@ RSpec.shared_examples_for 'Nameable' do
       nameable1.add_name(name_attr1a)
       nameable2.add_name(name_attr2a)
 
-      name_attr3a[:text] = name_attr1a[:text]
+      name_attr3a[:text_en] = name_attr1a[:text_en]
       nameable3.add_name(name_attr3a)
 
-      expect(described_class.find_by_name(name_attr1a[:text]))
+      expect(described_class.find_by_name(name_attr1a[:text_en]))
       .to match_array([nameable1, nameable3])
     end
   end
@@ -176,8 +176,8 @@ RSpec.shared_examples_for 'Nameable' do
       nameable1.add_name(name_attr1a)
 
       nameable1.reload
-      expect(nameable1.names[0].text).to eq(name_attr1a[:text])
-      expect(nameable1.names[1].text).to eq(name_attr1b[:text])
+      expect(nameable1.names[0].text).to eq(name_attr1a[:text_en])
+      expect(nameable1.names[1].text).to eq(name_attr1b[:text_en])
     end
   end
 
@@ -224,14 +224,14 @@ RSpec.shared_examples_for 'Nameable' do
           nameable1.add_name(name_attr1a)
           nameable1.reload
 
-          expect(nameable1.names[0].text).to eq(name_attr1a[:text])
+          expect(nameable1.names[0].text).to eq(name_attr1a[:text_en])
         end
 
         it 'marked as most recent name of nameable' do
           nameable1.add_name(name_attr1a)
           nameable1.reload
 
-          expect(nameable1.recent_name_object.text).to eq(name_attr1a[:text])
+          expect(nameable1.recent_name_object.text).to eq(name_attr1a[:text_en])
         end
       end
     end
@@ -243,7 +243,7 @@ RSpec.shared_examples_for 'Nameable' do
 
       context 'text matches earlier sibling' do
         before :example do
-          name_attr1b[:text] = name_attr1a[:text]
+          name_attr1b[:text_en] = name_attr1a[:text_en]
         end
 
         it 'causes nameable to have 1 name' do
@@ -265,7 +265,7 @@ RSpec.shared_examples_for 'Nameable' do
             nameable1.add_name(name_attr1b)
             nameable1.reload
 
-            expect(nameable1.recent_name_object.text).to eq(name_attr1a[:text])
+            expect(nameable1.recent_name_object.text).to eq(name_attr1a[:text_en])
           end
         end
       end
@@ -290,7 +290,7 @@ RSpec.shared_examples_for 'Nameable' do
             nameable1.add_name(name_attr1b)
             nameable1.reload
 
-            expect(nameable1.recent_name_object.text).to eq(name_attr1b[:text])
+            expect(nameable1.recent_name_object.text).to eq(name_attr1b[:text_en])
           end
         end
       end
@@ -303,7 +303,7 @@ RSpec.shared_examples_for 'Nameable' do
 
       context 'and text matches sibling' do
         before :example do
-          name_attr1a[:text] = name_attr1b[:text]
+          name_attr1a[:text_en] = name_attr1b[:text_en]
         end
 
         it 'causes nameable to have 1 name' do
@@ -326,7 +326,7 @@ RSpec.shared_examples_for 'Nameable' do
             nameable1.add_name(name_attr1a)
             nameable1.reload
 
-            expect(nameable1.recent_name_object.text).to eq(name_attr1a[:text])
+            expect(nameable1.recent_name_object.text).to eq(name_attr1a[:text_en])
           end
         end
       end
@@ -351,7 +351,7 @@ RSpec.shared_examples_for 'Nameable' do
             nameable1.add_name(name_attr1a)
             nameable1.reload
 
-            expect(nameable1.recent_name_object.text).to_not eq(name_attr1a[:text])
+            expect(nameable1.recent_name_object.text).to_not eq(name_attr1a[:text_en])
           end
         end
       end
@@ -366,7 +366,7 @@ RSpec.shared_examples_for 'Nameable' do
 
       context 'and text matches earliest sibling (but not later sibling)' do
         it 'adds another name object' do
-          name_attr1c[:text] = name_attr1a[:text]
+          name_attr1c[:text_en] = name_attr1a[:text_en]
 
           nameable1.add_name(name_attr1c)
 
@@ -417,8 +417,8 @@ RSpec.shared_examples_for 'Nameable' do
         nameable.id == nameable2.id
       end
 
-      expect(nameable1_with_names.reload.name).to eq(name_attr1b[:text])
-      expect(nameable2_with_names.reload.name).to eq(name_attr2b[:text])
+      expect(nameable1_with_names.reload.name).to eq(name_attr1b[:text_en])
+      expect(nameable2_with_names.reload.name).to eq(name_attr2b[:text_en])
     end
 
     it 'issues just 1 query (with subsequent nameable.name calls)' do

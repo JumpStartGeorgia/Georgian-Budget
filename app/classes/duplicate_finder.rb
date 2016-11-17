@@ -20,7 +20,11 @@ class DuplicateFinder
       return perma_id_item
     end
 
-    items_sharing_data.each do |possible_item|
+    items_with_same_name.each do |possible_item|
+      return possible_item if is_duplicate?(possible_item)
+    end
+
+    items_with_same_code.each do |possible_item|
       return possible_item if is_duplicate?(possible_item)
     end
 
@@ -28,30 +32,52 @@ class DuplicateFinder
   end
 
   def find_possible_duplicates
-    items_sharing_data.select do |possible_item|
-      is_possible_duplicate?(possible_item)
-    end
+    possible_duplicates = []
+
+    item_with_same_code = most_recent_item_with_same_code
+    possible_duplicates << item_with_same_code if item_with_same_code.present?
+
+    item_with_same_name = most_recent_item_with_same_name
+    possible_duplicates << item_with_same_name if item_with_same_name.present?
+
+    possible_duplicates
   end
 
   private
 
-  def items_sharing_data
-    items_with_same_code = source_item.class
+  def most_recent_item_with_same_code
+    items_with_same_code
+    .order(start_date: :desc)
+    .find do |possible_item|
+      is_possible_duplicate?(possible_item)
+    end
+  end
+
+  def items_with_same_code
+    @items_with_same_code ||= source_item.class
     .where(code: source_item.code)
     .where.not(id: source_item)
     .where(source_item.class.arel_table[:start_date].lteq(source_item.end_date))
+  end
 
-    items_with_same_name = source_item.class
+  def most_recent_item_with_same_name
+    items_with_same_name
+    .order(start_date: :desc)
+    .find do |possible_item|
+      is_possible_duplicate?(possible_item)
+    end
+  end
+
+  def items_with_same_name
+    @items_with_same_name ||= source_item.class
     .find_by_name(source_item.name)
     .where.not(id: source_item)
     .where(source_item.class.arel_table[:start_date].lteq(source_item.end_date))
-
-    items_with_same_code + items_with_same_name
   end
 
   def is_duplicate?(other_item)
-    return false unless name_matches?(other_item)
     return false unless code_generation_matches?(other_item)
+    return false unless name_matches?(other_item)
     return false if items_overlap?(other_item)
 
     true
@@ -59,8 +85,8 @@ class DuplicateFinder
 
   def is_possible_duplicate?(other_item)
     return false if items_overlap?(other_item)
-    return true if name_matches?(other_item)
     return true if code_matches?(other_item)
+    return true if name_matches?(other_item)
 
     false
   end

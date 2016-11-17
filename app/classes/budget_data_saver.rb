@@ -10,14 +10,15 @@ class BudgetDataSaver
     save_planned_finances
     save_perma_id
 
-    exact_match = DuplicateFinder.new(new_item).find_exact_match
+    duplicate_finder = DuplicateFinder.new(new_item)
+    exact_match = duplicate_finder.find_exact_match
 
     if exact_match.present?
       merge_items(exact_match)
     else
       if new_item.respond_to?(:save_possible_duplicates)
         new_item.save_possible_duplicates(
-          DuplicateFinder.new(new_item).find_possible_duplicates
+          duplicate_finder.find_possible_duplicates
         )
       end
     end
