@@ -46,8 +46,8 @@ class BudgetFiles
     save_priorities_list if priorities_list.present?
     save_priority_associations_list if priority_associations_list.present?
     save_budget_item_translations if budget_item_translations.present?
-    save_priority_finances
     save_quarterly_spent_finances
+    save_priority_finances
 
     print_end_messages
   end
