@@ -89,6 +89,7 @@ namespace :budget_data do
         'Budget Item 1 Dates',
         'Budget Item 2 Dates',
         'Marked on Date',
+        'Priority Names (if different)',
         'Merge? (yes / no)'
       ]
 
@@ -105,6 +106,7 @@ namespace :budget_data do
           "#{item1.start_date} - #{item1.end_date}",
           "#{item2.start_date} - #{item2.end_date}",
           possible_duplicate_pair.date_when_found,
+          possible_duplicate_pair.priorities_differ? ? "Item 1 priority: #{item1.priority.name} |||||| Item 2 priority: #{item2.priority.name}" : '',
           ''
         ]
       end

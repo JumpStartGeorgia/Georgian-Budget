@@ -66,6 +66,12 @@ class PossibleDuplicatePair < ApplicationRecord
     item2.name_on_date(date_when_found).text
   end
 
+  def priorities_differ?
+    item1.priority.present? &&
+    item2.priority.present? &&
+    item1.priority != item2.priority
+  end
+
   private
 
   def validate_item2_is_not_item1
