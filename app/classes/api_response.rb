@@ -84,7 +84,7 @@ class APIResponse
 
   def budget_item_config(id)
     begin
-      budget_item = budget_type_class.find(id)
+      budget_item = BudgetItem.find_by_perma_id(id)
     rescue ActiveRecord::RecordNotFound
       add_error('Could not find budget item')
       return nil
