@@ -31,15 +31,6 @@ RSpec.describe Name, type: :model do
 
       expect(name1).to have(1).errors_on(:start_date)
     end
-
-    context 'when name has siblings' do
-      it "cannot be the same as another sibling's start date" do
-        name1b.start_date = name1.start_date
-        name1b.valid?
-
-        expect(name1b).to have(1).errors_on(:start_date)
-      end
-    end
   end
 
   describe '#text=' do

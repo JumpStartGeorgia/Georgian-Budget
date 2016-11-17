@@ -4,7 +4,7 @@ class Name < ApplicationRecord
   translates :text, fallbacks_for_empty_translations: true
   globalize_accessors locales: [:en, :ka], attributes: [:text]
 
-  validates :start_date, uniqueness: { scope: [:nameable_type, :nameable_id] }, presence: true
+  validates :start_date, presence: true
   validates :nameable, presence: true
   validate :validate_text_not_empty_string
 
