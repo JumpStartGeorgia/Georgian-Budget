@@ -219,7 +219,7 @@ RSpec.describe Priority, type: :model do
       priority.add_name(FactoryGirl.attributes_for(:name, text_ka: 'a b'))
       priority.save_perma_id
 
-      expect(priority.perma_id.text).to eq(
+      expect(priority.perma_id).to eq(
         Digest::SHA1.hexdigest "a_b"
       )
     end

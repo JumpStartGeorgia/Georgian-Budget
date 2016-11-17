@@ -25,7 +25,7 @@ RSpec.describe SpendingAgency, type: :model do
 
       spending_agency.save_perma_id
 
-      expect(spending_agency.perma_id.text).to eq(
+      expect(spending_agency.perma_id).to eq(
         Digest::SHA1.hexdigest "00_1_a_b"
       )
     end

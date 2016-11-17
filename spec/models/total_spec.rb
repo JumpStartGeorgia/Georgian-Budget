@@ -47,7 +47,7 @@ RSpec.describe Total do
     it 'saves computed perma_id to perma_ids' do
       total.save_perma_id
 
-      expect(total.perma_id.text).to eq(
+      expect(total.perma_id).to eq(
         Digest::SHA1.hexdigest "00_მთლიანი_სახელმწიფო_ბიუჯეტი"
       )
     end

@@ -102,7 +102,7 @@ RSpec.describe Program, type: :model do
 
       new_program.save_perma_id
 
-      expect(new_program.perma_id.text).to eq(
+      expect(new_program.perma_id).to eq(
         Digest::SHA1.hexdigest "00_1_a_b"
       )
     end
