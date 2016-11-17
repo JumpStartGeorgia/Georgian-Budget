@@ -36,20 +36,22 @@ class BudgetDataSaver
   def save_code
     return unless new_item.respond_to?(:add_code)
     return unless data_holder.respond_to?(:code_data)
+
     new_item.add_code(data_holder.code_data)
   end
 
   def save_name
     return unless new_item.respond_to?(:add_name)
     return unless data_holder.respond_to?(:name_data)
+
     new_item.add_name(data_holder.name_data)
   end
 
   def save_spent_finance
     return unless data_holder.respond_to?(:spent_finance_data)
-    new_item.add_spent_finance(
-      data_holder.spent_finance_data
-    )
+    return unless data_holder.spent_finance_data.present?
+
+    new_item.add_spent_finance(data_holder.spent_finance_data)
   end
 
   # if there is just one planned finance hash (monthly spreadsheets), this
@@ -57,6 +59,7 @@ class BudgetDataSaver
   # this method saves all of them.
   def save_planned_finances
     return unless data_holder.respond_to?(:planned_finance_data)
+    return unless data_holder.planned_finance_data.present?
 
     planned_finance_data = data_holder.planned_finance_data
 
