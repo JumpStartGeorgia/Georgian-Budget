@@ -36,6 +36,14 @@ class PlannedFinance < ApplicationRecord
     calculate(:sum, :amount)
   end
 
+  def self.official
+    where(official: true)
+  end
+
+  def self.unofficial
+    where(official: false)
+  end
+
   def ==(other_planned_finance)
     return false if other_planned_finance.class != self.class
     return false if finance_plannable != other_planned_finance.finance_plannable
@@ -50,6 +58,7 @@ class PlannedFinance < ApplicationRecord
   end
 
   def amount_pretty
+    return nil if amount.nil?
     ActionController::Base.helpers.number_with_delimiter(amount, delimiter: ',')
   end
 end
