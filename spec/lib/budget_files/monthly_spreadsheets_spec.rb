@@ -91,6 +91,17 @@ RSpec.describe 'BudgetFiles' do
             expect(finance.end_date).to eq(Date.new(2015, 3, 31))
             expect(finance.official).to eq(false)
           end
+
+          it 'saves correct number of yearly spent finances' do
+            expect(total.spent_finances.yearly.length).to eq(1)
+          end
+
+          it 'saves yearly spent finance' do
+            finance = total.spent_finances.yearly[0]
+
+            expect(finance.amount.to_f).to eq(656549486.69 + 641341973.31)
+            expect(finance.official).to eq(false)
+          end
         end
 
         context 'planned finances:' do
@@ -167,8 +178,17 @@ RSpec.describe 'BudgetFiles' do
             finance = spending_agency1.spent_finances.quarterly[0]
 
             expect(finance.amount.to_f).to eq(3532432.91 + 3753083.38)
-            expect(finance.start_date).to eq(Date.new(2015, 1, 1))
-            expect(finance.end_date).to eq(Date.new(2015, 3, 31))
+            expect(finance.official).to eq(false)
+          end
+
+          it 'saves correct number of yearly spent finances' do
+            expect(spending_agency1.spent_finances.yearly.length).to eq(1)
+          end
+
+          it 'saves yearly spent finance' do
+            finance = spending_agency1.spent_finances.yearly[0]
+
+            expect(finance.amount.to_f).to eq(3532432.91 + 3753083.38)
             expect(finance.official).to eq(false)
           end
         end
