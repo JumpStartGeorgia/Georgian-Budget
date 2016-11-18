@@ -5,6 +5,11 @@ class Priority < ApplicationRecord
   include PermaIdable
 
   has_many :programs
+  has_many :spending_agencies,
+           -> { distinct },
+           through: :programs,
+           source: :parent,
+           source_type: 'SpendingAgency'
 
   # Updates the priority's finances by summing the finance amounts of the
   # priority's programs.
