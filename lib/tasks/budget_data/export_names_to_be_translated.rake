@@ -1,6 +1,6 @@
 namespace :budget_data do
   desc 'Get list of unique budget item names to be translated'
-  task get_georgian_names_to_be_translated: :environment do
+  task export_georgian_names_to_be_translated: :environment do
     # inefficient, but there aren't enough names for it to matter
     names = Name.all.select { |name| name.text_en == nil }
 

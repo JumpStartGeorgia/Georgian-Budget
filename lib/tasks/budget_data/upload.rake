@@ -1,4 +1,4 @@
-require_relative '../budget_uploader/budget_files'
+require_relative '../../budget_uploader/budget_files'
 
 namespace :budget_data do
   desc 'Upload all budget files'
