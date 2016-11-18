@@ -217,7 +217,7 @@ class BudgetFiles
     puts "\nSaving quarterly and yearly spent finances"
     time_prettifier.run do
       SpentFinanceAggregator.new.create_from_monthly(Quarter)
-      SpentFinanceAggregator.new.create_from_monthly(Yearly)
+      SpentFinanceAggregator.new.create_from_monthly(Year)
     end
 
     finished_message = "Finished saving quarterly and yearly spent finances in #{time_prettifier.elapsed_prettified}"
