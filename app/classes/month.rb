@@ -43,12 +43,12 @@ class Month < TimePeriod
     end
   end
 
-  def ==(another_month)
-    if start_date == another_month.start_date
-      return true
-    else
-      return false
-    end
+  def ==(o)
+    self.class == o.class && state == o.state
+  end
+
+  def state
+    [start_date, end_date]
   end
 
   def next
