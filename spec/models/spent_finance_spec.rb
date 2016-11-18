@@ -61,12 +61,26 @@ RSpec.describe SpentFinance do
   end
 
   describe 'time period' do
-    it 'is unique' do
-      spent_finance1
-      spent_finance1b.start_date = spent_finance1.start_date
-      spent_finance1b.end_date = spent_finance1.end_date
+    context 'when finance is official' do
+      it 'is unique' do
+        spent_finance1.update_attribute(:official, true)
+        spent_finance1b.official = true
+        spent_finance1b.start_date = spent_finance1.start_date
+        spent_finance1b.end_date = spent_finance1.end_date
 
-      expect(spent_finance1b).to have(1).error_on(:end_date)
+        expect(spent_finance1b).to have(1).error_on(:end_date)
+      end
+    end
+
+    context 'when finance is unofficial' do
+      it 'does not have to be unique' do
+        spent_finance1.update_attribute(:official, true)
+        spent_finance1b.official = false
+        spent_finance1b.start_date = spent_finance1.start_date
+        spent_finance1b.end_date = spent_finance1.end_date
+
+        expect(spent_finance1b).to have(0).error_on(:end_date)
+      end
     end
   end
 

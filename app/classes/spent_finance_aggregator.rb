@@ -1,11 +1,11 @@
 class SpentFinanceAggregator
-  def create_quarterly_from_monthly
+  def create_from_monthly(time_period_klass)
     finance_spendables = SpentFinance
       .monthly
       .select(
         :finance_spendable_type,
-        :finance_spendable_id
-      ).group(
+        :finance_spendable_id)
+      .group(
         :finance_spendable_type,
         :finance_spendable_id
       )
@@ -13,14 +13,14 @@ class SpentFinanceAggregator
     finance_spendables.each do |finance_spendables|
       finance_spendable = finance_spendables.finance_spendable
 
-      quarters = Quarter.for_dates(
+      new_time_periods = time_period_klass.for_dates(
         finance_spendable.spent_finances.pluck(:start_date))
 
-      quarters.each do |quarter|
+      new_time_periods.each do |new_time_period|
         amount = finance_spendable
           .spent_finances
-          .after(quarter.start_date)
-          .before(quarter.end_date)
+          .after(new_time_period.start_date)
+          .before(new_time_period.end_date)
           .sum(:amount)
 
         amount = nil if amount == 0.0 && finance_spendable
@@ -29,7 +29,7 @@ class SpentFinanceAggregator
           .count == 0
 
         finance_spendable.add_spent_finance(
-          time_period: quarter,
+          time_period: new_time_period,
           amount: amount,
           official: false)
       end

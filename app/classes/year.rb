@@ -8,6 +8,10 @@ class Year < TimePeriod
     new(date.year)
   end
 
+  def self.for_dates(dates)
+    dates.map { |date| for_date(date) }.uniq
+  end
+
   def self.dates_valid?(start_date, end_date)
     return false unless start_date.month == 1
     return false unless start_date.day == 1
@@ -26,12 +30,24 @@ class Year < TimePeriod
     Year.new(start_date.year - 1)
   end
 
+  def to_hash
+    {
+      start_date: start_date,
+      end_date: end_date
+    }
+  end
+
   def ==(o)
     self.class == o.class && self.state == o.state
   end
+  alias_method :eql?, :==
 
   def state
     [start_date, end_date]
+  end
+
+  def hash
+    state.hash
   end
 
   def to_s

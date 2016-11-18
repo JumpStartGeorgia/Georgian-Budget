@@ -67,13 +67,28 @@ RSpec.describe PlannedFinance do
       expect(planned_finance1).to have(1).error_on(:announce_date)
     end
 
-    it 'is unique for same finance_plannable, start_date, and end_date' do
-      planned_finance1
-      planned_finance1b.start_date = planned_finance1.start_date
-      planned_finance1b.end_date = planned_finance1.end_date
-      planned_finance1b.announce_date = planned_finance1.announce_date
+    context 'when official' do
+      it 'is unique for same finance_plannable and time period' do
+        planned_finance1.update_attribute(:official, true)
+        planned_finance1b.official = true
+        planned_finance1b.start_date = planned_finance1.start_date
+        planned_finance1b.end_date = planned_finance1.end_date
+        planned_finance1b.announce_date = planned_finance1.announce_date
 
-      expect(planned_finance1b).to have(1).error_on(:announce_date)
+        expect(planned_finance1b).to have(1).error_on(:announce_date)
+      end
+    end
+
+    context 'when not official' do
+      it 'does not have to be unique for same finance_plannable and time period' do
+        planned_finance1.update_attribute(:official, true)
+        planned_finance1b.official = false
+        planned_finance1b.start_date = planned_finance1.start_date
+        planned_finance1b.end_date = planned_finance1.end_date
+        planned_finance1b.announce_date = planned_finance1.announce_date
+
+        expect(planned_finance1b).to have(0).error_on(:announce_date)
+      end
     end
   end
 

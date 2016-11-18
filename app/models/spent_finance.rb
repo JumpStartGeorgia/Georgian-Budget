@@ -11,7 +11,8 @@ class SpentFinance < ApplicationRecord
                 :finance_spendable_id,
                 :start_date
               ]
-            }
+            },
+            if: :official
   validates :official, inclusion: { in: [true, false] }
 
   def parent

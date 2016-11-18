@@ -46,7 +46,7 @@ class BudgetFiles
     save_priorities_list if priorities_list.present?
     save_priority_associations_list if priority_associations_list.present?
     save_budget_item_translations if budget_item_translations.present?
-    save_quarterly_spent_finances
+    save_other_time_period_spent_finances
     save_priority_finances
 
     print_end_messages
@@ -121,9 +121,7 @@ class BudgetFiles
   def get_budget_item_translations(args)
     return nil unless args[:budget_item_translations]
 
-    BudgetItemTranslations.new(
-      args[:budget_item_translations]
-    )
+    BudgetItemTranslations.new(args[:budget_item_translations])
   end
 
   def upload_monthly_sheets
@@ -215,13 +213,14 @@ class BudgetFiles
     end_messages << finished_message
   end
 
-  def save_quarterly_spent_finances
-    puts "\nSaving quarterly spent finances"
+  def save_other_time_period_spent_finances
+    puts "\nSaving quarterly and yearly spent finances"
     time_prettifier.run do
-      SpentFinanceAggregator.new.create_quarterly_from_monthly
+      SpentFinanceAggregator.new.create_from_monthly(Quarter)
+      SpentFinanceAggregator.new.create_from_monthly(Yearly)
     end
 
-    finished_message = "Finished saving quarterly spent finances in #{time_prettifier.elapsed_prettified}"
+    finished_message = "Finished saving quarterly and yearly spent finances in #{time_prettifier.elapsed_prettified}"
     puts finished_message
     end_messages << finished_message
   end
