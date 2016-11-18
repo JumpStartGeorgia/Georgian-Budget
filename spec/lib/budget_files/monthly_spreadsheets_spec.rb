@@ -30,6 +30,7 @@ RSpec.describe 'BudgetFiles' do
       context 'total:' do
         let(:total) { Total.first }
         let(:q1_2015) { Quarter.for_date(Date.new(2015, 1, 1)) }
+        let(:year_2015) { Year.new(2015) }
 
         it 'saves total perma_id' do
           require 'digest/sha1'
@@ -43,11 +44,11 @@ RSpec.describe 'BudgetFiles' do
         end
 
         it 'saves total start date' do
-          expect(total.start_date).to eq(q1_2015.start_date)
+          expect(total.start_date).to eq(year_2015.start_date)
         end
 
         it 'saves total end date' do
-          expect(total.end_date).to eq(q1_2015.end_date)
+          expect(total.end_date).to eq(year_2015.end_date)
         end
 
         it 'saves total English name' do

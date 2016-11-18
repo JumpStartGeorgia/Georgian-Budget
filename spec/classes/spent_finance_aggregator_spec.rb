@@ -289,6 +289,11 @@ RSpec.describe SpentFinanceAggregator do
         .add_spent_finance(FactoryGirl.attributes_for(:spent_finance,
           time_period: Month.new(2013, 3),
           amount: march_amount))
+        .add_spent_finance(FactoryGirl.attributes_for(:spent_finance,
+          time_period: Quarter.for_date(Date.new(2013, 1, 1))))
+        .add_spent_finance(FactoryGirl.attributes_for(:spent_finance,
+          time_period: Month.new(2013, 3),
+          official: false))
 
         SpentFinanceAggregator.new.create_from_monthly(Year)
       end

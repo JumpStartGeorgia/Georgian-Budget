@@ -17,15 +17,16 @@ class SpentFinanceAggregator
         finance_spendable.spent_finances.pluck(:start_date))
 
       new_time_periods.each do |new_time_period|
-        amount = finance_spendable
+        monthly_official_spent_finances = finance_spendable
           .spent_finances
+          .monthly
+          .official
           .after(new_time_period.start_date)
           .before(new_time_period.end_date)
-          .sum(:amount)
 
-        amount = nil if amount == 0.0 && finance_spendable
-          .spent_finances
-          .where.not(amount: nil)
+        amount = monthly_official_spent_finances.sum(:amount)
+
+        amount = nil if amount == 0.0 && monthly_official_spent_finances.where.not(amount: nil)
           .count == 0
 
         finance_spendable.add_spent_finance(
