@@ -16,15 +16,15 @@ class YearlyBudgetSheet::Item
   end
 
   def two_years_earlier_spent_amount
-    header_row_values[3]
+    header_row_values[3] * amount_multiplier
   end
 
   def previous_year_plan_amount
-    header_row_values[4]
+    header_row_values[4] * amount_multiplier
   end
 
   def current_year_plan_amount
-    header_row_values[5]
+    header_row_values[5] * amount_multiplier
   end
 
   def header_row_values
@@ -46,5 +46,10 @@ class YearlyBudgetSheet::Item
     header_row_data.cells.map do |cell|
       cell.present? && cell.value.present? ? cell.value : nil
     end
+  end
+
+  # amounts in yearly spreadsheets are recorded in 1000s
+  def amount_multiplier
+    1000
   end
 end

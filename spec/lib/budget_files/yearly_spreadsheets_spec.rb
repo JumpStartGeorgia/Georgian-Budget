@@ -64,7 +64,7 @@ RSpec.describe 'BudgetFiles' do
           .with_time_period(Year.new(2013))
           .first
 
-          expect(finance.amount.to_f).to eq(8104217.6)
+          expect(finance.amount.to_f).to eq(8104217600)
           expect(finance.official).to eq(true)
         end
 
@@ -74,7 +74,7 @@ RSpec.describe 'BudgetFiles' do
           .where(announce_date: Date.new(2015, 1, 1))
           .first
 
-          expect(finance.amount.to_f).to eq(9080000.0)
+          expect(finance.amount.to_f).to eq(9080000000)
           expect(finance.official).to eq(true)
         end
 
@@ -84,7 +84,7 @@ RSpec.describe 'BudgetFiles' do
           .where(announce_date: Date.new(2015, 1, 1))
           .first
 
-          expect(finance.amount.to_f).to eq(9575000.0)
+          expect(finance.amount.to_f).to eq(9575000000)
           expect(finance.official).to eq(true)
         end
 
@@ -93,7 +93,7 @@ RSpec.describe 'BudgetFiles' do
           .with_time_period(Year.new(2014))
           .first
 
-          expect(finance.amount.to_f).to eq(9009812.2)
+          expect(finance.amount.to_f).to eq(9009812200)
           expect(finance.official).to eq(true)
         end
 
@@ -103,7 +103,7 @@ RSpec.describe 'BudgetFiles' do
           .where(announce_date: Date.new(2016, 1, 1))
           .first
 
-          expect(finance.amount.to_f).to eq(9620000.0)
+          expect(finance.amount.to_f).to eq(9620000000)
           expect(finance.official).to eq(true)
         end
 
@@ -113,7 +113,7 @@ RSpec.describe 'BudgetFiles' do
           .where(announce_date: Date.new(2016, 1, 1))
           .first
 
-          expect(finance.amount.to_f).to eq(10145000.0)
+          expect(finance.amount.to_f).to eq(10145000000)
           expect(finance.official).to eq(true)
         end
       end
@@ -131,7 +131,7 @@ RSpec.describe 'BudgetFiles' do
           .with_time_period(Year.new(2013))
           .first
 
-          expect(finance.amount.to_f).to eq(123541.4)
+          expect(finance.amount.to_f).to eq(123541400)
         end
 
         it 'saved the 2014 plan announced in 2015' do
@@ -140,7 +140,7 @@ RSpec.describe 'BudgetFiles' do
           .where(announce_date: Date.new(2015, 1, 1))
           .first
 
-          expect(finance.amount.to_f).to eq(131091.0)
+          expect(finance.amount.to_f).to eq(131091000)
         end
 
         it 'saved the 2015 plan announced in 2015' do
@@ -149,7 +149,7 @@ RSpec.describe 'BudgetFiles' do
           .where(announce_date: Date.new(2015, 1, 1))
           .first
 
-          expect(finance.amount.to_f).to eq(120000.0)
+          expect(finance.amount.to_f).to eq(120000000)
         end
 
         it 'saved the 2014 spent amount' do
@@ -157,7 +157,7 @@ RSpec.describe 'BudgetFiles' do
           .with_time_period(Year.new(2014))
           .first
 
-          expect(finance.amount.to_f).to eq(88395.6)
+          expect(finance.amount.to_f).to eq(88395600)
         end
 
         it 'saved the 2015 plan announced in 2016' do
@@ -166,7 +166,7 @@ RSpec.describe 'BudgetFiles' do
           .where(announce_date: Date.new(2016, 1, 1))
           .first
 
-          expect(finance.amount.to_f).to eq(85368.1)
+          expect(finance.amount.to_f).to eq(85368100)
         end
 
         it 'saved the 2016 plan announced in 2016' do
@@ -175,7 +175,7 @@ RSpec.describe 'BudgetFiles' do
           .where(announce_date: Date.new(2016, 1, 1))
           .first
 
-          expect(finance.amount.to_f).to eq(95100.0)
+          expect(finance.amount.to_f).to eq(95100000)
         end
       end
 
@@ -192,7 +192,7 @@ RSpec.describe 'BudgetFiles' do
           .with_time_period(Year.new(2013))
           .first
 
-          expect(finance.amount.to_f).to eq(27115.1)
+          expect(finance.amount.to_f).to eq(27115100)
         end
 
         it 'saved the 2014 plan announced in 2015' do
@@ -201,7 +201,7 @@ RSpec.describe 'BudgetFiles' do
           .where(announce_date: Date.new(2015, 1, 1))
           .first
 
-          expect(finance.amount.to_f).to eq(49707.0)
+          expect(finance.amount.to_f).to eq(49707000)
         end
 
         it 'saved the 2015 plan announced in 2015' do
@@ -210,7 +210,7 @@ RSpec.describe 'BudgetFiles' do
           .where(announce_date: Date.new(2015, 1, 1))
           .first
 
-          expect(finance.amount.to_f).to eq(60500.0)
+          expect(finance.amount.to_f).to eq(60500000)
         end
 
         it 'saved the 2014 spent amount' do
@@ -218,7 +218,7 @@ RSpec.describe 'BudgetFiles' do
           .with_time_period(Year.new(2014))
           .first
 
-          expect(finance.amount.to_f).to eq(32410.1)
+          expect(finance.amount.to_f).to eq(32410100)
         end
 
         it 'saved the 2015 plan announced in 2016' do
@@ -227,7 +227,7 @@ RSpec.describe 'BudgetFiles' do
           .where(announce_date: Date.new(2016, 1, 1))
           .first
 
-          expect(finance.amount.to_f).to eq(60417.4)
+          expect(finance.amount.to_f).to eq(60417400)
         end
 
         it 'saved the 2016 plan announced in 2016' do
@@ -236,7 +236,7 @@ RSpec.describe 'BudgetFiles' do
           .where(announce_date: Date.new(2016, 1, 1))
           .first
 
-          expect(finance.amount.to_f).to eq(66747.0)
+          expect(finance.amount.to_f).to eq(66747000)
         end
       end
 
@@ -253,7 +253,7 @@ RSpec.describe 'BudgetFiles' do
           .with_time_period(Year.new(2013))
           .first
 
-          expect(finance.amount.to_f).to eq(59208.7)
+          expect(finance.amount.to_f).to eq(59208700)
         end
 
         it 'saved the 2014 plan announced in 2015' do
@@ -262,7 +262,7 @@ RSpec.describe 'BudgetFiles' do
           .where(announce_date: Date.new(2015, 1, 1))
           .first
 
-          expect(finance.amount.to_f).to eq(76440.0)
+          expect(finance.amount.to_f).to eq(76440000)
         end
 
         it 'saved the 2015 plan announced in 2015' do
@@ -271,7 +271,7 @@ RSpec.describe 'BudgetFiles' do
           .where(announce_date: Date.new(2015, 1, 1))
           .first
 
-          expect(finance.amount.to_f).to eq(82663.0)
+          expect(finance.amount.to_f).to eq(82663000)
         end
 
         it 'saved the 2014 spent amount' do
@@ -279,7 +279,7 @@ RSpec.describe 'BudgetFiles' do
           .with_time_period(Year.new(2014))
           .first
 
-          expect(finance.amount.to_f).to eq(74918.7)
+          expect(finance.amount.to_f).to eq(74918700)
         end
 
         it 'saved the 2016 plan announced in 2016' do
@@ -288,7 +288,7 @@ RSpec.describe 'BudgetFiles' do
           .where(announce_date: Date.new(2016, 1, 1))
           .first
 
-          expect(finance.amount.to_f).to eq(89611.0)
+          expect(finance.amount.to_f).to eq(89611000)
         end
       end
     end
