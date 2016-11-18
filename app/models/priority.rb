@@ -34,8 +34,8 @@ class Priority < ApplicationRecord
     program_spent_finances.each do |program_spent_finance|
       add_spent_finance(
         time_period: program_spent_finance.time_period,
-        amount: program_spent_finance.amount
-      )
+        amount: program_spent_finance.amount,
+        official: false)
     end
   end
 
@@ -56,7 +56,8 @@ class Priority < ApplicationRecord
     add_planned_finance(
       time_period: dates.time_period,
       announce_date: dates.announce_date,
-      amount: planned_finance_amount_for_dates(dates))
+      amount: planned_finance_amount_for_dates(dates),
+      official: false)
   end
 
   def planned_finance_amount_for_dates(dates)

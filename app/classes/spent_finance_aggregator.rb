@@ -30,7 +30,8 @@ class SpentFinanceAggregator
 
         finance_spendable.add_spent_finance(
           time_period: quarter,
-          amount: amount)
+          amount: amount,
+          official: false)
       end
     end
   end

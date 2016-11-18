@@ -19,9 +19,9 @@ RSpec.describe SpentFinanceAggregator do
   describe '#create_quarterly_from_monthly' do
     it 'saves data for priority' do
       financeable1 = FactoryGirl.create(:priority)
-      financeable1.add_spent_finance(
+      financeable1.add_spent_finance(FactoryGirl.attributes_for(:spent_finance,
         time_period: january,
-        amount: january_amount_financeable1)
+        amount: january_amount_financeable1))
 
       SpentFinanceAggregator.new.create_quarterly_from_monthly
 
@@ -30,13 +30,14 @@ RSpec.describe SpentFinanceAggregator do
       expect(quarterly_spent_finances.length).to eq(1)
       expect(quarterly_spent_finances[0].time_period).to eq(q1)
       expect(quarterly_spent_finances[0].amount).to eq(january_amount_financeable1)
+      expect(quarterly_spent_finances[0].official).to eq(false)
     end
 
     it 'saves data for total' do
       financeable1 = FactoryGirl.create(:total)
-      financeable1.add_spent_finance(
+      financeable1.add_spent_finance(FactoryGirl.attributes_for(:spent_finance,
         time_period: january,
-        amount: january_amount_financeable1)
+        amount: january_amount_financeable1))
 
       SpentFinanceAggregator.new.create_quarterly_from_monthly
 
@@ -45,13 +46,14 @@ RSpec.describe SpentFinanceAggregator do
       expect(quarterly_spent_finances.length).to eq(1)
       expect(quarterly_spent_finances[0].time_period).to eq(q1)
       expect(quarterly_spent_finances[0].amount).to eq(january_amount_financeable1)
+      expect(quarterly_spent_finances[0].official).to eq(false)
     end
 
     it 'saves data for spending agency' do
       financeable1 = FactoryGirl.create(:spending_agency)
-      financeable1.add_spent_finance(
+      financeable1.add_spent_finance(FactoryGirl.attributes_for(:spent_finance,
         time_period: january,
-        amount: january_amount_financeable1)
+        amount: january_amount_financeable1))
 
       SpentFinanceAggregator.new.create_quarterly_from_monthly
 
@@ -60,13 +62,14 @@ RSpec.describe SpentFinanceAggregator do
       expect(quarterly_spent_finances.length).to eq(1)
       expect(quarterly_spent_finances[0].time_period).to eq(q1)
       expect(quarterly_spent_finances[0].amount).to eq(january_amount_financeable1)
+      expect(quarterly_spent_finances[0].official).to eq(false)
     end
 
     it 'saves data for program' do
       financeable1 = FactoryGirl.create(:program)
-      financeable1.add_spent_finance(
+      financeable1.add_spent_finance(FactoryGirl.attributes_for(:spent_finance,
         time_period: january,
-        amount: january_amount_financeable1)
+        amount: january_amount_financeable1))
 
       SpentFinanceAggregator.new.create_quarterly_from_monthly
 
@@ -75,14 +78,15 @@ RSpec.describe SpentFinanceAggregator do
       expect(quarterly_spent_finances.length).to eq(1)
       expect(quarterly_spent_finances[0].time_period).to eq(q1)
       expect(quarterly_spent_finances[0].amount).to eq(january_amount_financeable1)
+      expect(quarterly_spent_finances[0].official).to eq(false)
     end
 
     context 'when there is a spent finance in January with nil amount' do
       it 'saves a quarter 1 spent finance with nil amount' do
         financeable1 = FactoryGirl.create(:spending_agency)
-        financeable1.add_spent_finance(
+        financeable1.add_spent_finance(FactoryGirl.attributes_for(:spent_finance,
           time_period: january,
-          amount: nil)
+          amount: nil))
 
         SpentFinanceAggregator.new.create_quarterly_from_monthly
 
@@ -91,6 +95,7 @@ RSpec.describe SpentFinanceAggregator do
         expect(quarterly_spent_finances.length).to eq(1)
         expect(quarterly_spent_finances[0].time_period).to eq(q1)
         expect(quarterly_spent_finances[0].amount).to eq(nil)
+        expect(quarterly_spent_finances[0].official).to eq(false)
       end
     end
 
@@ -98,16 +103,16 @@ RSpec.describe SpentFinanceAggregator do
       context 'and all amounts are present' do
         it 'creates quarter 1 spent finance with sum of monthly amounts' do
           financeable1 = FactoryGirl.create(:program)
-          .add_spent_finance(
+          .add_spent_finance(FactoryGirl.attributes_for(:spent_finance,
             time_period: january,
             amount: january_amount_financeable1
-          ).add_spent_finance(
+          )).add_spent_finance(FactoryGirl.attributes_for(:spent_finance,
             time_period: february,
             amount: february_amount_financeable1
-          ).add_spent_finance(
+          )).add_spent_finance(FactoryGirl.attributes_for(:spent_finance,
             time_period: march,
             amount: march_amount
-          )
+          ))
 
           SpentFinanceAggregator.new.create_quarterly_from_monthly
 
@@ -118,22 +123,23 @@ RSpec.describe SpentFinanceAggregator do
 
           expect(quarterly_spent_finances[0].amount)
           .to eq(january_amount_financeable1 + february_amount_financeable1 + march_amount)
+          expect(quarterly_spent_finances[0].official).to eq(false)
         end
       end
 
       context 'and March amount is nil' do
         it 'creates quarter 1 spent finance with sum of Jan and Feb amounts' do
           financeable1 = FactoryGirl.create(:spending_agency)
-          .add_spent_finance(
+          .add_spent_finance(FactoryGirl.attributes_for(:spent_finance,
             time_period: january,
             amount: january_amount_financeable1
-          ).add_spent_finance(
+          )).add_spent_finance(FactoryGirl.attributes_for(:spent_finance,
             time_period: february,
             amount: february_amount_financeable1
-          ).add_spent_finance(
+          )).add_spent_finance(FactoryGirl.attributes_for(:spent_finance,
             time_period: march,
             amount: nil
-          )
+          ))
 
           SpentFinanceAggregator.new.create_quarterly_from_monthly
 
@@ -144,22 +150,24 @@ RSpec.describe SpentFinanceAggregator do
 
           expect(quarterly_spent_finances[0].amount)
           .to eq(january_amount_financeable1 + february_amount_financeable1)
+
+          expect(quarterly_spent_finances[0].official).to eq(false)
         end
       end
 
       context 'and all three amounts are nil' do
         it 'creates quarter 1 spent finance with nil amount' do
           financeable1 = FactoryGirl.create(:priority)
-          .add_spent_finance(
+          .add_spent_finance(FactoryGirl.attributes_for(:spent_finance,
             time_period: january,
             amount: nil
-          ).add_spent_finance(
+          )).add_spent_finance(FactoryGirl.attributes_for(:spent_finance,
             time_period: february,
             amount: nil
-          ).add_spent_finance(
+          )).add_spent_finance(FactoryGirl.attributes_for(:spent_finance,
             time_period: march,
             amount: nil
-          )
+          ))
 
           SpentFinanceAggregator.new.create_quarterly_from_monthly
 
@@ -168,6 +176,7 @@ RSpec.describe SpentFinanceAggregator do
           expect(quarterly_spent_finances.length).to eq(1)
           expect(quarterly_spent_finances[0].time_period).to eq(q1)
           expect(quarterly_spent_finances[0].amount).to eq(nil)
+          expect(quarterly_spent_finances[0].official).to eq(false)
         end
       end
     end
@@ -176,13 +185,13 @@ RSpec.describe SpentFinanceAggregator do
       let(:financeable1) { FactoryGirl.create(:priority) }
 
       before :example do
-        financeable1.add_spent_finance(
+        financeable1.add_spent_finance(FactoryGirl.attributes_for(:spent_finance,
           time_period: january,
           amount: january_amount_financeable1
-        ).add_spent_finance(
+        )).add_spent_finance(FactoryGirl.attributes_for(:spent_finance,
           time_period: april,
           amount: april_amount
-        )
+        ))
       end
 
       it 'creates 2 quarterly spent finances' do
@@ -200,6 +209,7 @@ RSpec.describe SpentFinanceAggregator do
 
         expect(quarterly_spent_finances[0].time_period).to eq(q1)
         expect(quarterly_spent_finances[0].amount).to eq(january_amount_financeable1)
+        expect(quarterly_spent_finances[0].official).to eq(false)
       end
 
       it 'creates quarter 2 spent finance with April amount' do
@@ -209,6 +219,7 @@ RSpec.describe SpentFinanceAggregator do
 
         expect(quarterly_spent_finances[1].time_period).to eq(q2)
         expect(quarterly_spent_finances[1].amount).to eq(april_amount)
+        expect(quarterly_spent_finances[1].official).to eq(false)
       end
     end
 
@@ -219,22 +230,22 @@ RSpec.describe SpentFinanceAggregator do
 
         before :example do
           financeable1
-          .add_spent_finance(
+          .add_spent_finance(FactoryGirl.attributes_for(:spent_finance,
             time_period: january,
             amount: january_amount_financeable1
-          ).add_spent_finance(
+          )).add_spent_finance(FactoryGirl.attributes_for(:spent_finance,
             time_period: february,
             amount: february_amount_financeable1
-          )
+          ))
 
           financeable2
-          .add_spent_finance(
+          .add_spent_finance(FactoryGirl.attributes_for(:spent_finance,
             time_period: january,
             amount: january_amount_financeable2
-          ).add_spent_finance(
+          )).add_spent_finance(FactoryGirl.attributes_for(:spent_finance,
             time_period: february,
             amount: february_amount_financeable2
-          )
+          ))
         end
 
         it 'creates a quarterly spent finance for first program' do
@@ -246,6 +257,7 @@ RSpec.describe SpentFinanceAggregator do
           expect(quarterly_spent_finances[0].time_period).to eq(q1)
           expect(quarterly_spent_finances[0].amount).to eq(
             january_amount_financeable1 + february_amount_financeable1)
+          expect(quarterly_spent_finances[0].official).to eq(false)
         end
 
         it 'creates a quarterly spent finance for second program' do
@@ -257,6 +269,7 @@ RSpec.describe SpentFinanceAggregator do
           expect(quarterly_spent_finances[0].time_period).to eq(q1)
           expect(quarterly_spent_finances[0].amount).to eq(
             january_amount_financeable2 + february_amount_financeable2)
+          expect(quarterly_spent_finances[0].official).to eq(false)
         end
       end
     end

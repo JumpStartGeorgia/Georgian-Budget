@@ -65,6 +65,7 @@ RSpec.describe 'BudgetFiles' do
           .first
 
           expect(finance.amount.to_f).to eq(8104217.6)
+          expect(finance.official).to eq(true)
         end
 
         it 'saved the 2014 plan announced in 2015' do
@@ -74,6 +75,7 @@ RSpec.describe 'BudgetFiles' do
           .first
 
           expect(finance.amount.to_f).to eq(9080000.0)
+          expect(finance.official).to eq(true)
         end
 
         it 'saved the 2015 plan announced in 2015' do
@@ -83,6 +85,7 @@ RSpec.describe 'BudgetFiles' do
           .first
 
           expect(finance.amount.to_f).to eq(9575000.0)
+          expect(finance.official).to eq(true)
         end
 
         it 'saved the 2014 spent amount' do
@@ -91,6 +94,7 @@ RSpec.describe 'BudgetFiles' do
           .first
 
           expect(finance.amount.to_f).to eq(9009812.2)
+          expect(finance.official).to eq(true)
         end
 
         it 'saved the 2015 plan announced in 2016' do
@@ -100,6 +104,7 @@ RSpec.describe 'BudgetFiles' do
           .first
 
           expect(finance.amount.to_f).to eq(9620000.0)
+          expect(finance.official).to eq(true)
         end
 
         it 'saved the 2016 plan announced in 2016' do
@@ -109,6 +114,7 @@ RSpec.describe 'BudgetFiles' do
           .first
 
           expect(finance.amount.to_f).to eq(10145000.0)
+          expect(finance.official).to eq(true)
         end
       end
 

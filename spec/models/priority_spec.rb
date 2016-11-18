@@ -56,25 +56,25 @@ RSpec.describe Priority, type: :model do
         let(:spent_finance_time_period3) { Month.for_date(Date.new(2013, 1, 1)) }
 
         before :example do
-          program1.add_spent_finance(
+          program1.add_spent_finance(FactoryGirl.attributes_for(:spent_finance,
             amount: program1_spent_finance1_amount,
-            time_period: spent_finance_time_period1)
+            time_period: spent_finance_time_period1))
 
-          program2.add_spent_finance(
+          program2.add_spent_finance(FactoryGirl.attributes_for(:spent_finance,
             amount: program2_spent_finance1_amount,
-            time_period: spent_finance_time_period1)
+            time_period: spent_finance_time_period1))
 
-          program1.add_spent_finance(
+          program1.add_spent_finance(FactoryGirl.attributes_for(:spent_finance,
             amount: program1_spent_finance2_amount,
-            time_period: spent_finance_time_period2)
+            time_period: spent_finance_time_period2))
 
-          program2.add_spent_finance(
+          program2.add_spent_finance(FactoryGirl.attributes_for(:spent_finance,
             amount: program2_spent_finance2_amount,
-            time_period: spent_finance_time_period2)
+            time_period: spent_finance_time_period2))
 
-          program1.add_spent_finance(
+          program1.add_spent_finance(FactoryGirl.attributes_for(:spent_finance,
             amount: program1_spent_finance3_amount,
-            time_period: spent_finance_time_period3)
+            time_period: spent_finance_time_period3))
         end
 
         it "sets priority's spent finances to program spent finance sums" do
@@ -86,17 +86,23 @@ RSpec.describe Priority, type: :model do
           expect(priority.spent_finances[0].amount).to eq(
             program1_spent_finance1_amount + program2_spent_finance1_amount)
 
+          expect(priority.spent_finances[0].official).to eq(false)
+
           expect(priority.spent_finances[1].time_period).to eq(
             spent_finance_time_period2)
 
           expect(priority.spent_finances[1].amount).to eq(
             program1_spent_finance2_amount)
 
+          expect(priority.spent_finances[1].official).to eq(false)
+
           expect(priority.spent_finances[2].time_period).to eq(
             spent_finance_time_period3)
 
           expect(priority.spent_finances[2].amount).to eq(
             program1_spent_finance3_amount)
+
+          expect(priority.spent_finances[2].official).to eq(false)
         end
       end
 
@@ -118,25 +124,25 @@ RSpec.describe Priority, type: :model do
           let(:program2_planned_finance1c_amount) { 23111 }
 
           before :example do
-            program1.add_planned_finance(
+            program1.add_planned_finance(FactoryGirl.attributes_for(:planned_finance,
               time_period: planned_finance_time_period1,
               announce_date: planned_finance_announce_date1a,
-              amount: program1_planned_finance1a_amount)
+              amount: program1_planned_finance1a_amount))
 
-            program1.add_planned_finance(
+            program1.add_planned_finance(FactoryGirl.attributes_for(:planned_finance,
               time_period: planned_finance_time_period1,
               announce_date: planned_finance_announce_date1b,
-              amount: program1_planned_finance1b_amount)
+              amount: program1_planned_finance1b_amount))
 
-            program2.add_planned_finance(
+            program2.add_planned_finance(FactoryGirl.attributes_for(:planned_finance,
               time_period: planned_finance_time_period1,
               announce_date: planned_finance_announce_date1b,
-              amount: program2_planned_finance1b_amount)
+              amount: program2_planned_finance1b_amount))
 
-            program2.add_planned_finance(
+            program2.add_planned_finance(FactoryGirl.attributes_for(:planned_finance,
               time_period: planned_finance_time_period1,
               announce_date: planned_finance_announce_date1c,
-              amount: program2_planned_finance1c_amount)
+              amount: program2_planned_finance1c_amount))
           end
 
           it 'creates planned finance without at the time unannounced program plans' do
@@ -144,6 +150,8 @@ RSpec.describe Priority, type: :model do
 
             expect(planned_finance_q1_jan.amount).to eq(
               program1_planned_finance1a_amount)
+
+            expect(planned_finance_q1_jan.official).to eq(false)
           end
 
           it 'creates planned finance with program plans announced on same date when available' do
@@ -152,6 +160,8 @@ RSpec.describe Priority, type: :model do
             expect(planned_finance_q1_feb.amount).to eq(
               program1_planned_finance1b_amount +
               program2_planned_finance1b_amount)
+
+            expect(planned_finance_q1_feb.official).to eq(false)
           end
 
           it 'creates planned finance with most recent program plans for time period' do
@@ -160,6 +170,8 @@ RSpec.describe Priority, type: :model do
             expect(planned_finance_q1_march.amount).to eq(
               program1_planned_finance1b_amount +
               program2_planned_finance1c_amount)
+
+            expect(planned_finance_q1_march.official).to eq(false)
           end
         end
 
@@ -171,15 +183,15 @@ RSpec.describe Priority, type: :model do
           let(:program2_planned_finance2_amount) { nil }
 
           before :each do
-            program1.add_planned_finance(
+            program1.add_planned_finance(FactoryGirl.attributes_for(:planned_finance,
               time_period: planned_finance_time_period2,
               announce_date: planned_finance_announce_date2,
-              amount: program1_planned_finance2_amount)
+              amount: program1_planned_finance2_amount))
 
-            program2.add_planned_finance(
+            program2.add_planned_finance(FactoryGirl.attributes_for(:planned_finance,
               time_period: planned_finance_time_period2,
               announce_date: planned_finance_announce_date2,
-              amount: program2_planned_finance2_amount)
+              amount: program2_planned_finance2_amount))
           end
 
           it 'creates planned finance for quarter from non-nil finance' do
@@ -187,6 +199,8 @@ RSpec.describe Priority, type: :model do
 
             expect(priority.all_planned_finances[0].amount).to eq(
               program1_planned_finance2_amount)
+
+            expect(priority.all_planned_finances[0].official).to eq(false)
           end
         end
 
@@ -197,10 +211,10 @@ RSpec.describe Priority, type: :model do
           let(:program1_planned_finance_q3_august_amount) { nil }
 
           before :example do
-            program1.add_planned_finance(
+            program1.add_planned_finance(FactoryGirl.attributes_for(:planned_finance,
               time_period: q3,
               announce_date: q3_august_announce_date,
-              amount: program1_planned_finance_q3_august_amount)
+              amount: program1_planned_finance_q3_august_amount))
           end
 
           it 'creates planned finance with nil amount' do
@@ -208,6 +222,8 @@ RSpec.describe Priority, type: :model do
 
             expect(priority.all_planned_finances[0].amount).to eq(
               program1_planned_finance_q3_august_amount)
+
+            expect(priority.all_planned_finances[0].official).to eq(false)
           end
         end
       end

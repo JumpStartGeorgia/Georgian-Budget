@@ -68,6 +68,7 @@ RSpec.describe 'BudgetFiles' do
             expect(finance.amount.to_f).to eq(656549486.69)
             expect(finance.start_date).to eq(Date.new(2015, 1, 1))
             expect(finance.end_date).to eq(Date.new(2015, 1, 31))
+            expect(finance.official).to eq(true)
           end
 
           it 'saves february spent finance' do
@@ -75,6 +76,7 @@ RSpec.describe 'BudgetFiles' do
             expect(finance.amount.to_f).to eq(641341973.31)
             expect(finance.start_date).to eq(Date.new(2015, 2, 1))
             expect(finance.end_date).to eq(Date.new(2015, 2, 28))
+            expect(finance.official).to eq(true)
           end
 
           it 'saves correct number of quarterly spent finances' do
@@ -87,6 +89,7 @@ RSpec.describe 'BudgetFiles' do
             expect(finance.amount.to_f).to eq(656549486.69 + 641341973.31)
             expect(finance.start_date).to eq(Date.new(2015, 1, 1))
             expect(finance.end_date).to eq(Date.new(2015, 3, 31))
+            expect(finance.official).to eq(false)
           end
         end
 
@@ -99,6 +102,7 @@ RSpec.describe 'BudgetFiles' do
             expect(finance.end_date).to eq(Date.new(2015, 3, 31))
             expect(finance.announce_date).to eq(Date.new(2015, 1, 1))
             expect(finance.most_recently_announced).to eq(true)
+            expect(finance.official).to eq(true)
           end
 
           it 'saves correct number of planned finances' do
@@ -143,6 +147,7 @@ RSpec.describe 'BudgetFiles' do
             expect(finance.amount.to_f).to eq(3532432.91)
             expect(finance.start_date).to eq(Date.new(2015, 1, 1))
             expect(finance.end_date).to eq(Date.new(2015, 1, 31))
+            expect(finance.official).to eq(true)
           end
 
           it 'saves February spent finance' do
@@ -151,6 +156,7 @@ RSpec.describe 'BudgetFiles' do
             expect(finance.amount.to_f).to eq(3753083.38)
             expect(finance.start_date).to eq(Date.new(2015, 2, 1))
             expect(finance.end_date).to eq(Date.new(2015, 2, 28))
+            expect(finance.official).to eq(true)
           end
 
           it 'saves correct number of quarterly spent finances' do
@@ -163,6 +169,7 @@ RSpec.describe 'BudgetFiles' do
             expect(finance.amount.to_f).to eq(3532432.91 + 3753083.38)
             expect(finance.start_date).to eq(Date.new(2015, 1, 1))
             expect(finance.end_date).to eq(Date.new(2015, 3, 31))
+            expect(finance.official).to eq(false)
           end
         end
 
@@ -172,13 +179,14 @@ RSpec.describe 'BudgetFiles' do
           end
 
           it 'saves first planned finance' do
-            spending_agency1_planned_finance1 = spending_agency1.all_planned_finances[0]
+            finance = spending_agency1.all_planned_finances[0]
 
-            expect(spending_agency1_planned_finance1.amount.to_f).to eq(14767400)
-            expect(spending_agency1_planned_finance1.start_date).to eq(Date.new(2015, 1, 1))
-            expect(spending_agency1_planned_finance1.end_date).to eq(Date.new(2015, 3, 31))
-            expect(spending_agency1_planned_finance1.announce_date).to eq(Date.new(2015, 1, 1))
-            expect(spending_agency1_planned_finance1.most_recently_announced).to eq(true)
+            expect(finance.amount.to_f).to eq(14767400)
+            expect(finance.start_date).to eq(Date.new(2015, 1, 1))
+            expect(finance.end_date).to eq(Date.new(2015, 3, 31))
+            expect(finance.announce_date).to eq(Date.new(2015, 1, 1))
+            expect(finance.most_recently_announced).to eq(true)
+            expect(finance.official).to eq(true)
           end
         end
       end
@@ -210,23 +218,25 @@ RSpec.describe 'BudgetFiles' do
           # has two plans for the same quarter
 
           it 'saves first planned finance' do
-            spending_agency2_planned_finance1 = spending_agency2.all_planned_finances[0]
+            finance = spending_agency2.all_planned_finances[0]
 
-            expect(spending_agency2_planned_finance1.amount.to_f).to eq(11471000)
-            expect(spending_agency2_planned_finance1.start_date).to eq(Date.new(2015, 1, 1))
-            expect(spending_agency2_planned_finance1.end_date).to eq(Date.new(2015, 3, 31))
-            expect(spending_agency2_planned_finance1.announce_date).to eq(Date.new(2015, 1, 1))
-            expect(spending_agency2_planned_finance1.most_recently_announced).to eq(false)
+            expect(finance.amount.to_f).to eq(11471000)
+            expect(finance.start_date).to eq(Date.new(2015, 1, 1))
+            expect(finance.end_date).to eq(Date.new(2015, 3, 31))
+            expect(finance.announce_date).to eq(Date.new(2015, 1, 1))
+            expect(finance.most_recently_announced).to eq(false)
+            expect(finance.official).to eq(true)
           end
 
           it 'saves second planned finance' do
-            spending_agency2_planned_finance2 = spending_agency2.all_planned_finances[1]
+            finance = spending_agency2.all_planned_finances[1]
 
-            expect(spending_agency2_planned_finance2.amount.to_f).to eq(12471000)
-            expect(spending_agency2_planned_finance2.start_date).to eq(Date.new(2015, 1, 1))
-            expect(spending_agency2_planned_finance2.end_date).to eq(Date.new(2015, 3, 31))
-            expect(spending_agency2_planned_finance2.announce_date).to eq(Date.new(2015, 2, 1))
-            expect(spending_agency2_planned_finance2.most_recently_announced).to eq(true)
+            expect(finance.amount.to_f).to eq(12471000)
+            expect(finance.start_date).to eq(Date.new(2015, 1, 1))
+            expect(finance.end_date).to eq(Date.new(2015, 3, 31))
+            expect(finance.announce_date).to eq(Date.new(2015, 2, 1))
+            expect(finance.most_recently_announced).to eq(true)
+            expect(finance.official).to eq(true)
           end
         end
       end

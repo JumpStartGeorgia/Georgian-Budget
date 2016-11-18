@@ -14,6 +14,7 @@ class PlannedFinance < ApplicationRecord
                 :end_date
               ]
             }
+  validates :official, inclusion: { in: [true, false] }
 
   def parent
     finance_plannable

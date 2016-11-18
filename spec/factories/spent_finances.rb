@@ -13,5 +13,6 @@ FactoryGirl.define do
     end
 
     association :finance_spendable, factory: :program
+    official true
   end
 end

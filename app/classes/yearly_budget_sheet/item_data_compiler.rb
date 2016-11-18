@@ -31,7 +31,8 @@ class YearlyBudgetSheet::ItemDataCompiler
     {
       start_date: two_years_ago.start_date,
       end_date: two_years_ago.end_date,
-      amount: yearly_sheet_item.two_years_earlier_spent_amount
+      amount: yearly_sheet_item.two_years_earlier_spent_amount,
+      official: true
     }
   end
 
@@ -45,7 +46,8 @@ class YearlyBudgetSheet::ItemDataCompiler
         start_date: previous_year.start_date,
         end_date: previous_year.end_date,
         announce_date: year.start_date,
-        amount: yearly_sheet_item.previous_year_plan_amount
+        amount: yearly_sheet_item.previous_year_plan_amount,
+        official: true
       }
     end
 
@@ -54,7 +56,8 @@ class YearlyBudgetSheet::ItemDataCompiler
         start_date: year.start_date,
         end_date: year.end_date,
         announce_date: year.start_date,
-        amount: yearly_sheet_item.current_year_plan_amount
+        amount: yearly_sheet_item.current_year_plan_amount,
+        official: true
       }
     end
 

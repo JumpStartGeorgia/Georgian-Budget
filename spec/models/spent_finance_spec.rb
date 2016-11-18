@@ -51,6 +51,15 @@ RSpec.describe SpentFinance do
     expect(new_spent_finance).to be_valid
   end
 
+  describe '#official' do
+    it 'is required' do
+      new_spent_finance.official = nil
+
+      expect(new_spent_finance.valid?).to eq(false)
+      expect(new_spent_finance).to have(1).error_on(:official)
+    end
+  end
+
   describe 'time period' do
     it 'is unique' do
       spent_finance1
