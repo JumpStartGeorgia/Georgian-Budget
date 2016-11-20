@@ -79,6 +79,9 @@ gem 'gon', '~> 6.0', '>= 6.0.1'
 gem 'coffee-script', '~> 2.4', '>= 2.4.1'
 
 group :development do
+  # use pry as default rails console
+  gem 'pry-rails', '~> 0.3.4'
+
   # Recommends SQL query performance optimizations
   gem 'bullet', '~> 5.3'
 
