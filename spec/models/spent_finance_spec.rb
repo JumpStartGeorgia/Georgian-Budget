@@ -123,7 +123,7 @@ RSpec.describe SpentFinance do
     end
   end
 
-  describe '#prefer_official' do
+  describe '.prefer_official' do
     subject { SpentFinance.prefer_official }
 
     let!(:unofficial_tp1) { FactoryGirl.create(:spent_finance, official: false) }
