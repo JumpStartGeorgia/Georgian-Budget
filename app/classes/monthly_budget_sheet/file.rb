@@ -48,7 +48,7 @@ module MonthlyBudgetSheet
             # save the previous budget item
             ItemSaver.new(
               current_item,
-              start_date: publish_date
+              publish_date: publish_date
             ).save_data_from_monthly_sheet_item
           end
 

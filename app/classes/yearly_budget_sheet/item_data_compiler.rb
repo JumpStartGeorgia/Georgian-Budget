@@ -29,8 +29,7 @@ class YearlyBudgetSheet::ItemDataCompiler
     two_years_ago = year.previous.previous
 
     {
-      start_date: two_years_ago.start_date,
-      end_date: two_years_ago.end_date,
+      time_period: two_years_ago,
       amount: yearly_sheet_item.two_years_earlier_spent_amount,
       official: true
     }
@@ -43,8 +42,7 @@ class YearlyBudgetSheet::ItemDataCompiler
       previous_year = year.previous
 
       finances << {
-        start_date: previous_year.start_date,
-        end_date: previous_year.end_date,
+        time_period: previous_year,
         announce_date: year.start_date,
         amount: yearly_sheet_item.previous_year_plan_amount,
         official: true
@@ -53,8 +51,7 @@ class YearlyBudgetSheet::ItemDataCompiler
 
     if yearly_sheet_item.current_year_plan_amount.present?
       finances << {
-        start_date: year.start_date,
-        end_date: year.end_date,
+        time_period: year,
         announce_date: year.start_date,
         amount: yearly_sheet_item.current_year_plan_amount,
         official: true
@@ -62,6 +59,10 @@ class YearlyBudgetSheet::ItemDataCompiler
     end
 
     finances
+  end
+
+  def publish_date
+    year.start_date
   end
 
   attr_reader :yearly_sheet_item,

@@ -2,6 +2,7 @@ class PossibleDuplicatePair < ApplicationRecord
   belongs_to :item1, polymorphic: true, foreign_type: 'pair_type'
   belongs_to :item2, polymorphic: true, foreign_type: 'pair_type'
 
+  validates :date_when_found, presence: true
   validates :item1_id, presence: true
 
   validates :item2_id,
@@ -32,10 +33,6 @@ class PossibleDuplicatePair < ApplicationRecord
 
     self.item1 = earlier_item
     self.item2 = later_item
-  end
-
-  def date_when_found
-    item2.codes.first.start_date
   end
 
   def item1_code_when_found

@@ -411,12 +411,12 @@ RSpec.describe ItemMerger do
         before :each do
           receiver.save_possible_duplicates([
             possible_duplicate1
-          ])
+          ], date_when_found: Date.new(2012, 1, 1))
 
           giver.save_possible_duplicates([
             possible_duplicate1,
             possible_duplicate2
-          ])
+          ], date_when_found: Date.new(2014, 1, 1))
         end
 
         it 'causes receiver to have two possible duplicates' do
@@ -447,7 +447,7 @@ RSpec.describe ItemMerger do
     context 'when giver has perma_ids' do
       let(:receiver) { FactoryGirl.create(:program) }
       let(:giver) { FactoryGirl.create(:program) }
-      
+
       it 'changes perma_idable of those perma_ids to receiver' do
         perma_id1 = FactoryGirl.create(:perma_id, perma_idable: giver)
         perma_id2 = FactoryGirl.create(:perma_id, perma_idable: giver)

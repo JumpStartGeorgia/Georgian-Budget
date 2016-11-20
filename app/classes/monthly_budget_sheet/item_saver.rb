@@ -2,7 +2,7 @@ module MonthlyBudgetSheet
   class ItemSaver
     def initialize(monthly_sheet_item, args = {})
       @monthly_sheet_item = monthly_sheet_item
-      @start_date = args[:start_date]
+      @publish_date = args[:publish_date]
     end
 
     def save_data_from_monthly_sheet_item
@@ -11,7 +11,7 @@ module MonthlyBudgetSheet
 
     def code_data
       {
-        start_date: start_date,
+        start_date: publish_date,
         number: code_number
       }
     end
@@ -20,7 +20,7 @@ module MonthlyBudgetSheet
       {
         text_ka: name_text,
         text_en: nil,
-        start_date: start_date
+        start_date: publish_date
       }
     end
 
@@ -35,7 +35,7 @@ module MonthlyBudgetSheet
     def planned_finance_data
       {
         time_period: quarter,
-        announce_date: start_date,
+        announce_date: publish_date,
         amount: planned_finance_cumulative,
         official: true
       }
@@ -50,7 +50,7 @@ module MonthlyBudgetSheet
     end
 
     attr_reader :monthly_sheet_item,
-                :start_date
+                :publish_date
 
     private
 
@@ -59,7 +59,7 @@ module MonthlyBudgetSheet
     end
 
     def month
-      Month.for_date(start_date)
+      Month.for_date(publish_date)
     end
 
     def planned_finance_cumulative
@@ -67,7 +67,7 @@ module MonthlyBudgetSheet
     end
 
     def quarter
-      Quarter.for_date(start_date)
+      Quarter.for_date(publish_date)
     end
   end
 end

@@ -29,23 +29,19 @@ module BudgetItemDuplicatable
     earlier_possible_duplicates + subsequent_possible_duplicates
   end
 
-  def save_possible_duplicates(possible_duplicates)
+  def save_possible_duplicates(possible_duplicates, args)
+    date_when_found = args[:date_when_found]
+
     possible_duplicates.each do |possible_duplicate_item|
       PossibleDuplicatePair.create(
-        items: [possible_duplicate_item, self]
+        items: [possible_duplicate_item, self],
+        date_when_found: date_when_found
       )
     end
   end
 
-  def get_possible_duplicates
-    possible_duplicates_array = []
-
-    code_duplicate = self.class.where(code: code).where.not(id: self).order(:start_date).last
-    possible_duplicates_array << code_duplicate if code_duplicate.present?
-
-    name_duplicate = self.class.find_by_name(name).where.not(id: self).order(:start_date).last
-    possible_duplicates_array << name_duplicate if name_duplicate.present?
-
-    possible_duplicates_array
+  def take_possible_duplicates_from(old_duplicatable)
+    PossibleDuplicatePair.where(item1: old_duplicatable).update(item1: self)
+    PossibleDuplicatePair.where(item2: old_duplicatable).update(item2: self)
   end
 end

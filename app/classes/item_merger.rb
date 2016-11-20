@@ -29,7 +29,7 @@ class ItemMerger
     end
 
     if receiver.respond_to?(:save_possible_duplicates)
-      merge_possible_duplicates(giver.possible_duplicates)
+      merge_possible_duplicates_from(giver)
     end
 
     if receiver.respond_to?(:perma_ids)
@@ -111,10 +111,10 @@ class ItemMerger
     end
   end
 
-  def merge_possible_duplicates(new_possible_duplicates)
-    return if new_possible_duplicates.blank?
+  def merge_possible_duplicates_from(giver)
+    return if giver.possible_duplicates.blank?
 
-    receiver.save_possible_duplicates(new_possible_duplicates)
+    receiver.take_possible_duplicates_from(giver)
   end
 
   def merge_child_programs(new_child_programs)

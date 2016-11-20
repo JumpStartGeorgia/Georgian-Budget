@@ -18,7 +18,8 @@ class BudgetDataSaver
     else
       if new_item.respond_to?(:save_possible_duplicates)
         new_item.save_possible_duplicates(
-          duplicate_finder.find_possible_duplicates
+          duplicate_finder.find_possible_duplicates,
+          date_when_found: data_holder.publish_date
         )
       end
     end

@@ -43,6 +43,7 @@ RSpec.describe BudgetDataSaver do
       it 'creates program with correct perma id' do
         data_holder = instance_double(MonthlyBudgetSheet::ItemSaver)
         allow(data_holder).to receive(:code_number).and_return('01 0555')
+        allow(data_holder).to receive(:publish_date).and_return(Date.new(2012, 1, 1))
         allow(data_holder).to receive(:code_data).and_return({
           start_date: Date.new(2012, 1, 1),
           number: '01 0555'

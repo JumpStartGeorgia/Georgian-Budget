@@ -65,6 +65,15 @@ Rspec.describe PossibleDuplicatePair, type: :model do
     end
   end
 
+  describe '#date_when_found' do
+    it 'is required' do
+      possible_duplicate_pair.date_when_found = nil
+
+      expect(possible_duplicate_pair.valid?).to eq(false)
+      expect(possible_duplicate_pair).to have(1).error_on(:date_when_found)
+    end
+  end
+
   context '#create' do
     context 'with items array' do
       let(:earlier_item) do

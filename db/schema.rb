@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161118084416) do
+ActiveRecord::Schema.define(version: 20161120073210) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -96,6 +96,7 @@ ActiveRecord::Schema.define(version: 20161118084416) do
     t.integer "item1_id"
     t.integer "item2_id"
     t.string  "pair_type"
+    t.date    "date_when_found"
     t.index ["item1_id"], name: "index_item1", using: :btree
     t.index ["item2_id"], name: "index_item2", using: :btree
   end

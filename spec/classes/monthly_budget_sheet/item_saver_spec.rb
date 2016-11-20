@@ -46,7 +46,7 @@ describe MonthlyBudgetSheet::ItemSaver do
         it '' do
           MonthlyBudgetSheet::ItemSaver.new(
             monthly_sheet_item,
-            start_date: Date.new(2012, 2, 1)
+            publish_date: Date.new(2012, 2, 1)
           ).save_data_from_monthly_sheet_item
 
           expect(total.spent_finances.length).to eq(2)
@@ -55,7 +55,7 @@ describe MonthlyBudgetSheet::ItemSaver do
         it 'with correct amount' do
           MonthlyBudgetSheet::ItemSaver.new(
             monthly_sheet_item,
-            start_date: Date.new(2012, 2, 1)
+            publish_date: Date.new(2012, 2, 1)
           ).save_data_from_monthly_sheet_item
 
           expect(total.spent_finances.last.amount).to eq(
@@ -76,7 +76,7 @@ describe MonthlyBudgetSheet::ItemSaver do
         it '' do
           MonthlyBudgetSheet::ItemSaver.new(
             monthly_sheet_item,
-            start_date: Date.new(2012, 4, 1)
+            publish_date: Date.new(2012, 4, 1)
           ).save_data_from_monthly_sheet_item
 
           expect(total.planned_finances.length).to eq(2)
@@ -85,7 +85,7 @@ describe MonthlyBudgetSheet::ItemSaver do
         it 'with correct amount' do
           MonthlyBudgetSheet::ItemSaver.new(
             monthly_sheet_item,
-            start_date: Date.new(2012, 4, 1)
+            publish_date: Date.new(2012, 4, 1)
           ).save_data_from_monthly_sheet_item
 
           expect(total.planned_finances.last.amount).to eq(
@@ -104,7 +104,7 @@ describe MonthlyBudgetSheet::ItemSaver do
 
         MonthlyBudgetSheet::ItemSaver.new(
           monthly_sheet_item,
-          start_date: Date.new(2012, 4, 1)
+          publish_date: Date.new(2012, 4, 1)
         ).save_data_from_monthly_sheet_item
 
         new_program = Program.find_by_code('01 01')
@@ -148,7 +148,7 @@ describe MonthlyBudgetSheet::ItemSaver do
           it 'creates new program' do
             MonthlyBudgetSheet::ItemSaver.new(
               monthly_sheet_item,
-              start_date: Date.new(2012, 4, 1)
+              publish_date: Date.new(2012, 4, 1)
             ).save_data_from_monthly_sheet_item
 
             new_program = Program.find_by_code(current_program_code_number)
@@ -183,11 +183,16 @@ describe MonthlyBudgetSheet::ItemSaver do
           it 'creates separate program and marks them as possible duplicates' do
             MonthlyBudgetSheet::ItemSaver.new(
               monthly_sheet_item,
-              start_date: Date.new(2012, 4, 1)
+              publish_date: Date.new(2012, 4, 1)
             ).save_data_from_monthly_sheet_item
 
             expect(previous_program.possible_duplicates[0].name)
             .to eq(current_program_name_text)
+
+            expect(
+              PossibleDuplicatePair.where(item1_id: previous_program)
+              .first.date_when_found
+            ).to eq(Date.new(2012, 4, 1))
           end
         end
 
@@ -220,7 +225,7 @@ describe MonthlyBudgetSheet::ItemSaver do
           it 'saves spent finance data to previous program' do
             MonthlyBudgetSheet::ItemSaver.new(
               monthly_sheet_item,
-              start_date: Date.new(2012, 4, 1)
+              publish_date: Date.new(2012, 4, 1)
             ).save_data_from_monthly_sheet_item
 
             expect(previous_program.spent_finances.last.amount).to eq(
@@ -231,7 +236,7 @@ describe MonthlyBudgetSheet::ItemSaver do
           it 'saves planned finance data to previous program' do
             MonthlyBudgetSheet::ItemSaver.new(
               monthly_sheet_item,
-              start_date: Date.new(2012, 4, 1)
+              publish_date: Date.new(2012, 4, 1)
             ).save_data_from_monthly_sheet_item
 
             expect(previous_program.planned_finances.last.amount).to eq(
