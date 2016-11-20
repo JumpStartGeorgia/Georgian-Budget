@@ -12,11 +12,7 @@ namespace :budget_data do
     .includes(:item2)
     .order(pair_type: :desc)
     .sort_by do |pair|
-      begin
-        pair.item1.code
-      rescue
-        binding.pry
-      end
+      pair.item1.code
     end
 
     require 'csv'
