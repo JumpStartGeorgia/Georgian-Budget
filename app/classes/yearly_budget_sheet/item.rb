@@ -1,6 +1,7 @@
 class YearlyBudgetSheet::Item
   def initialize(args = {})
     @header_row_data = args[:header_row_data]
+    @header_row_values = args[:header_row_values]
   end
 
   def has_valid_header_row_data?
@@ -16,15 +17,18 @@ class YearlyBudgetSheet::Item
   end
 
   def two_years_earlier_spent_amount
-    header_row_values[3] * amount_multiplier
+    amount = header_row_values[3]
+    amount.present? ? amount * amount_multiplier : nil
   end
 
   def previous_year_plan_amount
-    header_row_values[4] * amount_multiplier
+    amount = header_row_values[4]
+    amount.present? ? amount * amount_multiplier : nil
   end
 
   def current_year_plan_amount
-    header_row_values[5] * amount_multiplier
+    amount = header_row_values[5]
+    amount.present? ? amount * amount_multiplier : nil
   end
 
   def header_row_values
@@ -44,7 +48,8 @@ class YearlyBudgetSheet::Item
 
   def get_header_row_values
     header_row_data.cells.map do |cell|
-      cell.present? && cell.value.present? ? cell.value : nil
+      value = cell.value
+      cell.present? && value.present? ? value : nil
     end
   end
 
