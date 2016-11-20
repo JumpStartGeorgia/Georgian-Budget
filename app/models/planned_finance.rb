@@ -45,11 +45,34 @@ class PlannedFinance < ApplicationRecord
     where(official: false)
   end
 
+  def self.prefer_official
+    ids = self.find_by_sql(
+      <<-STRING
+        SELECT DISTINCT ON (finance_plannable_type,
+                            finance_plannable_id,
+                            start_date,
+                            end_date,
+                            announce_date)
+                            id
+        FROM planned_finances
+        ORDER BY finance_plannable_type,
+                 finance_plannable_id,
+                 start_date,
+                 end_date,
+                 announce_date,
+                 official DESC
+      STRING
+    )
+
+    where(id: ids)
+  end
+
   def ==(other_planned_finance)
     return false if other_planned_finance.class != self.class
     return false if finance_plannable != other_planned_finance.finance_plannable
     return false if start_date != other_planned_finance.start_date
     return false if end_date != other_planned_finance.end_date
+    return false if official != other_planned_finance.official
 
     if announce_date != other_planned_finance.announce_date
       return false if amount != other_planned_finance.amount

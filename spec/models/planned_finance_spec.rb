@@ -193,4 +193,30 @@ RSpec.describe PlannedFinance do
       )
     end
   end
+
+  describe '.prefer_official' do
+    subject { PlannedFinance.prefer_official }
+
+    let!(:unofficial_tp1) do
+      FactoryGirl.create(:planned_finance, official: false)
+    end
+
+    let!(:official_tp1) do
+      FactoryGirl.create(:planned_finance,
+        finance_plannable: unofficial_tp1.finance_plannable,
+        time_period: unofficial_tp1.time_period,
+        announce_date: unofficial_tp1.announce_date,
+        official: true)
+    end
+
+    let!(:unofficial_tp2) do
+      FactoryGirl.create(:planned_finance,
+        finance_plannable: unofficial_tp1.finance_plannable,
+        official: false)
+    end
+
+    it { is_expected.to_not include(unofficial_tp1) }
+    it { is_expected.to include(official_tp1) }
+    it { is_expected.to include(unofficial_tp2) }
+  end
 end
