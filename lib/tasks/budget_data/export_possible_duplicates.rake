@@ -8,7 +8,16 @@ namespace :budget_data do
 
     possible_duplicate_pairs = PossibleDuplicatePair
     .all
+    .includes(:item1)
+    .includes(:item2)
     .order(pair_type: :desc)
+    .sort_by do |pair|
+      begin
+        pair.item1.code
+      rescue
+        binding.pry
+      end
+    end
 
     require 'csv'
     CSV.open(csv_file_path, 'wb') do |csv|

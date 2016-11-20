@@ -10,7 +10,8 @@ namespace :budget_data do
     CSV.open(csv_file_path, 'wb') do |csv|
       csv << [
         'Type',
-        'Item Name',
+        'Code',
+        'Name',
         '2012 official',
         '2012 unofficial',
         '2013 official',
@@ -28,8 +29,8 @@ namespace :budget_data do
       year_2016 = Year.new(2016)
 
       totals = Total.all
-      spending_agencies = SpendingAgency.all.with_spent_finances.merge(SpentFinance.yearly).with_most_recent_names
-      programs = Program.all.with_spent_finances.merge(SpentFinance.yearly).with_most_recent_names
+      spending_agencies = SpendingAgency.all.with_spent_finances.merge(SpentFinance.yearly).with_most_recent_names.order(:code)
+      programs = Program.all.with_spent_finances.merge(SpentFinance.yearly).with_most_recent_names.order(:code)
 
       budget_items = totals + spending_agencies + programs
 
@@ -38,6 +39,7 @@ namespace :budget_data do
 
         csv << [
           budget_item.class,
+          budget_item.code,
           budget_item.name,
           official_amount(spent_finances, year_2012),
           unofficial_amount(spent_finances, year_2012),
@@ -54,11 +56,18 @@ namespace :budget_data do
 
   def official_amount(spent_finances, year)
     finance = spent_finances.find { |finance| finance.time_period == year && finance.official }
-    finance.present? ? finance.amount_pretty : ''
+    return 'No Value' unless finance.present?
+    return 'Missing Value' unless finance.amount.present?
+
+    finance.amount_pretty
   end
 
   def unofficial_amount(spent_finances, year)
     finance = spent_finances.find { |finance| finance.time_period == year && !finance.official }
-    finance.present? ? finance.amount_pretty : ''
+
+    return 'No Value' unless finance.present?
+    return 'Missing Value' unless finance.amount.present?
+
+    finance.amount_pretty
   end
 end
