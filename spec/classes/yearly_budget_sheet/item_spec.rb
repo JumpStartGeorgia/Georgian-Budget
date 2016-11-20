@@ -1,29 +1,43 @@
 require 'rails_helper'
 
 RSpec.describe YearlyBudgetSheet::Item do
-  describe '.new' do
-    context 'with header_row_data' do
-      it 'converts data to header_row_values' do
+  describe '#header_row_values' do
+    context 'when initialized with header_row_data' do
+      let(:cell1) { instance_double(RubyXL::Cell, 'cell1') }
+      let(:cell2) { instance_double(RubyXL::Cell, 'cell2') }
+      let(:cell3) { instance_double(RubyXL::Cell, 'cell3') }
+      let(:cell4) { nil }
+      let(:header_row_cells) { [cell1, cell2, cell3, cell4] }
+      let(:header_row_data) { instance_double(RubyXL::Row, 'header_row_data') }
+      let(:item) { YearlyBudgetSheet::Item.new(header_row_data: header_row_data) }
+
+      before do
         require 'rubyXL'
-        cell1 = instance_double(RubyXL::Cell, 'cell1')
         expect(cell1).to receive(:value).and_return(1)
-
-        cell2 = instance_double(RubyXL::Cell, 'cell2')
         expect(cell2).to receive(:value).and_return(nil)
-
-        cell3 = instance_double(RubyXL::Cell, 'cell3')
         expect(cell3).to receive(:value).and_return('434')
 
-        header_row_cells = [cell1, cell2, cell3]
-        header_row_data = instance_double(RubyXL::Row)
         expect(header_row_data).to receive(:cells).and_return(header_row_cells)
+      end
 
-        item = YearlyBudgetSheet::Item.new(header_row_data: header_row_data)
+      it 'converts cell with number value to number in header_row_values' do
+        expect(item.header_row_values[0]).to eq(1)
+      end
 
-        expect(item.header_row_values).to eq([1, nil, '434'])
+      it 'converts cell with nil value to nil in header_row_values' do
+        expect(item.header_row_values[1]).to eq(nil)
+      end
+
+      it 'converts cell with string value to string in header_row_values' do
+        expect(item.header_row_values[2]).to eq('434')
+      end
+
+      it 'converts nil cell to nil in header_row_values' do
+        expect(item.header_row_values[3]).to eq(nil)
       end
     end
   end
+
   describe '#two_years_earlier_spent_amount' do
     let(:item) { YearlyBudgetSheet::Item.new(header_row_values: header_row_values) }
     subject { item.two_years_earlier_spent_amount }

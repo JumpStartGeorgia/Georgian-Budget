@@ -48,8 +48,8 @@ class YearlyBudgetSheet::Item
 
   def get_header_row_values
     header_row_data.cells.map do |cell|
-      value = cell.value
-      cell.present? && value.present? ? value : nil
+      value = cell.present? ? cell.value : nil
+      value.present? ? value : nil
     end
   end
 
