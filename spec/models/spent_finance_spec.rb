@@ -122,4 +122,25 @@ RSpec.describe SpentFinance do
       )
     end
   end
+
+  describe '#prefer_official' do
+    subject { SpentFinance.prefer_official }
+
+    let!(:unofficial_tp1) { FactoryGirl.create(:spent_finance, official: false) }
+    let!(:official_tp1) do
+      FactoryGirl.create(:spent_finance,
+        finance_spendable: unofficial_tp1.finance_spendable,
+        time_period: unofficial_tp1.time_period,
+        official: true)
+    end
+    let!(:unofficial_tp2) do
+      FactoryGirl.create(:spent_finance,
+        finance_spendable: unofficial_tp1.finance_spendable,
+        official: false)
+    end
+
+    it { is_expected.to_not include(unofficial_tp1) }
+    it { is_expected.to include(official_tp1) }
+    it { is_expected.to include(unofficial_tp2) }
+  end
 end

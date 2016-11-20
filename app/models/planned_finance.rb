@@ -11,10 +11,10 @@ class PlannedFinance < ApplicationRecord
                 :finance_plannable_type,
                 :finance_plannable_id,
                 :start_date,
-                :end_date
+                :end_date,
+                :official
               ]
-            },
-            if: :official
+            }
   validates :official, inclusion: { in: [true, false] }
 
   def parent

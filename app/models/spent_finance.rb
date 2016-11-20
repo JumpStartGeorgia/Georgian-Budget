@@ -9,10 +9,10 @@ class SpentFinance < ApplicationRecord
               scope: [
                 :finance_spendable_type,
                 :finance_spendable_id,
-                :start_date
+                :start_date,
+                :official
               ]
-            },
-            if: :official
+            }
   validates :official, inclusion: { in: [true, false] }
 
   def parent
@@ -41,6 +41,26 @@ class SpentFinance < ApplicationRecord
 
   def self.unofficial
     where(official: false)
+  end
+
+  def self.prefer_official
+    ids = self.find_by_sql(
+      <<-STRING
+        SELECT DISTINCT ON (finance_spendable_type,
+                            finance_spendable_id,
+                            start_date,
+                            end_date)
+                            id
+        FROM spent_finances
+        ORDER BY finance_spendable_type,
+                 finance_spendable_id,
+                 start_date,
+                 end_date,
+                 official DESC
+      STRING
+    )
+    
+    where(id: ids)
   end
 
   def amount_pretty
