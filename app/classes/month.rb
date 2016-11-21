@@ -44,11 +44,17 @@ class Month < TimePeriod
   end
 
   def ==(o)
-    self.class == o.class && state == o.state
+    o.class == self.class && o.state == state
   end
+
+  alias_method :eql?, :==
 
   def state
     [start_date, end_date]
+  end
+
+  def hash
+    state.hash
   end
 
   def next

@@ -31,18 +31,6 @@ class Quarter < TimePeriod
     I18n.t("shared.time_periods.quarter_#{to_i}", year: year)
   end
 
-  def <=>(other_quarter)
-    return -1 if start_date < other_quarter.start_date
-    return 0 if start_date == other_quarter.start_date
-    return 1
-  end
-
-  def ==(other_quarter)
-    other_quarter.class == self.class && other_quarter.state == state
-  end
-
-  alias_method :eql?, :==
-
   def next
     new_month = (start_date.month + 3)%12
     new_year = start_date.year + (start_date.month + 3)/12
@@ -66,12 +54,24 @@ class Quarter < TimePeriod
     dates.map { |date| for_date(date) }.uniq
   end
 
-  def hash
-    state.hash
+  def <=>(other_quarter)
+    return -1 if start_date < other_quarter.start_date
+    return 0 if start_date == other_quarter.start_date
+    return 1
   end
+
+  def ==(o)
+    o.class == self.class && o.state == state
+  end
+
+  alias_method :eql?, :==
 
   def state
     [start_date, end_date]
+  end
+
+  def hash
+    state.hash
   end
 
   private
