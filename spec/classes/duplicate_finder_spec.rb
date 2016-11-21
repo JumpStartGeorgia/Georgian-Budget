@@ -55,16 +55,6 @@ RSpec.describe do DuplicateFinder
           ))
         end
 
-        context 'but the item starts after source item ends' do
-          it 'returns nil' do
-            source_item.update_attribute(:end_date, Date.new(2012, 5, 4))
-            previously_saved_item.update_attribute(:start_date, source_item.end_date + 1)
-            exact_match = DuplicateFinder.new(source_item).find_exact_match
-
-            expect(exact_match).to eq(nil)
-          end
-        end
-
         it 'returns that item as exact match' do
           exact_match = DuplicateFinder.new(source_item).find_exact_match
 

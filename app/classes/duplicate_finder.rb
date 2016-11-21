@@ -44,6 +44,7 @@ class DuplicateFinder
   end
 
   def is_possible_duplicate?(other_item)
+    return false if other_item.start_date > source_item.end_date
     return false if items_overlap?(other_item)
     return true if code_matches?(other_item)
     return true if name_matches?(other_item)
@@ -65,7 +66,6 @@ class DuplicateFinder
     @items_with_same_code ||= source_item.class
     .with_code_in_history(source_item.code)
     .where.not(id: source_item)
-    .where(source_item.class.arel_table[:start_date].lteq(source_item.end_date))
   end
 
   def most_recent_item_with_same_name
@@ -80,7 +80,6 @@ class DuplicateFinder
     @items_with_same_name ||= source_item.class
     .with_name_in_history(source_item.name)
     .where.not(id: source_item)
-    .where(source_item.class.arel_table[:start_date].lteq(source_item.end_date))
   end
 
   def is_duplicate?(other_item)
