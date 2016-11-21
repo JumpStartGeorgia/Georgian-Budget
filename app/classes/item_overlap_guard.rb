@@ -5,9 +5,7 @@ class ItemOverlapGuard
   end
 
   def overlap?
-    return true if finances_overlap?(
-      item1.spent_finances.official,
-      item2.spent_finances.official)
+    return true if spent_finances_overlap?
 
     false
   end
@@ -16,7 +14,10 @@ class ItemOverlapGuard
 
   private
 
-  def finances_overlap?(item1_official_spent, item2_official_spent)
+  def spent_finances_overlap?
+    item1_official_spent = item1.spent_finances.official
+    item2_official_spent = item2.spent_finances.official
+
     return false if item1_official_spent.blank?
     return false if item2_official_spent.blank?
 
