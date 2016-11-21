@@ -42,6 +42,9 @@ class PossibleDuplicatePair < ApplicationRecord
     code = item1.code_on_date(date_when_found)
     return code.number if code.present?
 
+    code = item1.codes.first
+    return code.number if code.present?
+
     'NO VALUE'
   end
 
@@ -52,6 +55,9 @@ class PossibleDuplicatePair < ApplicationRecord
     name = item1.name_on_date(date_when_found)
     return name.text if name.present?
 
+    name = item1.names.first
+    return name.text if name.present?
+
     'NO VALUE'
   end
 
@@ -59,11 +65,17 @@ class PossibleDuplicatePair < ApplicationRecord
     code = item2.code_on_date(date_when_found)
     return code.number if code.present?
 
+    code = item2.codes.first
+    return code.number if code.present?
+
     'NO VALUE'
   end
 
   def item2_name_when_found
     name = item2.name_on_date(date_when_found)
+    return name.text if name.present?
+
+    name = item2.names.first
     return name.text if name.present?
 
     'NO VALUE'
