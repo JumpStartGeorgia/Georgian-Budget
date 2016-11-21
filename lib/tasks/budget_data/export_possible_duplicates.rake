@@ -10,7 +10,6 @@ namespace :budget_data do
     .all
     .includes(:item1)
     .includes(:item2)
-    .order(pair_type: :desc)
     .sort_by do |pair|
       pair.item1.code
     end
@@ -26,6 +25,7 @@ namespace :budget_data do
         'Budget Item 1 Dates',
         'Budget Item 2 Dates',
         'Marked on Date',
+        'Finances Overlap?',
         'Priority Names (if different)',
         'Merge? (yes / no)'
       ]
@@ -43,6 +43,7 @@ namespace :budget_data do
           "#{item1.start_date} - #{item1.end_date}",
           "#{item2.start_date} - #{item2.end_date}",
           possible_duplicate_pair.date_when_found,
+          ItemOverlapGuard.new(item1, item2).overlap? ? 'FINANCES OVERLAP' : 'no overlap',
           possible_duplicate_pair.priorities_differ? ? "Item 1 priority: #{item1.priority.name} |||||| Item 2 priority: #{item2.priority.name}" : '',
           ''
         ]
