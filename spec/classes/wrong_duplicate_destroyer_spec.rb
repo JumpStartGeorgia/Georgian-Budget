@@ -6,19 +6,23 @@ RSpec.describe WrongDuplicateDestroyer do
 
   let!(:pair_same_codes) do
     FactoryGirl.create(:possible_duplicate_pair,
-      item1: FactoryGirl.create(:program).add_code(
-        FactoryGirl.attributes_for(:code, number: '01 01')),
-      item2: FactoryGirl.create(:program).add_code(
-        FactoryGirl.attributes_for(:code, number: '01 01'))
+      item1: FactoryGirl.create(:program, end_date: Date.new(2012, 1, 1))
+             .add_code(FactoryGirl.attributes_for(:code, number: '01 01'))
+             .add_spent_finance(FactoryGirl.attributes_for(:spent_finance)),
+      item2: FactoryGirl.create(:program, end_date: Date.new(2012, 1, 1))
+             .add_code(FactoryGirl.attributes_for(:code, number: '01 01'))
+             .add_spent_finance(FactoryGirl.attributes_for(:spent_finance))
     )
   end
 
   let!(:pair_different_codes) do
     FactoryGirl.create(:possible_duplicate_pair,
-      item1: FactoryGirl.create(:program).add_code(
-        FactoryGirl.attributes_for(:code, number: '01 01')),
-      item2: FactoryGirl.create(:program).add_code(
-        FactoryGirl.attributes_for(:code, number: '01 02'))
+      item1: FactoryGirl.create(:program)
+             .add_code(FactoryGirl.attributes_for(:code, number: '01 01'))
+             .add_spent_finance(FactoryGirl.attributes_for(:spent_finance)),
+      item2: FactoryGirl.create(:program, end_date: Date.new(2012, 1, 1))
+             .add_code(FactoryGirl.attributes_for(:code, number: '01 02'))
+             .add_spent_finance(FactoryGirl.attributes_for(:spent_finance))
     )
   end
 
