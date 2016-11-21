@@ -26,7 +26,7 @@ module FinancePlannable
 
   included do
     has_many :planned_finances,
-             -> { prefer_official.order('planned_finances.start_date').where(most_recently_announced: true) },
+             -> { order('planned_finances.start_date').where(most_recently_announced: true) },
              as: :finance_plannable
   end
 

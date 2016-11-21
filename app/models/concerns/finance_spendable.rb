@@ -3,7 +3,7 @@ module FinanceSpendable
 
   included do
     has_many :spent_finances,
-             -> { prefer_official.order('spent_finances.start_date') },
+             -> { order('spent_finances.start_date') },
              as: :finance_spendable,
              dependent: :destroy
   end
