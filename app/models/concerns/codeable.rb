@@ -5,6 +5,12 @@ module Codeable
     has_many :codes, -> { order :start_date }, as: :codeable, dependent: :destroy
   end
 
+  module ClassMethods
+    def with_code_in_history(code_number)
+      joins(:codes).where(codes: { number: code_number })
+    end
+  end
+
   def add_code(code_attributes, args = {})
     transaction do
       code_attributes[:codeable] = self

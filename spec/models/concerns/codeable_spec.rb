@@ -264,4 +264,28 @@ RSpec.shared_examples_for 'Codeable' do
       end
     end
   end
+
+  describe '.with_code_in_history' do
+    subject { described_class.with_code_in_history('01 01') }
+
+    let!(:codeable1) do
+      FactoryGirl.create(described_class_sym)
+      .add_code(FactoryGirl.attributes_for(:code, number: '01 01'))
+      .add_code(FactoryGirl.attributes_for(:code, number: '01 02'))
+    end
+
+    let!(:codeable2) do
+      FactoryGirl.create(described_class_sym)
+      .add_code(FactoryGirl.attributes_for(:code, number: '01 01'))
+    end
+
+    let!(:codeable3) do
+      FactoryGirl.create(described_class_sym)
+      .add_code(FactoryGirl.attributes_for(:code, number: '01 02'))
+    end
+
+    it { is_expected.to include(codeable1) }
+    it { is_expected.to include(codeable2) }
+    it { is_expected.to_not include(codeable3) }
+  end
 end

@@ -55,7 +55,7 @@ class DuplicateFinder
 
   def items_with_same_code
     @items_with_same_code ||= source_item.class
-    .where(code: source_item.code)
+    .with_code_in_history(source_item.code)
     .where.not(id: source_item)
     .where(source_item.class.arel_table[:start_date].lteq(source_item.end_date))
   end
@@ -104,7 +104,7 @@ class DuplicateFinder
   end
 
   def code_matches?(other_item)
-    source_item.code == other_item.code
+    other_item.codes.pluck(:number).include? source_item.code
   end
 
   def code_generation_matches?(other_item)

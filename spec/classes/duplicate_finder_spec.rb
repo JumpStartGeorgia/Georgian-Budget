@@ -186,6 +186,21 @@ RSpec.describe do DuplicateFinder
       end
     end
 
+    context 'when previous item had same code earlier but diff code now' do
+      it 'returns the item in possible duplicates' do
+        previously_saved_item
+        .add_code(FactoryGirl.attributes_for(:code,
+          number: source_item_code_attr[:number],
+          start_date: source_item_code_attr[:start_date] - 2))
+        .add_code(FactoryGirl.attributes_for(:code,
+          start_date: source_item_code_attr[:start_date] + 4))
+
+        possible_duplicates = DuplicateFinder.new(source_item).find_possible_duplicates
+
+        expect(possible_duplicates).to eq([previously_saved_item])
+      end
+    end
+
     context 'when there is an item with the same code' do
       before :example do
         previously_saved_item.add_code(FactoryGirl.attributes_for(
