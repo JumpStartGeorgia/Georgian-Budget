@@ -43,6 +43,14 @@ class DuplicateFinder
     possible_duplicates
   end
 
+  def is_possible_duplicate?(other_item)
+    return false if items_overlap?(other_item)
+    return true if code_matches?(other_item)
+    return true if name_matches?(other_item)
+
+    false
+  end
+
   private
 
   def most_recent_item_with_same_code
@@ -83,14 +91,6 @@ class DuplicateFinder
     true
   end
 
-  def is_possible_duplicate?(other_item)
-    return false if items_overlap?(other_item)
-    return true if code_matches?(other_item)
-    return true if name_matches?(other_item)
-
-    false
-  end
-
   def items_overlap?(other_item)
     ItemOverlapGuard.new(source_item, other_item).overlap?
   end
@@ -98,9 +98,13 @@ class DuplicateFinder
   def name_matches?(other_item)
     return false if source_item.name.blank? || other_item.name.blank?
 
-    Name.texts_represent_same_budget_item?(
-      source_item.name,
-      other_item.name)
+    other_item.names.each do |other_name|
+      return true if Name.texts_represent_same_budget_item?(
+        source_item.name,
+        other_name.text)
+    end
+
+    false
   end
 
   def code_matches?(other_item)

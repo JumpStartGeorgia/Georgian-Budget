@@ -48,6 +48,7 @@ class BudgetFiles
     save_budget_item_translations if budget_item_translations.present?
     save_other_time_period_spent_finances
     save_priority_finances
+    destroy_non_duplicate_pairs
 
     print_end_messages
   end
@@ -223,6 +224,10 @@ class BudgetFiles
     finished_message = "Finished saving quarterly and yearly spent finances in #{time_prettifier.elapsed_prettified}"
     puts finished_message
     end_messages << finished_message
+  end
+
+  def destroy_non_duplicate_pairs
+    WrongDuplicateDestroyer.new.destroy_non_duplicate_pairs(PossibleDuplicatePair.all)
   end
 
   def print_start_messages
