@@ -34,7 +34,8 @@ module BudgetItemDuplicatable
 
     possible_duplicates.each do |possible_duplicate_item|
       PossibleDuplicatePair.create(
-        items: [possible_duplicate_item, self],
+        item1: possible_duplicate_item,
+        item2: self,
         date_when_found: date_when_found
       )
     end
