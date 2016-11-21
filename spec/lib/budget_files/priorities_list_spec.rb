@@ -69,17 +69,17 @@ RSpec.describe 'BudgetFiles' do
       end
 
       let(:uncategorized_priority) do
-        Priority.find_by_name('უკატეგორიო')[0]
+        Priority.with_name_in_history('უკატეგორიო')[0]
       end
 
       let(:economic_stability_priority) do
-        Priority.find_by_name(
+        Priority.with_name_in_history(
           'მაკროეკონომიკური სტაბილურობა და საინვესტიციო გარემოს გაუმჯობესება'
         )[0]
       end
 
       let(:education_priority) do
-        Priority.find_by_name(
+        Priority.with_name_in_history(
           'განათლება, მეცნიერება და პროფესიული მომზადება'
         )[0]
       end

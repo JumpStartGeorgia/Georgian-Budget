@@ -6,7 +6,7 @@ module Nameable
   end
 
   module ClassMethods
-    def find_by_name(name)
+    def with_name_in_history(name)
       joins(names: :translations)
       .where('name_translations.text = ?', name)
     end

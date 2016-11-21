@@ -70,7 +70,7 @@ class DuplicateFinder
 
   def items_with_same_name
     @items_with_same_name ||= source_item.class
-    .find_by_name(source_item.name)
+    .with_name_in_history(source_item.name)
     .where.not(id: source_item)
     .where(source_item.class.arel_table[:start_date].lteq(source_item.end_date))
   end

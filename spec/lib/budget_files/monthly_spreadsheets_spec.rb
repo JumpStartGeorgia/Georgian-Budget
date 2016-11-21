@@ -125,7 +125,7 @@ RSpec.describe 'BudgetFiles' do
 
       context 'spending agency (parliament):' do
         let(:spending_agency1_array) do
-          SpendingAgency.find_by_name('საქართველოს პარლამენტი და მასთან არსებული ორგანიზაციები')
+          SpendingAgency.with_name_in_history('საქართველოს პარლამენტი და მასთან არსებული ორგანიზაციები')
         end
 
         let(:spending_agency1) { spending_agency1_array[0] }
@@ -214,7 +214,7 @@ RSpec.describe 'BudgetFiles' do
 
       context 'spending agency (government administration):' do
         let(:spending_agency2_array) do
-          SpendingAgency.find_by_name('საქართველოს მთავრობის ადმინისტრაცია')
+          SpendingAgency.with_name_in_history('საქართველოს მთავრობის ადმინისტრაცია')
         end
 
         let(:spending_agency2) { spending_agency2_array[0] }
@@ -264,7 +264,7 @@ RSpec.describe 'BudgetFiles' do
 
       context 'spending agency (president administration):' do
         let(:spending_agency2_array) do
-          SpendingAgency.find_by_name('საქართველოს პრეზიდენტის ადმინისტრაცია')
+          SpendingAgency.with_name_in_history('საქართველოს პრეზიდენტის ადმინისტრაცია')
         end
 
         let(:spending_agency2) { spending_agency2_array[0] }
@@ -291,7 +291,7 @@ RSpec.describe 'BudgetFiles' do
 
       context 'program (legislation):' do
         let(:program1_array) do
-          Program.find_by_name('საკანონმდებლო საქმიანობა')
+          Program.with_name_in_history('საკანონმდებლო საქმიანობა')
         end
 
         let(:program1) { program1_array[0] }
@@ -322,7 +322,7 @@ RSpec.describe 'BudgetFiles' do
 
       context 'program (security and internal affairs apparatus):' do
         let(:program2_array) do
-          Program.find_by_name('საქართველოს ეროვნული უშიშროების საბჭოს აპარატი')
+          Program.with_name_in_history('საქართველოს ეროვნული უშიშროების საბჭოს აპარატი')
         end
 
         let(:program2) { program2_array[0] }

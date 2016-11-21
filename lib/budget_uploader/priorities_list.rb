@@ -22,7 +22,7 @@ class PrioritiesList
       raise "Priorities list has no priority with identifier #{identifier}"
     end
 
-    Priority.find_by_name(name)[0]
+    Priority.with_name_in_history(name)[0]
   end
 
   attr_reader :rows

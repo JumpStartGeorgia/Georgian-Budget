@@ -157,7 +157,7 @@ RSpec.shared_examples_for 'Nameable' do
     end
   end
 
-  describe '.find_by_name' do
+  describe '.with_name_in_history' do
     it 'returns nameables with name' do
       nameable1.add_name(name_attr1a)
       nameable2.add_name(name_attr2a)
@@ -165,7 +165,7 @@ RSpec.shared_examples_for 'Nameable' do
       name_attr3a[:text_en] = name_attr1a[:text_en]
       nameable3.add_name(name_attr3a)
 
-      expect(described_class.find_by_name(name_attr1a[:text_en]))
+      expect(described_class.with_name_in_history(name_attr1a[:text_en]))
       .to match_array([nameable1, nameable3])
     end
   end
