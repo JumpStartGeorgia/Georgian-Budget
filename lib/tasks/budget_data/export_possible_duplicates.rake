@@ -6,13 +6,7 @@ namespace :budget_data do
     file_name = "possible_duplicate_budget_items_#{I18n.locale}.csv"
     csv_file_path = Rails.root.join('tmp', file_name)
 
-    possible_duplicate_pairs = PossibleDuplicatePair
-    .all
-    .includes(:item1)
-    .includes(:item2)
-    .sort_by do |pair|
-      pair.item1.code
-    end
+    possible_duplicate_pairs = PossibleDuplicatePair.all.with_items.sort_by { |pair| pair.item1.code }
 
     require 'csv'
     CSV.open(csv_file_path, 'wb') do |csv|

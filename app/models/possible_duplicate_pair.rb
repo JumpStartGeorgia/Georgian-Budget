@@ -75,6 +75,10 @@ class PossibleDuplicatePair < ApplicationRecord
     item1.priority != item2.priority
   end
 
+  def self.with_items
+    includes(:item1).includes(:item2)
+  end
+
   private
 
   def validate_item2_is_not_item1

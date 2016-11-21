@@ -5,8 +5,9 @@ class ItemOverlapGuard
   end
 
   def overlap?
-    return true if check_data_with_period_type('monthly')
-    return true if check_data_with_period_type('yearly')
+    return true if finances_overlap?(
+      item1.spent_finances.official,
+      item2.spent_finances.official)
 
     false
   end
@@ -15,18 +16,14 @@ class ItemOverlapGuard
 
   private
 
-  def check_data_with_period_type(time_period_type)
-    return false if item1.spent_finances.official.send(time_period_type).blank?
-    return false if item2.spent_finances.official.send(time_period_type).blank?
+  def finances_overlap?(item1_official_spent, item2_official_spent)
+    return false if item1_official_spent.blank?
+    return false if item2_official_spent.blank?
 
-    item1_start = item1.spent_finances.official.send(time_period_type).minimum(:start_date)
-    item1_end = item1.spent_finances.official.send(time_period_type).maximum(:end_date)
+    periods1 = item1_official_spent.map(&:time_period).map(&:to_s)
+    periods2 = item2_official_spent.map(&:time_period).map(&:to_s)
 
-    item2_start = item2.spent_finances.official.send(time_period_type).minimum(:start_date)
-    item2_end = item2.spent_finances.official.send(time_period_type).maximum(:end_date)
-
-    return true if item1_start <= item2_end && item1_end >= item2_start
-    return true if item1_end >= item2_start && item1_start <= item2_end
+    return true if (periods1 & periods2).present?
 
     false
   end
