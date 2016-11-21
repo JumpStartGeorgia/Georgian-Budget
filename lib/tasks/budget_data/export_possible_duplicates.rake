@@ -6,7 +6,7 @@ namespace :budget_data do
     file_name = "possible_duplicate_budget_items_#{I18n.locale}.csv"
     csv_file_path = Rails.root.join('tmp', file_name)
 
-    possible_duplicate_pairs = PossibleDuplicatePair.all.with_items.sort_by { |pair| pair.item1.code }
+    pairs = PossibleDuplicatePair.all.with_items.sort_by { |pair| pair.item1.code }
 
     require 'csv'
     CSV.open(csv_file_path, 'wb') do |csv|
@@ -19,12 +19,11 @@ namespace :budget_data do
         'Budget Item 1 Dates',
         'Budget Item 2 Dates',
         'Marked on Date',
-        'Finances Overlap?',
         'Priority Names (if different)',
         'Merge? (yes / no)'
       ]
 
-      possible_duplicate_pairs.each do |possible_duplicate_pair|
+      pairs.each do |possible_duplicate_pair|
         item1 = possible_duplicate_pair.item1
         item2 = possible_duplicate_pair.item2
 
@@ -37,7 +36,6 @@ namespace :budget_data do
           "#{item1.start_date} - #{item1.end_date}",
           "#{item2.start_date} - #{item2.end_date}",
           possible_duplicate_pair.date_when_found,
-          ItemOverlapGuard.new(item1, item2).overlap? ? 'FINANCES OVERLAP' : 'no overlap',
           possible_duplicate_pair.priorities_differ? ? "Item 1 priority: #{item1.priority.name} |||||| Item 2 priority: #{item2.priority.name}" : '',
           ''
         ]
@@ -46,6 +44,6 @@ namespace :budget_data do
 
     puts "Finished exporting CSV of possible duplicate pairs"
     puts "File path: #{csv_file_path}"
-    puts "Number of Possible Duplicate Pairs: #{possible_duplicate_pairs.count}"
+    puts "Number of Possible Duplicate Pairs: #{pairs.count}"
   end
 end
