@@ -1,6 +1,10 @@
+class APIQueryInvalidError < StandardError
+end
+
 class APIResponse
   def initialize(params)
     @errors = []
+    @params = params
 
     filters = params['filters']
 
@@ -19,9 +23,10 @@ class APIResponse
     response[:errors] = errors
 
     response[:budget_items] = budget_items if budget_items
-  rescue StandardError => error
-    add_error("Failed to process the request: #{error}")
+  rescue APIQueryInvalidError => e
+    add_error("Failed to process the request: #{e.message}")
   ensure
+    response[:budget_items] = [] if response[:budget_items].blank?
     return response
   end
 
@@ -39,29 +44,47 @@ class APIResponse
               :finance_type,
               :time_period_type,
               :budget_item_fields,
-              :budget_item_type
+              :budget_item_type,
+              :params
 
   def budget_items
-    if budget_item_fields.present?
-      if budget_type_class == Total
-        budget_items = [Total.first]
-      else
-        budget_items = budget_type_class.with_most_recent_names
-      end
+    @budget_items ||= get_budget_items
+  end
 
-      return budget_items.map do |budget_item|
-        budget_item_hash(budget_item)
-      end
+  def get_budget_items
+    unless budget_item_fields.present?
+      raise APIQueryInvalidError, 'budgetItemFields must be supplied in query'
     end
 
-    budget_item_ids.map { |id| budget_item_config(id) }
+    if budget_item_ids.present?
+      budget_items = budget_item_ids.map do |perma_id|
+        item = BudgetItem.find_by_perma_id(perma_id)
+        unless item.present?
+          raise APIQueryInvalidError, "budget item with id #{perma_id} does not exist"
+        end
+
+        item
+      end
+    elsif budget_item_type.present?
+      budget_items = budget_type_class.all
+    else
+      raise APIQueryInvalidError, 'budgetItemIds or budgetItemType filter must be supplied in query'
+    end
+
+    return budget_items.map do |budget_item|
+      budget_item_hash(budget_item)
+    end
   end
 
   def budget_item_hash(budget_item)
     hash = {}
 
     hash['id'] = budget_item.perma_id if budget_item_fields.include? 'id'
+    hash['code'] = budget_item.code if budget_item_fields.include? 'code'
     hash['name'] = budget_item.name if budget_item_fields.include? 'name'
+    hash['type'] = budget_item.type if budget_item_fields.include? 'type'
+    hash['spent_finances'] = budget_item.spent_finances if budget_item_fields.include? 'spent_finances'
+    hash['planned_finances'] = budget_item.planned_finances if budget_item_fields.include? 'planned_finances'
 
     hash
   end
@@ -70,7 +93,9 @@ class APIResponse
     return nil unless fields.present? && fields.is_a?(String)
     fields.split(',').select do |field|
       valid = budget_item_permitted_fields.include? field
-      add_error("Budget item field \"#{field}\" not permitted") unless valid
+      unless valid
+        raise APIQueryInvalidError, "Budget item field \"#{field}\" not permitted"
+      end
       valid
     end
   end
@@ -78,63 +103,19 @@ class APIResponse
   def budget_item_permitted_fields
     [
       'id',
-      'name'
+      'code',
+      'type',
+      'name',
+      'spent_finances',
+      'planned_finances'
     ]
   end
 
-  def budget_item_config(id)
-    begin
-      budget_item = BudgetItem.find_by_perma_id(id)
-    rescue ActiveRecord::RecordNotFound
-      add_error('Could not find budget item')
-      return nil
-    end
-
-    if finance_type == 'planned_finance'
-      finances = budget_item.planned_finances
-    elsif finance_type == 'spent_finance'
-      finances = budget_item.spent_finances
-    else
-      add_error("No #{finance_type} finance type available")
-      return nil
-    end
-
-    if ['monthly', 'quarterly', 'yearly'].include? time_period_type
-      finances = finances.send(time_period_type)
-    else
-      add_error("Time period type #{time_period_type} is not available")
-    end
-
-    finances = finances.sort_by { |finance| finance.start_date }
-
-    name = budget_item.name
-
-    time_periods = finances.map { |finance| finance.time_period.to_s }
-
-    amounts = finances.map(&:amount).map do |amount|
-      amount.present? ? amount.to_f : nil
-    end
-
-    {
-      id: id,
-      type: budget_item.class.to_s.underscore,
-      finance_type: I18n.t("activerecord.models.#{finance_type}.other"),
-      time_period_type: time_period_type,
-      name: name,
-      time_periods: time_periods,
-      amounts: amounts
-    }
-  end
-
   def budget_type_class
-    unless budget_item_type.present?
-      raise 'Budget item type filter parameter is required'
-    end
-
     camelized = budget_item_type.camelize
 
     unless allowed_budget_item_types.include? camelized
-      raise "Budget item type #{budget_item_type} is not available"
+      raise APIQueryInvalidError, "Budget item type #{budget_item_type} is not available"
     end
 
     Object.const_get(camelized)
