@@ -23,10 +23,10 @@ class APIResponse
     response[:errors] = errors
 
     response[:budget_items] = budget_items if budget_items
+    return response
   rescue APIQueryInvalidError => e
     add_error("Failed to process the request: #{e.message}")
-  ensure
-    response[:budget_items] = [] if response[:budget_items].blank?
+    response[:budget_items] = []
     return response
   end
 
@@ -77,16 +77,32 @@ class APIResponse
   end
 
   def budget_item_hash(budget_item)
-    hash = {}
+    Hash.new.tap do |hash|
+      hash['id'] = budget_item.perma_id if budget_item_fields.include? 'id'
+      hash['code'] = budget_item.code if budget_item_fields.include? 'code'
+      hash['name'] = budget_item.name if budget_item_fields.include? 'name'
+      hash['type'] = budget_item.type if budget_item_fields.include? 'type'
 
-    hash['id'] = budget_item.perma_id if budget_item_fields.include? 'id'
-    hash['code'] = budget_item.code if budget_item_fields.include? 'code'
-    hash['name'] = budget_item.name if budget_item_fields.include? 'name'
-    hash['type'] = budget_item.type if budget_item_fields.include? 'type'
-    hash['spent_finances'] = budget_item.spent_finances if budget_item_fields.include? 'spent_finances'
-    hash['planned_finances'] = budget_item.planned_finances if budget_item_fields.include? 'planned_finances'
+      if budget_item_fields.include? 'spent_finances'
+        hash['spent_finances'] = budget_item.spent_finances.map do |f|
+          {
+            amount: f.amount.present? ? f.amount.to_f : nil,
+            time_period: f.time_period.to_s,
+            time_period_type: f.time_period_type
+          }
+        end
+      end
 
-    hash
+      if budget_item_fields.include? 'planned_finances'
+        hash['planned_finances'] = budget_item.planned_finances.map do |f|
+          {
+            amount: f.amount.present? ? f.amount.to_f : nil,
+            time_period: f.time_period.to_s,
+            time_period_type: f.time_period_type
+          }
+        end
+      end
+    end
   end
 
   def validate_budget_item_fields(fields)
