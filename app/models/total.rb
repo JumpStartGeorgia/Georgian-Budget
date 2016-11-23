@@ -3,6 +3,10 @@ class Total < ApplicationRecord
   include FinancePlannable
   include PermaIdable
 
+  def type
+    self.class.to_s.underscore
+  end
+
   def code
     '00'
   end

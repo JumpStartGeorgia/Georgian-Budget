@@ -8,4 +8,8 @@ class SpendingAgency < ApplicationRecord
   include PermaIdable
 
   belongs_to :priority
+
+  def type
+    self.class.to_s.underscore
+  end
 end

@@ -11,6 +11,10 @@ class Priority < ApplicationRecord
            source: :parent,
            source_type: 'SpendingAgency'
 
+  def type
+    self.class.to_s.underscore
+  end
+
   # Updates the priority's finances by summing the finance amounts of the
   # priority's programs.
   def update_finances

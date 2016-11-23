@@ -14,6 +14,10 @@ class Program < ApplicationRecord
     update_attribute(:parent, find_parent_codeable)
   end
 
+  def type
+    self.class.to_s.underscore
+  end
+
   private
 
   def find_parent_codeable
