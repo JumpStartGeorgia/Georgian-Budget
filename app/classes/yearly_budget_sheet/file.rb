@@ -28,13 +28,6 @@ class YearlyBudgetSheet::File
       spreadsheet_item = YearlyBudgetSheet::Item.new(header_row_data: row_data)
       next unless spreadsheet_item.has_valid_header_row_data?
 
-      # puts "\nfound header row ##{row_data.r}"
-      # puts "code: #{spreadsheet_item.code_number}"
-      # puts "name: #{spreadsheet_item.name_ka}"
-      # puts "#{year - 2} spent: #{spreadsheet_item.two_years_earlier_spent_amount}"
-      # puts "#{year - 1} plan: #{spreadsheet_item.previous_year_plan_amount}"
-      # puts "#{year} plan: #{spreadsheet_item.current_year_plan_amount}"
-
       item_data_compiler = YearlyBudgetSheet::ItemDataCompiler.new(
         spreadsheet_item,
         year: Year.for_date(publish_date)
@@ -55,10 +48,6 @@ class YearlyBudgetSheet::File
   attr_reader :spreadsheet_path
 
   private
-
-  def row_is_item_header?(row_data)
-    binding.pry if row_data.r == 4
-  end
 
   def get_publish_date
     match = filename_date_regex.match(spreadsheet_path)
