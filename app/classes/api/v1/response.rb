@@ -1,7 +1,4 @@
-class APIQueryInvalidError < StandardError
-end
-
-class APIResponse
+class API::V1::Response
   def initialize(params)
     @errors = []
     @params = params
@@ -24,7 +21,7 @@ class APIResponse
 
     response[:budget_items] = budget_items if budget_items
     return response
-  rescue APIQueryInvalidError => e
+  rescue InvalidQueryError => e
     add_error("Failed to process the request: #{e.message}")
     response[:budget_items] = []
     return response
@@ -53,14 +50,14 @@ class APIResponse
 
   def get_budget_items
     unless budget_item_fields.present?
-      raise APIQueryInvalidError, 'budgetItemFields must be supplied in query'
+      raise InvalidQueryError, 'budgetItemFields must be supplied in query'
     end
 
     if budget_item_ids.present?
       budget_items = budget_item_ids.map do |perma_id|
         item = BudgetItem.find_by_perma_id(perma_id)
         unless item.present?
-          raise APIQueryInvalidError, "budget item with id #{perma_id} does not exist"
+          raise InvalidQueryError, "budget item with id #{perma_id} does not exist"
         end
 
         item
@@ -68,7 +65,7 @@ class APIResponse
     elsif budget_item_type.present?
       budget_items = budget_type_class.all
     else
-      raise APIQueryInvalidError, 'budgetItemIds or budgetItemType filter must be supplied in query'
+      raise InvalidQueryError, 'budgetItemIds or budgetItemType filter must be supplied in query'
     end
 
     return budget_items.map do |budget_item|
@@ -110,7 +107,7 @@ class APIResponse
     fields.split(',').select do |field|
       valid = budget_item_permitted_fields.include? field
       unless valid
-        raise APIQueryInvalidError, "Budget item field \"#{field}\" not permitted"
+        raise InvalidQueryError, "Budget item field \"#{field}\" not permitted"
       end
       valid
     end
@@ -131,7 +128,7 @@ class APIResponse
     camelized = budget_item_type.camelize
 
     unless allowed_budget_item_types.include? camelized
-      raise APIQueryInvalidError, "Budget item type #{budget_item_type} is not available"
+      raise InvalidQueryError, "Budget item type #{budget_item_type} is not available"
     end
 
     Object.const_get(camelized)

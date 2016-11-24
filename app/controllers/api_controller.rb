@@ -4,7 +4,7 @@ class ApiController < ApplicationController
     version = parameters[:version]
 
     if version == 'v1'
-      response = APIResponse.new(parameters)
+      response = API::V1::Response.new(parameters)
       status = 200
     else
       response = {
