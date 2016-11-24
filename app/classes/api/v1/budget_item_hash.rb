@@ -18,6 +18,7 @@ class API::V1::BudgetItemHash
       if fields.include? 'spent_finances'
         hash['spent_finances'] = budget_item.spent_finances.map do |f|
           {
+            id: f.id,
             amount: f.amount.present? ? f.amount.to_f : nil,
             time_period: f.time_period.to_s,
             time_period_type: f.time_period_type
@@ -28,6 +29,7 @@ class API::V1::BudgetItemHash
       if fields.include? 'planned_finances'
         hash['planned_finances'] = budget_item.planned_finances.map do |f|
           {
+            id: f.id,
             amount: f.amount.present? ? f.amount.to_f : nil,
             time_period: f.time_period.to_s,
             time_period_type: f.time_period_type

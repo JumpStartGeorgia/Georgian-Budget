@@ -103,6 +103,9 @@ RSpec.describe 'API' do
       response_spent_finance1 = program1_response['spentFinances'][0]
       saved_spent_finance1 = program1.spent_finances[0]
 
+      expect(response_spent_finance1['id']).to eq(
+        saved_spent_finance1.id)
+
       expect(response_spent_finance1['timePeriod']).to eq(
         saved_spent_finance1.time_period.to_s)
 
@@ -114,6 +117,9 @@ RSpec.describe 'API' do
 
       response_spent_finance2 = program1_response['spentFinances'][1]
       saved_spent_finance2 = program1.spent_finances[1]
+
+      expect(response_spent_finance2['id']).to eq(
+        saved_spent_finance2.id)
 
       expect(response_spent_finance2['timePeriod']).to eq(
         saved_spent_finance2.time_period.to_s)
@@ -131,6 +137,9 @@ RSpec.describe 'API' do
       response_planned_finance1 = program1_response['plannedFinances'][0]
       saved_planned_finance1 = program1.planned_finances[0]
 
+      expect(response_planned_finance1['id']).to eq(
+        saved_planned_finance1.id)
+
       expect(response_planned_finance1['timePeriod']).to eq(
         saved_planned_finance1.time_period.to_s)
 
@@ -142,6 +151,9 @@ RSpec.describe 'API' do
 
       response_planned_finance2 = program1_response['plannedFinances'][1]
       saved_planned_finance2 = program1.planned_finances[1]
+
+      expect(response_planned_finance2['id']).to eq(
+        saved_planned_finance1.id)
 
       expect(response_planned_finance2['timePeriod']).to eq(
         saved_planned_finance2.time_period.to_s)
