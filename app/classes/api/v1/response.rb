@@ -21,7 +21,7 @@ class API::V1::Response
 
     response[:budget_items] = budget_items if budget_items
     return response
-  rescue InvalidQueryError => e
+  rescue API::V1::InvalidQueryError => e
     add_error("Failed to process the request: #{e.message}")
     response[:budget_items] = []
     return response
@@ -50,14 +50,14 @@ class API::V1::Response
 
   def get_budget_items
     unless budget_item_fields.present?
-      raise InvalidQueryError, 'budgetItemFields must be supplied in query'
+      raise API::V1::InvalidQueryError, 'budgetItemFields must be supplied in query'
     end
 
     if budget_item_ids.present?
       budget_items = budget_item_ids.map do |perma_id|
         item = BudgetItem.find_by_perma_id(perma_id)
         unless item.present?
-          raise InvalidQueryError, "budget item with id #{perma_id} does not exist"
+          raise API::V1::InvalidQueryError, "budget item with id #{perma_id} does not exist"
         end
 
         item
@@ -65,7 +65,7 @@ class API::V1::Response
     elsif budget_item_type.present?
       budget_items = budget_type_class.all
     else
-      raise InvalidQueryError, 'budgetItemIds or budgetItemType filter must be supplied in query'
+      raise API::V1::InvalidQueryError, 'budgetItemIds or budgetItemType filter must be supplied in query'
     end
 
     return budget_items.map do |budget_item|
@@ -74,32 +74,7 @@ class API::V1::Response
   end
 
   def budget_item_hash(budget_item)
-    Hash.new.tap do |hash|
-      hash['id'] = budget_item.perma_id if budget_item_fields.include? 'id'
-      hash['code'] = budget_item.code if budget_item_fields.include? 'code'
-      hash['name'] = budget_item.name if budget_item_fields.include? 'name'
-      hash['type'] = budget_item.type if budget_item_fields.include? 'type'
-
-      if budget_item_fields.include? 'spent_finances'
-        hash['spent_finances'] = budget_item.spent_finances.map do |f|
-          {
-            amount: f.amount.present? ? f.amount.to_f : nil,
-            time_period: f.time_period.to_s,
-            time_period_type: f.time_period_type
-          }
-        end
-      end
-
-      if budget_item_fields.include? 'planned_finances'
-        hash['planned_finances'] = budget_item.planned_finances.map do |f|
-          {
-            amount: f.amount.present? ? f.amount.to_f : nil,
-            time_period: f.time_period.to_s,
-            time_period_type: f.time_period_type
-          }
-        end
-      end
-    end
+    API::V1::BudgetItemHash.new(budget_item, budget_item_fields).to_hash
   end
 
   def validate_budget_item_fields(fields)
@@ -107,7 +82,7 @@ class API::V1::Response
     fields.split(',').select do |field|
       valid = budget_item_permitted_fields.include? field
       unless valid
-        raise InvalidQueryError, "Budget item field \"#{field}\" not permitted"
+        raise API::V1::InvalidQueryError, "Budget item field \"#{field}\" not permitted"
       end
       valid
     end
@@ -128,7 +103,7 @@ class API::V1::Response
     camelized = budget_item_type.camelize
 
     unless allowed_budget_item_types.include? camelized
-      raise InvalidQueryError, "Budget item type #{budget_item_type} is not available"
+      raise API::V1::InvalidQueryError, "Budget item type #{budget_item_type} is not available"
     end
 
     Object.const_get(camelized)
