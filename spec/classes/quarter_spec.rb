@@ -80,16 +80,16 @@ RSpec.describe Quarter do
 
   describe '#to_s' do
     context 'when quarter is first quarter of 2015' do
-      it 'returns "Quarter #1, 2015"' do
+      it 'returns correct value' do
         quarter = Quarter.for_date(Date.new(2015, 2, 4))
-        expect(quarter.to_s).to eq('Quarter #1, 2015')
+        expect(quarter.to_s).to eq('y2015_q1')
       end
     end
 
     context 'when quarter is fourth of 1234' do
-      it 'returns "Quarter #4, 1234"' do
+      it 'returns correct value' do
         quarter = Quarter.for_date(Date.new(1234, 10, 4))
-        expect(quarter.to_s).to eq('Quarter #4, 1234')
+        expect(quarter.to_s).to eq('y1234_q4')
       end
     end
   end

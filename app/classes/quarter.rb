@@ -24,11 +24,11 @@ class Quarter < TimePeriod
   end
 
   def to_i
-    return start_date.month/3 + 1
+    start_date.month/3 + 1
   end
 
   def to_s
-    I18n.t("shared.time_periods.quarter_#{to_i}", year: year)
+    "y#{start_date.year.to_s}_q#{to_i}"
   end
 
   def next

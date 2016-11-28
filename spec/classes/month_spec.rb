@@ -72,10 +72,15 @@ RSpec.describe Month do
   end
 
   describe '#to_s' do
-    context 'when month is 2015, 01' do
-      it 'returns "January, 2015"' do
-        month = Month.for_date(Date.new(2015, 1, 25))
-        expect(month.to_s).to eq('January, 2015')
+    context 'when month is January, 2015' do
+      it 'returns correct value' do
+        expect(Month.for_date(Date.new(2015, 1, 25)).to_s).to eq('y2015_m01')
+      end
+    end
+
+    context 'when month is December, 2014' do
+      it 'returns correct value' do
+        expect(Month.for_date(Date.new(2014, 12, 1)).to_s).to eq('y2014_m12')
       end
     end
   end

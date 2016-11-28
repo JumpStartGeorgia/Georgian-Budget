@@ -73,7 +73,7 @@ class Month < TimePeriod
   end
 
   def to_s
-    "#{I18n.t('date.month_names')[to_i]}, #{year}"
+    "y#{start_date.year.to_s}_m#{start_date.strftime('%m')}"
   end
 
   private
