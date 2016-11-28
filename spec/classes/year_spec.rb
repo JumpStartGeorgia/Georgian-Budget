@@ -70,4 +70,12 @@ RSpec.describe Year do
       end
     end
   end
+
+  describe '#to_s' do
+    context 'when year is 2014' do
+      it 'returns correct value' do
+        expect(Year.new(2014).to_s).to eq('y2014')
+      end
+    end
+  end
 end
