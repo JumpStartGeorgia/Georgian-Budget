@@ -63,7 +63,7 @@ class API::V1::Response
         item
       end
     elsif budget_item_type.present?
-      budget_items = budget_type_class.all
+      budget_items = budget_type_class.all.with_most_recent_names
     else
       raise API::V1::InvalidQueryError, 'budgetItemIds or budgetItemType filter must be supplied in query'
     end
