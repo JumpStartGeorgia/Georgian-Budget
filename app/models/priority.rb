@@ -37,7 +37,7 @@ class Priority < ApplicationRecord
 
     program_spent_finances.each do |program_spent_finance|
       add_spent_finance(
-        time_period: program_spent_finance.time_period,
+        time_period_obj: program_spent_finance.time_period_obj,
         amount: program_spent_finance.amount,
         official: false)
     end
@@ -58,7 +58,7 @@ class Priority < ApplicationRecord
 
   def create_planned_finance_with_dates(dates)
     add_planned_finance(
-      time_period: dates.time_period,
+      time_period_obj: dates.time_period_obj,
       announce_date: dates.announce_date,
       amount: planned_finance_amount_for_dates(dates),
       official: false)
@@ -68,7 +68,7 @@ class Priority < ApplicationRecord
     program_planned_finance_ids = PlannedFinance
     .select('DISTINCT ON (finance_plannable_type, finance_plannable_id, start_date, end_date) id')
     .where(finance_plannable: programs)
-    .with_time_period(dates.time_period)
+    .with_time_period(dates.time_period_obj)
     .where('announce_date <= ?', dates.announce_date)
     .order(:finance_plannable_type, :finance_plannable_id, :start_date, :end_date, announce_date: :desc)
     .map(&:id)

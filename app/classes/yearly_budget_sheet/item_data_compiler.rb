@@ -29,7 +29,7 @@ class YearlyBudgetSheet::ItemDataCompiler
     two_years_ago = year.previous.previous
 
     {
-      time_period: two_years_ago,
+      time_period_obj: two_years_ago,
       amount: yearly_sheet_item.two_years_earlier_spent_amount,
       official: true
     }
@@ -42,7 +42,7 @@ class YearlyBudgetSheet::ItemDataCompiler
       previous_year = year.previous
 
       finances << {
-        time_period: previous_year,
+        time_period_obj: previous_year,
         announce_date: year.start_date,
         amount: yearly_sheet_item.previous_year_plan_amount,
         official: true
@@ -51,7 +51,7 @@ class YearlyBudgetSheet::ItemDataCompiler
 
     if yearly_sheet_item.current_year_plan_amount.present?
       finances << {
-        time_period: year,
+        time_period_obj: year,
         announce_date: year.start_date,
         amount: yearly_sheet_item.current_year_plan_amount,
         official: true

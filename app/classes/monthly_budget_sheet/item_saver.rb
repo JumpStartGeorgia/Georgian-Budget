@@ -26,7 +26,7 @@ module MonthlyBudgetSheet
 
     def spent_finance_data
       {
-        time_period: month,
+        time_period_obj: month,
         amount: spent_finance_cumulative,
         official: true
       }
@@ -34,7 +34,7 @@ module MonthlyBudgetSheet
 
     def planned_finance_data
       {
-        time_period: quarter,
+        time_period_obj: quarter,
         announce_date: publish_date,
         amount: planned_finance_cumulative,
         official: true

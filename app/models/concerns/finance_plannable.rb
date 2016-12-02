@@ -87,7 +87,7 @@ module FinancePlannable
         amount: NonCumulativeFinanceCalculator.new(
           finances: planned_finances,
           cumulative_amount: new_planned_finance.amount,
-          time_period: new_planned_finance.time_period,
+          time_period_obj: new_planned_finance.time_period_obj,
           cumulative_within: args[:cumulative_within]
         ).calculate
       )

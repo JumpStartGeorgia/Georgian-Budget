@@ -41,7 +41,7 @@ RSpec.shared_examples_for 'FinanceSpendable' do
 
     it 'are ordered by start date' do
       spent_finance1
-      spent_finance1b.time_period = spent_finance1.time_period.next
+      spent_finance1b.time_period_obj = spent_finance1.time_period_obj.next
       spent_finance1b.save!
 
       expect(finance_spendable1.spent_finances).to eq(

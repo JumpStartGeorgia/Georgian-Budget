@@ -36,10 +36,10 @@ RSpec.describe 'BudgetFiles' do
           start_date: Date.new(2013, 1, 1))
         .save_perma_id
         .add_spent_finance(
-          time_period: @january_2012,
+          time_period_obj: @january_2012,
           amount: 30)
         .add_planned_finance(
-          time_period: @quarter1_2012,
+          time_period_obj: @quarter1_2012,
           announce_date: @quarter1_2012.start_date,
           amount: 300)
 
@@ -50,10 +50,10 @@ RSpec.describe 'BudgetFiles' do
           start_date: Date.new(2012, 1, 1))
         .save_perma_id
         .add_spent_finance(
-          time_period: @january_2012,
+          time_period_obj: @january_2012,
           amount: 70)
         .add_planned_finance(
-          time_period: @quarter1_2012,
+          time_period_obj: @quarter1_2012,
           announce_date: @quarter1_2012.start_date,
           amount: 200)
 
@@ -132,7 +132,7 @@ RSpec.describe 'BudgetFiles' do
 
         expect(monthly_spent_finances.length).to eq(1)
         expect(monthly_spent_finances[0].amount).to eq(100)
-        expect(monthly_spent_finances[0].time_period).to eq(@january_2012)
+        expect(monthly_spent_finances[0].time_period_obj).to eq(@january_2012)
       end
 
       it "sets education priority's quarterly spent finances" do
@@ -140,7 +140,7 @@ RSpec.describe 'BudgetFiles' do
 
         expect(quarterly_spent_finances.length).to eq(1)
         expect(quarterly_spent_finances[0].amount).to eq(100)
-        expect(quarterly_spent_finances[0].time_period).to eq(
+        expect(quarterly_spent_finances[0].time_period_obj).to eq(
           Quarter.for_date(Date.new(2012, 1, 1)))
       end
 
@@ -148,7 +148,7 @@ RSpec.describe 'BudgetFiles' do
         planned_finances = education_priority.planned_finances
 
         expect(planned_finances[0].amount).to eq(500)
-        expect(planned_finances[0].time_period).to eq(@quarter1_2012)
+        expect(planned_finances[0].time_period_obj).to eq(@quarter1_2012)
       end
 
       it 'sets priority of library program' do

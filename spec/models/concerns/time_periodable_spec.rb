@@ -13,13 +13,13 @@ RSpec.shared_examples_for 'TimePeriodable' do
 
   describe '#time_period=' do
     it "sets start date to time period's start date" do
-      time_periodable1.time_period = Quarter.for_date(Date.new(2011, 2, 2))
+      time_periodable1.time_period_obj = Quarter.for_date(Date.new(2011, 2, 2))
 
       expect(time_periodable1.start_date).to eq(Date.new(2011, 1, 1))
     end
 
     it "sets end date to time period's end date" do
-      time_periodable1.time_period = Quarter.for_date(Date.new(2011, 2, 2))
+      time_periodable1.time_period_obj = Quarter.for_date(Date.new(2011, 2, 2))
 
       expect(time_periodable1.end_date).to eq(Date.new(2011, 3, 31))
     end
@@ -28,10 +28,10 @@ RSpec.shared_examples_for 'TimePeriodable' do
   describe '#time_period_type' do
     context 'when start date and end date do not form recognizable time period' do
       it 'throws error on time period type' do
-        time_period = Month.for_date(Date.new(2012, 1, 1))
+        time_period_obj = Month.for_date(Date.new(2012, 1, 1))
 
-        time_periodable1.start_date = time_period.start_date + 1
-        time_periodable1.end_date = time_period.end_date
+        time_periodable1.start_date = time_period_obj.start_date + 1
+        time_periodable1.end_date = time_period_obj.end_date
 
         expect(time_periodable1.valid?).to eq(false)
         expect(time_periodable1).to have(1).error_on(:time_period_type)
@@ -40,7 +40,7 @@ RSpec.shared_examples_for 'TimePeriodable' do
 
     context 'when start date and end date form month' do
       it 'sets time period type to month' do
-        time_periodable1.time_period = Month.for_date(Date.new(2012, 1, 1))
+        time_periodable1.time_period_obj = Month.for_date(Date.new(2012, 1, 1))
         time_periodable1.save!
 
         expect(time_periodable1.time_period_type).to eq('month')
@@ -49,7 +49,7 @@ RSpec.shared_examples_for 'TimePeriodable' do
 
     context 'when start date and end date form quarter' do
       it 'sets time period type to quarter' do
-        time_periodable1.time_period = Quarter.for_date(Date.new(2012, 1, 1))
+        time_periodable1.time_period_obj = Quarter.for_date(Date.new(2012, 1, 1))
         time_periodable1.save!
 
         expect(time_periodable1.time_period_type).to eq('quarter')
@@ -58,7 +58,7 @@ RSpec.shared_examples_for 'TimePeriodable' do
 
     context 'when start date and end date form year' do
       it 'sets time period type to year' do
-        time_periodable1.time_period = Year.for_date(Date.new(2012, 1, 1))
+        time_periodable1.time_period_obj = Year.for_date(Date.new(2012, 1, 1))
         time_periodable1.save!
 
         expect(time_periodable1.time_period_type).to eq('year')

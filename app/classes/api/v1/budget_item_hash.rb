@@ -20,7 +20,7 @@ class API::V1::BudgetItemHash
           {
             id: f.id,
             amount: f.amount.present? ? f.amount.to_f : nil,
-            time_period: f.time_period.to_s,
+            time_period: f.time_period_obj.to_s,
             time_period_type: f.time_period_type
           }
         end
@@ -31,7 +31,7 @@ class API::V1::BudgetItemHash
           {
             id: f.id,
             amount: f.amount.present? ? f.amount.to_f : nil,
-            time_period: f.time_period.to_s,
+            time_period: f.time_period_obj.to_s,
             time_period_type: f.time_period_type
           }
         end

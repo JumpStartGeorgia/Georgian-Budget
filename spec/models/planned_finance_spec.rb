@@ -130,7 +130,7 @@ RSpec.describe PlannedFinance do
         it 'returns false' do
           planned_finance1b.update_attributes(
             announce_date: planned_finance1.announce_date,
-            time_period: planned_finance1.time_period.next
+            time_period_obj: planned_finance1.time_period_obj.next
           )
 
           planned_finance1b.reload

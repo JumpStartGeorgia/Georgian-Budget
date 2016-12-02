@@ -99,7 +99,7 @@ class ItemMerger
     first_new_quarter_plan = new_planned_finances.quarterly.first
 
     cumulative_within_year = first_new_quarter_plan.blank? ? []
-      : new_planned_finances.with_time_period(first_new_quarter_plan.time_period)
+      : new_planned_finances.with_time_period(first_new_quarter_plan.time_period_obj)
 
     new_planned_finances.each do |new_planned_finance|
       calculate_cumulative = cumulative_within_year.include?(new_planned_finance)

@@ -125,22 +125,22 @@ RSpec.describe Priority, type: :model do
 
           before :example do
             program1.add_planned_finance(FactoryGirl.attributes_for(:planned_finance,
-              time_period: planned_finance_time_period1,
+              time_period_obj: planned_finance_time_period1,
               announce_date: planned_finance_announce_date1a,
               amount: program1_planned_finance1a_amount))
 
             program1.add_planned_finance(FactoryGirl.attributes_for(:planned_finance,
-              time_period: planned_finance_time_period1,
+              time_period_obj: planned_finance_time_period1,
               announce_date: planned_finance_announce_date1b,
               amount: program1_planned_finance1b_amount))
 
             program2.add_planned_finance(FactoryGirl.attributes_for(:planned_finance,
-              time_period: planned_finance_time_period1,
+              time_period_obj: planned_finance_time_period1,
               announce_date: planned_finance_announce_date1b,
               amount: program2_planned_finance1b_amount))
 
             program2.add_planned_finance(FactoryGirl.attributes_for(:planned_finance,
-              time_period: planned_finance_time_period1,
+              time_period_obj: planned_finance_time_period1,
               announce_date: planned_finance_announce_date1c,
               amount: program2_planned_finance1c_amount))
           end
@@ -184,12 +184,12 @@ RSpec.describe Priority, type: :model do
 
           before :each do
             program1.add_planned_finance(FactoryGirl.attributes_for(:planned_finance,
-              time_period: planned_finance_time_period2,
+              time_period_obj: planned_finance_time_period2,
               announce_date: planned_finance_announce_date2,
               amount: program1_planned_finance2_amount))
 
             program2.add_planned_finance(FactoryGirl.attributes_for(:planned_finance,
-              time_period: planned_finance_time_period2,
+              time_period_obj: planned_finance_time_period2,
               announce_date: planned_finance_announce_date2,
               amount: program2_planned_finance2_amount))
           end
@@ -212,7 +212,7 @@ RSpec.describe Priority, type: :model do
 
           before :example do
             program1.add_planned_finance(FactoryGirl.attributes_for(:planned_finance,
-              time_period: q3,
+              time_period_obj: q3,
               announce_date: q3_august_announce_date,
               amount: program1_planned_finance_q3_august_amount))
           end

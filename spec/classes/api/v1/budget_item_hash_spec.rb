@@ -48,7 +48,7 @@ RSpec.describe API::V1::BudgetItemHash do
 
       it 'includes time period of spent finance' do
         expect(hash_spent1[:time_period])
-        .to eq(saved_spent1.time_period.to_s)
+        .to eq(saved_spent1.time_period_obj.to_s)
       end
 
       it 'includes time period type of spent finance' do
@@ -68,9 +68,9 @@ RSpec.describe API::V1::BudgetItemHash do
       let(:budget_item) do
         FactoryGirl.create(:program)
         .add_planned_finance(FactoryGirl.attributes_for(:planned_finance,
-          time_period: jan_2015))
+          time_period_obj: jan_2015))
         .add_planned_finance(FactoryGirl.attributes_for(:planned_finance,
-          time_period: feb_2015))
+          time_period_obj: feb_2015))
       end
 
       let(:hash_planned_finances) { hash['planned_finances'] }
@@ -87,7 +87,7 @@ RSpec.describe API::V1::BudgetItemHash do
 
       it 'includes time period of planned finance' do
         expect(hash_plan1[:time_period])
-        .to eq(saved_plan1.time_period.to_s)
+        .to eq(saved_plan1.time_period_obj.to_s)
       end
 
       it 'includes time period type of planned finance' do

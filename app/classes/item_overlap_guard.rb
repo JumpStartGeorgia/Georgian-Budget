@@ -34,8 +34,8 @@ class ItemOverlapGuard
   private
 
   def finances_overlap(finances1, finances2)
-    periods1 = finances1.map(&:time_period)
-    periods2 = finances2.map(&:time_period)
+    periods1 = finances1.map(&:time_period_obj)
+    periods2 = finances2.map(&:time_period_obj)
 
     periods1 & periods2
   end

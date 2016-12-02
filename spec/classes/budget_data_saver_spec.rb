@@ -8,7 +8,7 @@ RSpec.describe BudgetDataSaver do
           data_holder = instance_double(MonthlyBudgetSheet::ItemSaver)
           allow(data_holder).to receive(:code_number).and_return('00')
           allow(data_holder).to receive(:spent_finance_data).and_return(      {
-            time_period: Month.for_date(Date.new(2012, 1, 1)),
+            time_period_obj: Month.for_date(Date.new(2012, 1, 1)),
             amount: 101
           })
 
@@ -28,7 +28,7 @@ RSpec.describe BudgetDataSaver do
           data_holder = instance_double(MonthlyBudgetSheet::ItemSaver)
           allow(data_holder).to receive(:code_number).and_return('00')
           allow(data_holder).to receive(:spent_finance_data).and_return(      {
-            time_period: Month.for_date(Date.new(2012, 1, 1)),
+            time_period_obj: Month.for_date(Date.new(2012, 1, 1)),
             amount: 101
           })
 

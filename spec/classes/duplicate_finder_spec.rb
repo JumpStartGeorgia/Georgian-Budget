@@ -82,10 +82,10 @@ RSpec.describe do DuplicateFinder
         context 'and its monthly data overlaps the source item' do
           before :example do
             previously_saved_item.add_spent_finance(
-              time_period: Month.for_date(Date.new(2012, 1, 1)))
+              time_period_obj: Month.for_date(Date.new(2012, 1, 1)))
 
             source_item.add_spent_finance(
-              time_period: Month.for_date(Date.new(2012, 1, 1)))
+              time_period_obj: Month.for_date(Date.new(2012, 1, 1)))
           end
 
           it 'does not return as exact match' do
@@ -237,10 +237,10 @@ RSpec.describe do DuplicateFinder
         context 'and its monthly data overlaps the source item' do
           before :example do
             previously_saved_item.add_spent_finance(
-              time_period: Month.for_date(Date.new(2012, 1, 1)))
+              time_period_obj: Month.for_date(Date.new(2012, 1, 1)))
 
             source_item.add_spent_finance(
-              time_period: Month.for_date(Date.new(2012, 1, 1)))
+              time_period_obj: Month.for_date(Date.new(2012, 1, 1)))
           end
 
           it 'does not return as possible duplicate' do

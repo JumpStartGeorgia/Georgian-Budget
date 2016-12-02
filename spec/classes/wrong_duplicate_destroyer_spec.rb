@@ -31,11 +31,11 @@ RSpec.describe WrongDuplicateDestroyer do
       item1: FactoryGirl.create(:program)
              .add_code(FactoryGirl.attributes_for(:code, number: '01 01'))
              .add_spent_finance(FactoryGirl.attributes_for(:spent_finance,
-               time_period: jan_2015)),
+               time_period_obj: jan_2015)),
       item2: FactoryGirl.create(:program)
              .add_code(FactoryGirl.attributes_for(:code, number: '01 01'))
              .add_spent_finance(FactoryGirl.attributes_for(:spent_finance,
-               time_period: jan_2015)),
+               time_period_obj: jan_2015)),
     )
   end
 

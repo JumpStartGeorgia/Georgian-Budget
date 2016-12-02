@@ -66,7 +66,7 @@ RSpec.describe NonCumulativeFinanceCalculator do
         non_cumulative_amount = NonCumulativeFinanceCalculator.new(
           finances: financeable.planned_finances,
           cumulative_amount: cumulative_amount,
-          time_period: q2_2015,
+          time_period_obj: q2_2015,
           cumulative_within: Year
         ).calculate
 
@@ -94,7 +94,7 @@ RSpec.describe NonCumulativeFinanceCalculator do
         non_cumulative_amount = NonCumulativeFinanceCalculator.new(
           finances: financeable.planned_finances,
           cumulative_amount: cumulative_amount,
-          time_period: q2_2015,
+          time_period_obj: q2_2015,
           cumulative_within: Year
         ).calculate
 

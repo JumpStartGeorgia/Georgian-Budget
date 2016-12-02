@@ -30,7 +30,7 @@ class SpentFinanceAggregator
           .count == 0
 
         finance_spendable.add_spent_finance(
-          time_period: new_time_period,
+          time_period_obj: new_time_period,
           amount: amount,
           official: false)
       end

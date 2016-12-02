@@ -38,7 +38,7 @@ describe MonthlyBudgetSheet::ItemSaver do
       describe 'adds spent finance to total' do
         before :example do
           total.add_spent_finance(
-            time_period: Month.for_date(Date.new(2012, 1, 1)),
+            time_period_obj: Month.for_date(Date.new(2012, 1, 1)),
             amount: previous_spent_finance_amount
           )
         end
@@ -67,7 +67,7 @@ describe MonthlyBudgetSheet::ItemSaver do
       describe 'adds planned finance to total' do
         before :example do
           total.add_planned_finance(
-            time_period: Quarter.for_date(Date.new(2012, 1, 1)),
+            time_period_obj: Quarter.for_date(Date.new(2012, 1, 1)),
             announce_date: Date.new(2012, 1, 1),
             amount: previous_planned_finance_amount
           )
@@ -116,10 +116,10 @@ describe MonthlyBudgetSheet::ItemSaver do
         let(:previous_program) do
           FactoryGirl.create(:program)
           .add_spent_finance(
-            time_period: Month.for_date(Date.new(2012, 1, 1)),
+            time_period_obj: Month.for_date(Date.new(2012, 1, 1)),
             amount: previous_spent_finance_amount
           ).add_planned_finance(
-            time_period: Quarter.for_date(Date.new(2012, 1, 1)),
+            time_period_obj: Quarter.for_date(Date.new(2012, 1, 1)),
             announce_date: Date.new(2012, 1, 1),
             amount: previous_planned_finance_amount
           )

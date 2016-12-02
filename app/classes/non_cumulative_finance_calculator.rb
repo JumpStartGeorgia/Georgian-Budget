@@ -10,7 +10,7 @@ class NonCumulativeFinanceCalculator
   def initialize(args)
     @finances = args[:finances]
     @cumulative_amount = args[:cumulative_amount]
-    @time_period = args[:time_period]
+    @time_period = args[:time_period_obj]
     @surrounding_time_period = args[:cumulative_within].for_date(
       time_period.start_date)
   end
