@@ -21,8 +21,8 @@ RSpec.describe SpentFinance do
   let(:spent_finance1b) do
     FactoryGirl.create(
       :spent_finance,
-      start_date: spent_finance1.time_period.next.start_date,
-      end_date: spent_finance1.time_period.next.end_date,
+      start_date: spent_finance1.time_period_obj.next.start_date,
+      end_date: spent_finance1.time_period_obj.next.end_date,
       finance_spendable: spent_finance1.finance_spendable
     )
   end
@@ -30,8 +30,8 @@ RSpec.describe SpentFinance do
   let(:spent_finance1c) do
     FactoryGirl.create(
       :spent_finance,
-      start_date: spent_finance1b.time_period.next.start_date,
-      end_date: spent_finance1b.time_period.next.end_date,
+      start_date: spent_finance1b.time_period_obj.next.start_date,
+      end_date: spent_finance1b.time_period_obj.next.end_date,
       finance_spendable: spent_finance1b.finance_spendable
     )
   end
@@ -39,8 +39,8 @@ RSpec.describe SpentFinance do
   let(:spent_finance1d) do
     FactoryGirl.create(
       :spent_finance,
-      start_date: spent_finance1c.time_period.next.start_date,
-      end_date: spent_finance1c.time_period.next.end_date,
+      start_date: spent_finance1c.time_period_obj.next.start_date,
+      end_date: spent_finance1c.time_period_obj.next.end_date,
       finance_spendable: spent_finance1c.finance_spendable
     )
   end
@@ -133,10 +133,10 @@ RSpec.describe SpentFinance do
     let!(:official_tp1) do
       FactoryGirl.create(:spent_finance,
         finance_spendable: unofficial_tp1.finance_spendable,
-        time_period: unofficial_tp1.time_period,
+        time_period_obj: unofficial_tp1.time_period_obj,
         official: true)
     end
-    
+
     let!(:unofficial_tp2) do
       FactoryGirl.create(:spent_finance,
         finance_spendable: unofficial_tp1.finance_spendable,

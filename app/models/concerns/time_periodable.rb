@@ -34,13 +34,13 @@ module TimePeriodable
     nil
   end
 
-  def time_period
+  def time_period_obj
     time_period_class.for_date(start_date)
   end
 
-  def time_period=(time_period)
-    self.start_date = time_period.start_date
-    self.end_date = time_period.end_date
+  def time_period_obj=(time_period_obj)
+    self.start_date = time_period_obj.start_date
+    self.end_date = time_period_obj.end_date
   end
 
   private

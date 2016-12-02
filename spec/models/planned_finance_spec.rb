@@ -21,8 +21,8 @@ RSpec.describe PlannedFinance do
   let(:planned_finance1b) do
     FactoryGirl.create(
       :planned_finance,
-      start_date: planned_finance1.time_period.next.start_date,
-      end_date: planned_finance1.time_period.next.end_date,
+      start_date: planned_finance1.time_period_obj.next.start_date,
+      end_date: planned_finance1.time_period_obj.next.end_date,
       finance_plannable: planned_finance1.finance_plannable
     )
   end
@@ -30,8 +30,8 @@ RSpec.describe PlannedFinance do
   let(:planned_finance1c) do
     FactoryGirl.create(
       :planned_finance,
-      start_date: planned_finance1b.time_period.next.start_date,
-      end_date: planned_finance1b.time_period.next.end_date,
+      start_date: planned_finance1b.time_period_obj.next.start_date,
+      end_date: planned_finance1b.time_period_obj.next.end_date,
       finance_plannable: planned_finance1b.finance_plannable
     )
   end
@@ -39,8 +39,8 @@ RSpec.describe PlannedFinance do
   let(:planned_finance1d) do
     FactoryGirl.create(
       :planned_finance,
-      start_date: planned_finance1c.time_period.next.start_date,
-      end_date: planned_finance1c.time_period.next.end_date,
+      start_date: planned_finance1c.time_period_obj.next.start_date,
+      end_date: planned_finance1c.time_period_obj.next.end_date,
       finance_plannable: planned_finance1c.finance_plannable
     )
   end
@@ -204,7 +204,7 @@ RSpec.describe PlannedFinance do
     let!(:official_tp1) do
       FactoryGirl.create(:planned_finance,
         finance_plannable: unofficial_tp1.finance_plannable,
-        time_period: unofficial_tp1.time_period,
+        time_period_obj: unofficial_tp1.time_period_obj,
         announce_date: unofficial_tp1.announce_date,
         official: true)
     end
