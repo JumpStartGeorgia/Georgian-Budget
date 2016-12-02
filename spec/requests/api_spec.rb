@@ -27,12 +27,13 @@ RSpec.describe 'API' do
 
       FactoryGirl.create(:spending_agency)
 
-      get '/en/v1', params: {
-        budgetItemFields: 'id,name',
-        filters: {
-          budgetItemType: 'program'
-        }
-      }
+      get '/en/v1',
+          params: {
+            budgetItemFields: 'id,name',
+            filters: {
+              budgetItemType: 'program'
+            }
+          }
 
       json = JSON.parse(response.body)
       budget_items = json['budgetItems']
@@ -56,7 +57,8 @@ RSpec.describe 'API' do
       .add_name(FactoryGirl.attributes_for(:name))
       .save_perma_id
       .add_spent_finance(FactoryGirl.attributes_for(:spent_finance))
-      .add_spent_finance(FactoryGirl.attributes_for(:spent_finance))
+      .add_spent_finance(FactoryGirl.attributes_for(:spent_finance,
+        amount: nil))
       .add_planned_finance(FactoryGirl.attributes_for(:planned_finance,
         time_period_obj: q1_2015))
       .add_planned_finance(FactoryGirl.attributes_for(:planned_finance,
@@ -75,10 +77,12 @@ RSpec.describe 'API' do
     end
 
     before do
-      get '/en/v1', params: {
-        budgetItemFields: 'id,code,name,type,spent_finances,planned_finances',
-        budgetItemIds: [program1.perma_id, agency1.perma_id]
-      }
+      get '/en/v1',
+          params: {
+            budgetItemFields: 'id,code,name,type,spent_finances,planned_finances',
+            budgetItemIds: [program1.perma_id, agency1.perma_id]
+          },
+          headers: { 'X-Key-Inflection': 'camel' }
     end
 
     let(:json) { JSON.parse(response.body) }
@@ -113,7 +117,7 @@ RSpec.describe 'API' do
         saved_spent_finance1.time_period_obj.type)
 
       expect(response_spent_finance1['amount']).to eq(
-        saved_spent_finance1.amount)
+        saved_spent_finance1.amount.to_s)
 
       response_spent_finance2 = program1_response['spentFinances'][1]
       saved_spent_finance2 = program1.spent_finances[1]
@@ -147,7 +151,7 @@ RSpec.describe 'API' do
         saved_planned_finance1.time_period_obj.type)
 
       expect(response_planned_finance1['amount']).to eq(
-        saved_planned_finance1.amount)
+        saved_planned_finance1.amount.to_s)
 
       response_planned_finance2 = program1_response['plannedFinances'][1]
       saved_planned_finance2 = program1.planned_finances[1]
@@ -162,7 +166,7 @@ RSpec.describe 'API' do
         saved_planned_finance2.time_period_obj.type)
 
       expect(response_planned_finance2['amount']).to eq(
-        saved_planned_finance2.amount)
+        saved_planned_finance2.amount.to_s)
     end
 
     it 'includes agency data' do

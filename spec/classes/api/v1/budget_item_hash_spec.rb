@@ -31,7 +31,8 @@ RSpec.describe API::V1::BudgetItemHash do
       let(:budget_item) do
         FactoryGirl.create(:program)
         .add_spent_finance(FactoryGirl.attributes_for(:spent_finance))
-        .add_spent_finance(FactoryGirl.attributes_for(:spent_finance))
+        .add_spent_finance(FactoryGirl.attributes_for(:spent_finance,
+          amount: nil))
       end
 
       let(:hash_spent_finances) { hash['spent_finances'] }
