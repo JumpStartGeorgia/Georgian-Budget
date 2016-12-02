@@ -15,7 +15,7 @@ class ApiController < ApplicationController
       status = 400
     end
 
-    render json: SnakeCamelCase.to_camel_case_sym(response.to_hash),
+    render json: response.to_hash,
            status: status
   end
 

@@ -33,7 +33,8 @@ RSpec.describe 'API' do
             filters: {
               budgetItemType: 'program'
             }
-          }
+          },
+          headers: { 'X-Key-Inflection': 'camel' }
 
       json = JSON.parse(response.body)
       budget_items = json['budgetItems']
