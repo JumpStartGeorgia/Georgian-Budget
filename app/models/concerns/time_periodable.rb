@@ -6,6 +6,7 @@ module TimePeriodable
     validate :validate_time_period_type_is_recognizable
 
     before_save :set_time_period_type
+    before_save :set_time_period
   end
 
   module ClassMethods
@@ -56,6 +57,10 @@ module TimePeriodable
 
   def set_time_period_type
     self[:time_period_type] = get_time_period_type_from_dates
+  end
+
+  def set_time_period
+    self[:time_period] = time_period_obj.to_s
   end
 
   def get_time_period_type_from_dates

@@ -48,7 +48,7 @@ RSpec.describe API::V1::BudgetItemHash do
 
       it 'includes time period of spent finance' do
         expect(hash_spent1[:time_period])
-        .to eq(saved_spent1.time_period_obj.to_s)
+        .to eq(saved_spent1.time_period)
       end
 
       it 'includes time period type of spent finance' do
@@ -87,7 +87,7 @@ RSpec.describe API::V1::BudgetItemHash do
 
       it 'includes time period of planned finance' do
         expect(hash_plan1[:time_period])
-        .to eq(saved_plan1.time_period_obj.to_s)
+        .to eq(saved_plan1.time_period)
       end
 
       it 'includes time period type of planned finance' do

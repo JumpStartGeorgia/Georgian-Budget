@@ -107,7 +107,7 @@ RSpec.describe 'API' do
         saved_spent_finance1.id)
 
       expect(response_spent_finance1['timePeriod']).to eq(
-        saved_spent_finance1.time_period_obj.to_s)
+        saved_spent_finance1.time_period)
 
       expect(response_spent_finance1['timePeriodType']).to eq(
         saved_spent_finance1.time_period_obj.type)
@@ -122,7 +122,7 @@ RSpec.describe 'API' do
         saved_spent_finance2.id)
 
       expect(response_spent_finance2['timePeriod']).to eq(
-        saved_spent_finance2.time_period_obj.to_s)
+        saved_spent_finance2.time_period)
 
       expect(response_spent_finance2['timePeriodType']).to eq(
         saved_spent_finance2.time_period_obj.type)
@@ -141,7 +141,7 @@ RSpec.describe 'API' do
         saved_planned_finance1.id)
 
       expect(response_planned_finance1['timePeriod']).to eq(
-        saved_planned_finance1.time_period_obj.to_s)
+        saved_planned_finance1.time_period)
 
       expect(response_planned_finance1['timePeriodType']).to eq(
         saved_planned_finance1.time_period_obj.type)
@@ -156,7 +156,7 @@ RSpec.describe 'API' do
         saved_planned_finance2.id)
 
       expect(response_planned_finance2['timePeriod']).to eq(
-        saved_planned_finance2.time_period_obj.to_s)
+        saved_planned_finance2.time_period)
 
       expect(response_planned_finance2['timePeriodType']).to eq(
         saved_planned_finance2.time_period_obj.type)

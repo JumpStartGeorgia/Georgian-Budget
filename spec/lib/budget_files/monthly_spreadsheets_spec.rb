@@ -69,6 +69,7 @@ RSpec.describe 'BudgetFiles' do
             expect(finance.amount.to_f).to eq(656549486.69)
             expect(finance.start_date).to eq(Date.new(2015, 1, 1))
             expect(finance.end_date).to eq(Date.new(2015, 1, 31))
+            expect(finance.time_period).to eq('y2015-m01')
             expect(finance.official).to eq(true)
           end
 
@@ -77,6 +78,7 @@ RSpec.describe 'BudgetFiles' do
             expect(finance.amount.to_f).to eq(641341973.31)
             expect(finance.start_date).to eq(Date.new(2015, 2, 1))
             expect(finance.end_date).to eq(Date.new(2015, 2, 28))
+            expect(finance.time_period).to eq('y2015-m02')
             expect(finance.official).to eq(true)
           end
 

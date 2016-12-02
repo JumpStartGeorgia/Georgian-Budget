@@ -11,7 +11,30 @@ RSpec.shared_examples_for 'TimePeriodable' do
     FactoryGirl.build(described_class_sym)
   end
 
-  describe '#time_period=' do
+  describe '#time_period' do
+    it 'saves automatically as time_period_obj.to_s' do
+      y2015_q1 = Quarter.for_date(Date.new(2015, 1, 1))
+      time_periodable = FactoryGirl.create(
+        described_class_sym,
+        time_period_obj: y2015_q1)
+
+      expect(time_periodable.time_period).to eq(y2015_q1.to_s)
+    end
+  end
+
+  describe '#time_period_obj' do
+    it 'returns time period object for time periodable' do
+      y2015_q1 = Quarter.for_date(Date.new(2015, 1, 1))
+      time_periodable = FactoryGirl.create(
+        described_class_sym,
+        start_date: y2015_q1.start_date,
+        end_date: y2015_q1.end_date)
+
+      expect(time_periodable.time_period_obj).to eq(y2015_q1)
+    end
+  end
+
+  describe '#time_period_obj=' do
     it "sets start date to time period's start date" do
       time_periodable1.time_period_obj = Quarter.for_date(Date.new(2011, 2, 2))
 
