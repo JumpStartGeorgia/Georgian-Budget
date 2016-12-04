@@ -5,8 +5,13 @@ RSpec.shared_examples_for 'FinanceSpendable' do
 
   let(:finance_spendable1) { FactoryGirl.create(described_class_sym) }
 
-  let(:spent_finance_attr1a) { FactoryGirl.attributes_for(:spent_finance) }
-  let(:spent_finance_attr1b) { FactoryGirl.attributes_for(:spent_finance) }
+  let(:spent_finance_attr1a) do
+    FactoryGirl.attributes_for(:spent_finance)
+  end
+
+  let(:spent_finance_attr1b) do
+    FactoryGirl.attributes_for(:spent_finance)
+  end
 
   let(:spent_finance1) do
     FactoryGirl.create(
@@ -58,6 +63,47 @@ RSpec.shared_examples_for 'FinanceSpendable' do
         expect do
           finance_spendable1.add_spent_finance(spent_finance_attr1a)
         end.to raise_error(ActiveRecord::RecordInvalid)
+      end
+    end
+
+    context 'when spent finance is unofficial and alone in time period' do
+      it 'marks the spent finance as primary' do
+        finance = finance_spendable1.add_spent_finance(
+          FactoryGirl.attributes_for(:spent_finance, official: false),
+          return_finance: true)
+
+        expect(finance.reload.primary).to eq(true)
+      end
+    end
+
+    context 'when spent finance is official and alone in time period' do
+      it 'marks the spent finance as primary' do
+        finance = finance_spendable1.add_spent_finance(
+          FactoryGirl.attributes_for(:spent_finance, official: false),
+          return_finance: true)
+
+        expect(finance.reload.primary).to eq(true)
+      end
+    end
+
+    context 'when spent finance is official but has unofficial version' do
+      it 'marks official as primary and unofficial as not primary' do
+        unofficial_spent_attr = FactoryGirl.attributes_for(:spent_finance,
+          official: false,
+          time_period_obj: Year.new(2012))
+
+        official_spent_attr = FactoryGirl.attributes_for(:spent_finance,
+          official: true,
+          time_period_obj: Year.new(2012))
+
+        unofficial_spent = finance_spendable1.add_spent_finance(
+          unofficial_spent_attr, return_finance: true)
+
+        official_spent = finance_spendable1.add_spent_finance(
+          official_spent_attr, return_finance: true)
+
+        expect(official_spent.reload.primary).to eq(true)
+        expect(unofficial_spent.reload.primary).to eq(false)
       end
     end
 

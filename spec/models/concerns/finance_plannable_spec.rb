@@ -168,10 +168,6 @@ RSpec.shared_examples_for 'FinancePlannable' do
       end
     end
 
-    context 'when new planned finance is unique for time period' do
-      it 'sets most_recently_announced to true'
-    end
-
     context 'when new planned finance has earlier announced sibling for same time period' do
       before :each do
         planned_finance_attr1b[:start_date] = planned_finance_attr1[:start_date]

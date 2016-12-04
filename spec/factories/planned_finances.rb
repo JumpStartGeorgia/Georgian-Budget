@@ -12,5 +12,6 @@ FactoryGirl.define do
 
     association :finance_plannable, factory: :priority
     official true
+    primary true
   end
 end

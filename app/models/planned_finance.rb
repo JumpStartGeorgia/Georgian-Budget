@@ -15,6 +15,7 @@ class PlannedFinance < ApplicationRecord
                 :official
               ]
             }
+  validates :primary, inclusion: { in: [true, false] }
   validates :official, inclusion: { in: [true, false] }
 
   def parent

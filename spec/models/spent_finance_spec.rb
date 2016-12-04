@@ -51,6 +51,15 @@ RSpec.describe SpentFinance do
     expect(new_spent_finance).to be_valid
   end
 
+  describe '#primary' do
+    it 'is false by default' do
+      new_spent_finance.primary = nil
+      new_spent_finance.save!
+
+      expect(new_spent_finance.primary).to eq(false)
+    end
+  end
+
   describe '#official' do
     it 'is required' do
       new_spent_finance.official = nil

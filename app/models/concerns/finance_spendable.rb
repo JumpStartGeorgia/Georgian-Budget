@@ -21,7 +21,7 @@ module FinanceSpendable
 
       update_with_new_spent_finance(new_spent_finance, args)
 
-      args[:return_spent_finance] ? new_spent_finance : self
+      args[:return_finance] ? new_spent_finance : self
     end
   end
 
@@ -31,7 +31,7 @@ module FinanceSpendable
 
       update_with_new_spent_finance(new_spent_finance, args)
 
-      args[:return_spent_finance] ? new_spent_finance : self
+      args[:return_finance] ? new_spent_finance : self
     end
   end
 
@@ -49,6 +49,7 @@ module FinanceSpendable
       )
     end
 
+    FinanceCategorizer.new(new_spent_finance).set_primary
     DatesUpdater.new(self, new_spent_finance).update
   end
 end

@@ -51,6 +51,15 @@ RSpec.describe PlannedFinance do
     expect(new_planned_finance).to be_valid
   end
 
+  describe '#primary' do
+    it 'is required' do
+      planned_finance1.primary = nil
+
+      expect(planned_finance1.valid?).to eq(false)
+      expect(planned_finance1).to have(1).error_on(:primary)
+    end
+  end
+
   describe '#official' do
     it 'is required' do
       planned_finance1.official = nil

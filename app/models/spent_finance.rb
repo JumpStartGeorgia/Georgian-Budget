@@ -13,7 +13,10 @@ class SpentFinance < ApplicationRecord
                 :official
               ]
             }
+  validates :primary, inclusion: { in: [true, false] }
   validates :official, inclusion: { in: [true, false] }
+
+  before_validation :set_primary_default
 
   def parent
     finance_spendable
@@ -59,11 +62,17 @@ class SpentFinance < ApplicationRecord
                  official DESC
       STRING
     )
-    
+
     where(id: ids)
   end
 
   def amount_pretty
     ActionController::Base.helpers.number_with_delimiter(amount, delimiter: ',')
+  end
+
+  private
+
+  def set_primary_default
+    self.primary = false if primary.nil?
   end
 end

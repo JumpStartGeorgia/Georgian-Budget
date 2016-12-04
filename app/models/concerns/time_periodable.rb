@@ -40,6 +40,8 @@ module TimePeriodable
   end
 
   def time_period_obj=(time_period_obj)
+    return if time_period_obj.blank?
+    
     self.start_date = time_period_obj.start_date
     self.end_date = time_period_obj.end_date
   end
