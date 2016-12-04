@@ -14,6 +14,10 @@ module FinanceSpendable
     end
   end
 
+  def all_spent_finances
+    spent_finances
+  end
+
   def add_spent_finance(spent_finance_attributes, args = {})
     transaction do
       spent_finance_attributes[:finance_spendable] = self

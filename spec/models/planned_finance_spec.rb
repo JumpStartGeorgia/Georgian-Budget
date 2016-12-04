@@ -52,11 +52,11 @@ RSpec.describe PlannedFinance do
   end
 
   describe '#primary' do
-    it 'is required' do
+    it 'is set to false by default' do
       planned_finance1.primary = nil
+      planned_finance1.save!
 
-      expect(planned_finance1.valid?).to eq(false)
-      expect(planned_finance1).to have(1).error_on(:primary)
+      expect(planned_finance1.primary).to eq(false)
     end
   end
 

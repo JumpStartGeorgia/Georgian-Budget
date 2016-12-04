@@ -4,24 +4,54 @@ class FinanceCategorizer
   end
 
   def set_primary
-    if matching_siblings.count == 1
+    if versions.count == 1
       finance.update_attributes(primary: true) unless finance.primary
       return
     end
 
-    matching_siblings.update(primary: false)
-    matching_siblings.official.update(primary: true)
+    versions.update(primary: false)
+    primary_version.update_attributes(primary: true) unless primary_version.blank?
   end
 
   private
 
-  attr_reader :finance, :matching_siblings
+  attr_reader :finance
 
-  # Finances that belong to same budget item and have same time period
-  def matching_siblings
-    finance
-    .finance_spendable
-    .spent_finances
-    .with_time_period(finance.time_period_obj)
+  def versions
+    finance.versions
+  end
+
+  def official_versions
+    versions.official
+  end
+
+  def unofficial_versions
+    versions.unofficial
+  end
+
+  def primary_version
+    @primary_version ||= get_primary_version
+  end
+
+  def get_primary_version
+    if official_versions.count > 0
+      if announceable?
+        return official_versions.order(:announce_date).last
+      else
+        return official_versions.last
+      end
+    else
+      if announceable?
+        return unofficial_versions.order(:announce_date).last
+      else
+        return unofficial_versions.last
+      end
+    end
+
+    nil
+  end
+
+  def announceable?
+    finance.respond_to?(:announce_date)
   end
 end

@@ -168,6 +168,59 @@ RSpec.shared_examples_for 'FinancePlannable' do
       end
     end
 
+    context 'when finance is unofficial and has no siblings in time period' do
+      it 'marks finance as primary' do
+        official_finance = finance_plannable1.add_planned_finance(
+          FactoryGirl.attributes_for(:planned_finance,
+            primary: false,
+            official: false),
+          return_finance: true)
+
+        expect(official_finance.reload.primary).to eq(true)
+      end
+    end
+
+    context 'when finance is official and has no siblings in time period' do
+      it 'marks finance as primary' do
+        official_finance = finance_plannable1.add_planned_finance(
+          FactoryGirl.attributes_for(:planned_finance,
+            primary: false,
+            official: true),
+          return_finance: true)
+
+        expect(official_finance.reload.primary).to eq(true)
+      end
+    end
+
+    context 'when there are multiple siblings in same time period' do
+      it 'correctly marks finance and siblings as primary or not primary' do
+        most_recent_unofficial = finance_plannable1.add_planned_finance(
+          FactoryGirl.attributes_for(:planned_finance,
+            official: false,
+            time_period_obj: q1_2015,
+            announce_date: Date.new(2015, 3, 1)),
+          return_finance: true)
+
+        less_recent_official = finance_plannable1.add_planned_finance(
+          FactoryGirl.attributes_for(:planned_finance,
+            official: true,
+            time_period_obj: q1_2015,
+            announce_date: Date.new(2015, 1, 1)),
+          return_finance: true)
+
+        more_recent_official = finance_plannable1.add_planned_finance(
+          FactoryGirl.attributes_for(:planned_finance,
+            official: true,
+            time_period_obj: q1_2015,
+            announce_date: Date.new(2015, 2, 1)),
+          return_finance: true)
+
+        expect(most_recent_unofficial.reload.primary).to eq(false)
+        expect(less_recent_official.reload.primary).to eq(false)
+        expect(more_recent_official.reload.primary).to eq(true)
+      end
+    end
+
     context 'when new planned finance has earlier announced sibling for same time period' do
       before :each do
         planned_finance_attr1b[:start_date] = planned_finance_attr1[:start_date]

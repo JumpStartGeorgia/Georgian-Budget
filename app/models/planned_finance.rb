@@ -18,12 +18,26 @@ class PlannedFinance < ApplicationRecord
   validates :primary, inclusion: { in: [true, false] }
   validates :official, inclusion: { in: [true, false] }
 
-  def parent
+  before_validation :set_primary_default
+
+  def budget_item
     finance_plannable
   end
 
-  def parent=(new_parent)
-    self.finance_plannable = new_parent
+  def budget_item=(budget_item)
+    self.finance_plannable = budget_item
+  end
+
+  def siblings
+    budget_item.planned_finances
+  end
+
+  def all_siblings
+    budget_item.all_planned_finances
+  end
+
+  def versions
+    all_siblings.with_time_period(time_period_obj)
   end
 
   def self.before(date)
@@ -85,5 +99,11 @@ class PlannedFinance < ApplicationRecord
   def amount_pretty
     return nil if amount.nil?
     ActionController::Base.helpers.number_with_delimiter(amount, delimiter: ',')
+  end
+
+  private
+
+  def set_primary_default
+    self.primary = false if primary.nil?
   end
 end

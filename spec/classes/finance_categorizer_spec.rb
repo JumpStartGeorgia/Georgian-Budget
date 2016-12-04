@@ -2,40 +2,111 @@ require 'rails_helper'
 
 RSpec.describe FinanceCategorizer do
   describe '#set_primary' do
-    context 'when spent finance has no matching siblings' do
-      it 'sets primary to true' do
-        spent = FactoryGirl.create(:spent_finance, primary: false)
+    context 'when finance is unofficial and has sibling with different time period' do
+      let!(:non_matching_sibling) do
+        FactoryGirl.create(:spent_finance,
+          official: false,
+          primary: true)
+      end
 
-        FinanceCategorizer.new(spent).set_primary
+      let!(:finance) do
+        FactoryGirl.create(:spent_finance,
+          primary: false,
+          official: false,
+          budget_item: non_matching_sibling.budget_item)
+      end
 
-        expect(spent.primary).to eq(true)
+      before do
+        FinanceCategorizer.new(finance).set_primary
+      end
+
+      it 'marks finance as primary' do
+        expect(finance.primary).to eq(true)
+      end
+
+      it 'does not change non matching sibling primary value' do
+        expect(non_matching_sibling.primary).to eq(true)
       end
     end
 
-    context 'when spent finance is official and has matching unofficial sibling' do
-      let!(:unofficial_spent) do
-        FactoryGirl.create(:spent_finance, official: false, primary: true)
+    context 'when finance is official and has unofficial version' do
+      let!(:finance) do
+        FactoryGirl.create(:spent_finance, official: true, primary: false)
       end
 
-      let!(:official_spent) do
+      let!(:unofficial_version) do
         FactoryGirl.create(:spent_finance,
-          official: true,
-          primary: false,
-          time_period_obj: unofficial_spent.time_period_obj,
-          finance_spendable: unofficial_spent.finance_spendable
+          official: false,
+          primary: true,
+          time_period_obj: finance.time_period_obj,
+          budget_item: finance.budget_item
         )
       end
 
       before do
-        FinanceCategorizer.new(official_spent).set_primary
+        FinanceCategorizer.new(finance).set_primary
       end
 
-      it 'marks official finance as primary' do
-        expect(official_spent.reload.primary).to eq(true)
+      it 'marks finance as primary' do
+        expect(finance.reload.primary).to eq(true)
       end
 
-      it 'marks unofficial finance as not primary' do
-        expect(unofficial_spent.reload.primary).to eq(false)
+      it 'marks unofficial version as not primary' do
+        expect(unofficial_version.reload.primary).to eq(false)
+      end
+    end
+
+    context 'when finance is official and has later announced unofficial version' do
+      let!(:finance) do
+        FactoryGirl.create(:planned_finance, official: true, primary: false)
+      end
+
+      let!(:more_recent_unofficial_version) do
+        FactoryGirl.create(:planned_finance,
+          official: false,
+          primary: true,
+          time_period_obj: finance.time_period_obj,
+          announce_date: finance.announce_date + 1,
+          budget_item: finance.budget_item)
+      end
+
+      before do
+        FinanceCategorizer.new(finance).set_primary
+      end
+
+      it 'marks finance as primary' do
+        expect(finance.reload.primary).to eq(true)
+      end
+
+      it 'marks more recent unofficial finance as not primary' do
+        expect(more_recent_unofficial_version.reload.primary).to eq(false)
+      end
+    end
+
+    context 'when finance is unofficial and has less recently announced unofficial version' do
+      let!(:finance) do
+        FactoryGirl.create(:planned_finance, official: false, primary: false)
+      end
+
+      let!(:less_recent_unofficial) do
+        FactoryGirl.create(:planned_finance,
+          official: false,
+          primary: true,
+          time_period_obj: finance.time_period_obj,
+          announce_date: finance.announce_date - 1,
+          budget_item: finance.budget_item)
+      end
+
+      before do
+        FinanceCategorizer.new(finance).set_primary
+      end
+
+      it 'marks finance as primary' do
+        expect(finance.reload.primary).to eq(true)
+      end
+
+      it 'marks other version as not primary' do
+        expect(less_recent_unofficial.reload.primary).to eq(false)
       end
     end
   end

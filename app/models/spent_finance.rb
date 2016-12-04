@@ -18,12 +18,24 @@ class SpentFinance < ApplicationRecord
 
   before_validation :set_primary_default
 
-  def parent
+  def budget_item
     finance_spendable
   end
 
-  def parent=(new_parent)
-    self.finance_spendable = new_parent
+  def budget_item=(budget_item)
+    self.finance_spendable = budget_item
+  end
+
+  def siblings
+    budget_item.spent_finances
+  end
+
+  def all_siblings
+    budget_item.all_spent_finances
+  end
+
+  def versions
+    all_siblings.with_time_period(time_period_obj)
   end
 
   def self.before(date)
