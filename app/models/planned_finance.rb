@@ -60,6 +60,10 @@ class PlannedFinance < ApplicationRecord
     where(official: false)
   end
 
+  def self.primary
+    where(primary: true)
+  end
+
   def self.prefer_official
     ids = self.find_by_sql(
       <<-STRING

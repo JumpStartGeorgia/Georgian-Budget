@@ -83,53 +83,69 @@ RSpec.shared_examples_for 'FinancePlannable' do
   end
 
   describe '#planned_finances' do
-    it 'gets most recently announced planned finances for the finance_plannable' do
-      next_quarter = Quarter.for_date(planned_finance_attr1[:start_date]).next
-      planned_finance_attr1c[:start_date] = next_quarter.start_date
-      planned_finance_attr1c[:end_date] = next_quarter.end_date
+    let!(:primary_plan_q2_2015) do
+      finance_plannable1.add_planned_finance(
+        FactoryGirl.attributes_for(:planned_finance,
+          time_period_obj: q2_2015),
+        return_finance: true)
+    end
 
-      added_planned_finance1
-      added_planned_finance1b
-      added_planned_finance1c
+    let!(:primary_plan_q1_2015) do
+      finance_plannable1.add_planned_finance(
+        FactoryGirl.attributes_for(:planned_finance,
+          time_period_obj: q1_2015,
+          official: true),
+        return_finance: true)
+    end
 
-      finance_plannable1.reload
+    let!(:non_primary_plan_q1_2015) do
+      finance_plannable1.add_planned_finance(
+        FactoryGirl.attributes_for(:planned_finance,
+          time_period_obj: q1_2015,
+          official: false),
+        return_finance: true)
+    end
 
-      expect(finance_plannable1.planned_finances).to match_array(
-        [
-          added_planned_finance1b,
-          added_planned_finance1c
-        ]
-      )
+    it 'gets planned finances marked as primary ordered by start date' do
+      expect(finance_plannable1.planned_finances).to match_array([
+        primary_plan_q1_2015,
+        primary_plan_q2_2015
+      ])
     end
   end
 
   describe '#all_planned_finances' do
-    describe 'gets all planned finances' do
-      context 'including most recent and not most recent' do
-        it 'ordered by start date and then announce date' do
-          ## 1b has time period after 1
-          next_quarter = Quarter.for_date(planned_finance_attr1[:start_date]).next
-          planned_finance_attr1b[:start_date] = next_quarter.start_date
-          planned_finance_attr1b[:end_date] = next_quarter.end_date
+    let!(:primary_plan_q1_2015) do
+      finance_plannable1.add_planned_finance(
+        FactoryGirl.attributes_for(:planned_finance,
+          time_period_obj: q1_2015,
+          announce_date: q1_2015.start_date,
+          official: true),
+        return_finance: true)
+    end
 
-          ## 1c was announced before 1
-          planned_finance_attr1c[:announce_date] = planned_finance_attr1[:announce_date] - 1
+    let!(:non_primary_plan_q1_2015) do
+      finance_plannable1.add_planned_finance(
+        FactoryGirl.attributes_for(:planned_finance,
+          time_period_obj: q1_2015,
+          announce_date: q1_2015.start_date + 1,
+          official: false),
+        return_finance: true)
+    end
 
-          added_planned_finance1
-          added_planned_finance1b
-          added_planned_finance1c
+    let!(:primary_plan_q2_2015) do
+      finance_plannable1.add_planned_finance(
+        FactoryGirl.attributes_for(:planned_finance,
+          time_period_obj: q2_2015),
+        return_finance: true)
+    end
 
-          finance_plannable1.reload
-
-          expect(finance_plannable1.all_planned_finances).to eq(
-            [
-              added_planned_finance1c,
-              added_planned_finance1,
-              added_planned_finance1b
-            ]
-          )
-        end
-      end
+    it 'gets both primary and non primary planned finances ordered by start date and then announce date' do
+      expect(finance_plannable1.all_planned_finances).to match_array([
+        primary_plan_q1_2015,
+        non_primary_plan_q1_2015,
+        primary_plan_q2_2015
+      ])
     end
   end
 

@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.shared_examples_for 'FinanceSpendable' do
+  include_context 'months'
   let(:described_class_sym) { described_class.to_s.underscore.to_sym }
 
   let(:finance_spendable1) { FactoryGirl.create(described_class_sym) }
@@ -40,18 +41,67 @@ RSpec.shared_examples_for 'FinanceSpendable' do
   end
 
   describe '#spent_finances' do
-    it 'gets all spent finances for the finance_spendable' do
-      expect(finance_spendable1.spent_finances).to match_array([spent_finance1, spent_finance1b])
+    let!(:spent_feb_2015) do
+      finance_spendable1.add_spent_finance(
+        FactoryGirl.attributes_for(:spent_finance,
+          time_period_obj: feb_2015),
+        return_finance: true)
     end
 
-    it 'are ordered by start date' do
-      spent_finance1
-      spent_finance1b.time_period_obj = spent_finance1.time_period_obj.next
-      spent_finance1b.save!
+    let!(:spent_jan_2015) do
+      finance_spendable1.add_spent_finance(
+        FactoryGirl.attributes_for(:spent_finance,
+          time_period_obj: jan_2015,
+          official: true),
+        return_finance: true)
+    end
 
-      expect(finance_spendable1.spent_finances).to eq(
-        [spent_finance1, spent_finance1b]
-      )
+    let!(:spent_jan_2015_unofficial) do
+      finance_spendable1.add_spent_finance(
+        FactoryGirl.attributes_for(:spent_finance,
+          time_period_obj: jan_2015,
+          official: false),
+        return_finance: true)
+    end
+
+    it 'gets primary spent finances ordered by start date' do
+      expect(finance_spendable1.spent_finances).to match_array([
+        spent_jan_2015,
+        spent_feb_2015
+      ])
+    end
+  end
+
+  describe '#all_spent_finances' do
+    let!(:spent_feb_2015) do
+      finance_spendable1.add_spent_finance(
+        FactoryGirl.attributes_for(:spent_finance,
+          time_period_obj: feb_2015),
+        return_finance: true)
+    end
+
+    let!(:spent_jan_2015) do
+      finance_spendable1.add_spent_finance(
+        FactoryGirl.attributes_for(:spent_finance,
+          time_period_obj: jan_2015,
+          official: true),
+        return_finance: true)
+    end
+
+    let!(:spent_jan_2015_unofficial) do
+      finance_spendable1.add_spent_finance(
+        FactoryGirl.attributes_for(:spent_finance,
+          time_period_obj: jan_2015,
+          official: false),
+        return_finance: true)
+    end
+
+    it 'gets primary and non primary spent finances ordered by start date' do
+      expect(finance_spendable1.all_spent_finances).to match_array([
+        spent_jan_2015,
+        spent_jan_2015_unofficial,
+        spent_feb_2015
+      ])
     end
   end
 

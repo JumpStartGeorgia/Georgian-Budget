@@ -26,7 +26,7 @@ module FinancePlannable
 
   included do
     has_many :planned_finances,
-             -> { order('planned_finances.start_date').where(most_recently_announced: true) },
+             -> { primary.order('planned_finances.start_date') },
              as: :finance_plannable
   end
 
@@ -35,7 +35,7 @@ module FinancePlannable
   # most_recently_announced.
   def all_planned_finances
     planned_finances
-    .unscope(where: :most_recently_announced)
+    .unscope(where: :primary)
     .order('planned_finances.announce_date')
   end
 

@@ -3,7 +3,7 @@ module FinanceSpendable
 
   included do
     has_many :spent_finances,
-             -> { order('spent_finances.start_date') },
+             -> { primary.order('spent_finances.start_date') },
              as: :finance_spendable,
              dependent: :destroy
   end
@@ -15,7 +15,7 @@ module FinanceSpendable
   end
 
   def all_spent_finances
-    spent_finances
+    spent_finances.unscope(where: :primary)
   end
 
   def add_spent_finance(spent_finance_attributes, args = {})
