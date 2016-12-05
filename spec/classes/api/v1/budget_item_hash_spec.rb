@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe API::V1::BudgetItemHash do
   describe '#to_hash' do
-    let(:hash) { API::V1::BudgetItemHash.new(budget_item, fields).to_hash }
+    let(:hash) { API::V1::BudgetItemHash.new(budget_item, {fields: fields}).to_hash }
 
     context 'when id, code and name are requested for priority' do
       let!(:budget_item) do
