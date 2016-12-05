@@ -1,1 +1,1 @@
-# Rails.application.config.middleware.use OliveBranch::Middleware
+Rails.application.config.middleware.use OliveBranch::Middleware
