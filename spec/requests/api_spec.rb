@@ -13,25 +13,60 @@ RSpec.describe 'API' do
     end
   end
 
-  context 'when requesting list of program ids and names' do
-    it 'returns the perma_ids and names of all programs' do
-      program1 = FactoryGirl.create(:program)
-      .add_code(FactoryGirl.attributes_for(:code))
-      .add_name(FactoryGirl.attributes_for(:name))
-      .save_perma_id
-
-      program2 = FactoryGirl.create(:program)
-      .add_code(FactoryGirl.attributes_for(:code))
-      .add_name(FactoryGirl.attributes_for(:name))
-      .save_perma_id
-
+  context 'when requesting program ids, names and yearly finances' do
+    it 'returns the perma_ids, names and yearly finances of all programs' do
       FactoryGirl.create(:spending_agency)
 
+      # setup first program
+      program1 = FactoryGirl.create(:program)
+
+      program1_spent_2012 = program1.add_spent_finance(
+        FactoryGirl.attributes_for(:spent_finance,
+          time_period_obj: Year.new(2012)),
+        return_finance: true)
+
+      program1_plan_2012 = program1.add_planned_finance(
+        FactoryGirl.attributes_for(:planned_finance,
+          time_period_obj: Year.new(2012)),
+        return_finance: true)
+
+      program1
+      .add_spent_finance(FactoryGirl.attributes_for(:spent_finance,
+        time_period_obj: Month.for_date(Date.new(2012, 1, 1))))
+      .add_code(FactoryGirl.attributes_for(:code))
+      .add_name(FactoryGirl.attributes_for(:name))
+      .save_perma_id
+
+      # setup second program
+      program2 = FactoryGirl.create(:program)
+
+      program2_spent_2014 = program2.add_spent_finance(
+        FactoryGirl.attributes_for(:spent_finance,
+          time_period_obj: Year.new(2014)),
+        return_finance: true)
+
+      program2_plan_2011 = program2.add_planned_finance(
+        FactoryGirl.attributes_for(:planned_finance,
+          time_period_obj: Year.new(2011)),
+        return_finance: true)
+
+      program2_plan_2013 = program2.add_planned_finance(
+        FactoryGirl.attributes_for(:planned_finance,
+          time_period_obj: Year.new(2013)),
+        return_finance: true)
+
+      program2
+      .add_code(FactoryGirl.attributes_for(:code))
+      .add_name(FactoryGirl.attributes_for(:name))
+      .save_perma_id
+
+      # exercise
       get '/en/v1',
           params: {
-            budgetItemFields: 'id,name',
+            budgetItemFields: 'id,name,spent_finances,planned_finances',
             filters: {
-              budgetItemType: 'program'
+              budgetItemType: 'program',
+              timePeriodType: 'year'
             }
           },
           headers: { 'X-Key-Inflection': 'camel' }
@@ -41,11 +76,36 @@ RSpec.describe 'API' do
 
       expect(response.status).to eq(200)
 
+      # verify only programs were included in response
+      expect(budget_items.length).to eq(2)
+
+      # verify first program
       expect(budget_items[0]['id']).to eq(program1.perma_id)
       expect(budget_items[0]['name']).to eq(program1.name)
 
+      program1_spent = budget_items[0]['spentFinances']
+
+      expect(program1_spent.length).to eq(1)
+      expect(program1_spent[0]['amount']).to eq(program1_spent_2012.amount.to_s)
+      expect(program1_spent[0]['timePeriod']).to eq(program1_spent_2012.time_period)
+
+      program1_plans = budget_items[0]['plannedFinances']
+      expect(program1_plans.length).to eq(1)
+      expect(program1_plans[0]['amount']).to eq(program1_plan_2012.amount.to_s)
+      expect(program1_plans[0]['timePeriod']).to eq(program1_plan_2012.time_period)
+
+      # verify second program
       expect(budget_items[1]['id']).to eq(program2.perma_id)
       expect(budget_items[1]['name']).to eq(program2.name)
+
+      program2_spent = budget_items[1]['spentFinances']
+      expect(program2_spent.length).to eq(1)
+      expect(program2_spent[0]['amount']).to eq(program2_spent_2014.amount.to_s)
+
+      program2_plans = budget_items[1]['plannedFinances']
+      expect(program2_plans.length).to eq(2)
+      expect(program2_plans[0]['amount']).to eq(program2_plan_2011.amount.to_s)
+      expect(program2_plans[1]['amount']).to eq(program2_plan_2013.amount.to_s)
     end
   end
 

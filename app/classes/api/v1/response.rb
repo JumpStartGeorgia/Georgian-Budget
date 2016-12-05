@@ -7,8 +7,7 @@ class API::V1::Response
 
     if filters.present?
       @budget_item_type = filters['budget_item_type'] if filters['budget_item_type'].present?
-      @time_period_type = filters['time_period_type'] if filters['time_period_type'].present?
-      @finance_type = filters['finance_type'] if filters['finance_type'].present?
+      @time_period_type = validate_time_period_type(filters['time_period_type']) if filters['time_period_type'].present?
     end
 
     @budget_item_fields = validate_budget_item_fields(params['budget_item_fields']) if params['budget_item_fields'].present?
@@ -38,7 +37,6 @@ class API::V1::Response
   attr_accessor :errors
 
   attr_reader :budget_item_ids,
-              :finance_type,
               :time_period_type,
               :budget_item_fields,
               :budget_item_type,
@@ -74,7 +72,29 @@ class API::V1::Response
   end
 
   def budget_item_hash(budget_item)
-    API::V1::BudgetItemHash.new(budget_item, budget_item_fields).to_hash
+    API::V1::BudgetItemHash.new(
+      budget_item,
+      fields: budget_item_fields,
+      time_period_type: time_period_type
+    ).to_hash
+  end
+
+  def validate_time_period_type(time_period_type)
+    return nil unless time_period_type.present? && time_period_type.is_a?(String)
+
+    unless time_period_type_permitted_fields.include? time_period_type
+      raise API::V1::InvalidQueryError, "Time period type \"#{time_period_type}\" not permitted. Allowed values: #{time_period_type_permitted_fields.join(',')}"
+    end
+
+    time_period_type
+  end
+
+  def time_period_type_permitted_fields
+    [
+      'year',
+      'quarter',
+      'month'
+    ]
   end
 
   def validate_budget_item_fields(fields)
@@ -82,7 +102,7 @@ class API::V1::Response
     fields.split(',').select do |field|
       valid = budget_item_permitted_fields.include? field
       unless valid
-        raise API::V1::InvalidQueryError, "Budget item field \"#{field}\" not permitted"
+        raise API::V1::InvalidQueryError, "Budget item field \"#{field}\" not permitted. Allowed values: #{budget_item_permitted_fields.join(',')}"
       end
       valid
     end
