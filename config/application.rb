@@ -40,13 +40,5 @@ module GeorgianBudget
     config.i18n.available_locales = [:en, :ka]
 
     config.i18n.fallbacks = true
-
-    # API Allow
-    config.middleware.insert_before 0, Rack::Cors do
-      allow do
-        origins '*'
-        resource '*', headers: :any, methods: [:get]
-      end
-    end
   end
 end
