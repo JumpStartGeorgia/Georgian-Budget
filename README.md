@@ -57,6 +57,13 @@ NOTE: The below commands will only work if the container you are setting up to d
 
 5. Continue with deploy as usual
 
+## Transfer Postgres database
+
+1. Dump the database: `pg_dump -Fc -U postgres -O budget_staging_dev > tmp/budget_dev.sql`
+2. Copy out of db container: `docker cp {container-id}:tmp/budget_dev.sql tmp/`
+3. Copy to server: `scp tmp/budget_dev.sql {user_name}@{server_name}:tmp/`
+4. Restore: `pg_restore --clean --no-owner -d "budget-staging" -U "budget-staging" tmp/budget_dev.sql`
+
 ## Docker Cheat Sheet
 
 This is a cheat sheet for JumpStart's Rails docker projects. If you want to truly understand what's going on here, consult the Docker documentation and work through their tutorials.
