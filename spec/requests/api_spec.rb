@@ -13,94 +13,112 @@ RSpec.describe 'API' do
     end
   end
 
-  context 'when requesting program ids, names and yearly finances' do
-    it 'returns the perma_ids, names and yearly finances of all programs' do
-      FactoryGirl.create(:spending_agency)
-
-      # setup first program
-      program1 = FactoryGirl.create(:program)
-
-      program1_spent_2012 = program1.add_spent_finance(
-        FactoryGirl.attributes_for(:spent_finance,
-          time_period_obj: Year.new(2012)),
-        return_finance: true)
-
-      program1_plan_2012 = program1.add_planned_finance(
-        FactoryGirl.attributes_for(:planned_finance,
-          time_period_obj: Year.new(2012)),
-        return_finance: true)
-
-      program1
+  context 'when requesting program info and yearly finances' do
+    let!(:program1) do
+      FactoryGirl.create(:program)
       .add_spent_finance(FactoryGirl.attributes_for(:spent_finance,
         time_period_obj: Month.for_date(Date.new(2012, 1, 1))))
       .add_code(FactoryGirl.attributes_for(:code))
       .add_name(FactoryGirl.attributes_for(:name))
       .save_perma_id
+    end
 
-      # setup second program
-      program2 = FactoryGirl.create(:program)
-
-      program2_spent_2014 = program2.add_spent_finance(
+    let!(:program1_spent_2012) do
+      program1.add_spent_finance(
         FactoryGirl.attributes_for(:spent_finance,
-          time_period_obj: Year.new(2014)),
+          time_period_obj: Year.new(2012)),
         return_finance: true)
+    end
 
-      program2_plan_2011 = program2.add_planned_finance(
+    let!(:program1_plan_2012) do
+      program1.add_planned_finance(
         FactoryGirl.attributes_for(:planned_finance,
-          time_period_obj: Year.new(2011)),
+          time_period_obj: Year.new(2012)),
         return_finance: true)
+    end
 
-      program2_plan_2013 = program2.add_planned_finance(
-        FactoryGirl.attributes_for(:planned_finance,
-          time_period_obj: Year.new(2013)),
-        return_finance: true)
-
-      program2
+    let!(:program2) do
+      FactoryGirl.create(:program)
       .add_code(FactoryGirl.attributes_for(:code))
       .add_name(FactoryGirl.attributes_for(:name))
       .save_perma_id
+    end
+
+    let!(:program2_spent_2014) do
+      program2.add_spent_finance(
+        FactoryGirl.attributes_for(:spent_finance,
+          time_period_obj: Year.new(2014)),
+        return_finance: true)
+    end
+
+    let!(:program2_plan_2011) do
+      program2.add_planned_finance(
+        FactoryGirl.attributes_for(:planned_finance,
+          time_period_obj: Year.new(2011)),
+        return_finance: true)
+    end
+
+    let!(:program2_plan_2013) do
+      program2.add_planned_finance(
+        FactoryGirl.attributes_for(:planned_finance,
+          time_period_obj: Year.new(2013)),
+        return_finance: true)
+    end
+
+    let(:budget_items) do
+      JSON.parse(response.body)['budgetItems']
+    end
+
+    before do
+      FactoryGirl.create(:spending_agency)
 
       # exercise
       get '/en/v1',
           params: {
-            budgetItemFields: 'id,name,spent_finances,planned_finances',
+            budgetItemFields: 'id,name,type,spent_finances,planned_finances',
             filters: {
               budgetItemType: 'program',
               timePeriodType: 'year'
             }
           },
           headers: { 'X-Key-Inflection': 'camel' }
+    end
 
-      json = JSON.parse(response.body)
-      budget_items = json['budgetItems']
-
+    it 'has OK status' do
       expect(response.status).to eq(200)
+    end
 
-      # verify only programs were included in response
+    it 'returns correct number of budget items' do
       expect(budget_items.length).to eq(2)
+    end
 
-      # verify first program
+    it 'returns info (id, name, etc.) for each program' do
       expect(budget_items[0]['id']).to eq(program1.perma_id)
       expect(budget_items[0]['name']).to eq(program1.name)
+      expect(budget_items[0]['type']).to eq('program')
 
+      expect(budget_items[1]['id']).to eq(program2.perma_id)
+      expect(budget_items[1]['name']).to eq(program2.name)
+      expect(budget_items[1]['type']).to eq('program')
+    end
+
+    it 'returns spent finances for each program' do
       program1_spent = budget_items[0]['spentFinances']
 
       expect(program1_spent.length).to eq(1)
       expect(program1_spent[0]['amount']).to eq(program1_spent_2012.amount.to_s)
       expect(program1_spent[0]['timePeriod']).to eq(program1_spent_2012.time_period)
 
+      program2_spent = budget_items[1]['spentFinances']
+      expect(program2_spent.length).to eq(1)
+      expect(program2_spent[0]['amount']).to eq(program2_spent_2014.amount.to_s)
+    end
+
+    it 'returns planned finances for each program' do
       program1_plans = budget_items[0]['plannedFinances']
       expect(program1_plans.length).to eq(1)
       expect(program1_plans[0]['amount']).to eq(program1_plan_2012.amount.to_s)
       expect(program1_plans[0]['timePeriod']).to eq(program1_plan_2012.time_period)
-
-      # verify second program
-      expect(budget_items[1]['id']).to eq(program2.perma_id)
-      expect(budget_items[1]['name']).to eq(program2.name)
-
-      program2_spent = budget_items[1]['spentFinances']
-      expect(program2_spent.length).to eq(1)
-      expect(program2_spent[0]['amount']).to eq(program2_spent_2014.amount.to_s)
 
       program2_plans = budget_items[1]['plannedFinances']
       expect(program2_plans.length).to eq(2)
