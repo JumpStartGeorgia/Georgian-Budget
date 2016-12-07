@@ -78,7 +78,7 @@ RSpec.describe 'API' do
       # exercise
       get '/en/v1',
           params: {
-            budgetItemFields: 'id,name,type,spent_finances,planned_finances',
+            budgetItemFields: 'id,name,code,type,spent_finances,planned_finances',
             filters: {
               budgetItemType: 'program',
               timePeriodType: 'year'
@@ -98,10 +98,12 @@ RSpec.describe 'API' do
     it 'returns info (id, name, etc.) for each program' do
       expect(program1_response['id']).to eq(program1.perma_id)
       expect(program1_response['name']).to eq(program1.name)
+      expect(program1_response['code']).to eq(program1.code)
       expect(program1_response['type']).to eq('program')
 
       expect(program2_response['id']).to eq(program2.perma_id)
       expect(program2_response['name']).to eq(program2.name)
+      expect(program2_response['code']).to eq(program2.code)
       expect(program2_response['type']).to eq('program')
     end
 
