@@ -160,7 +160,7 @@ RSpec.describe 'API' do
     end
 
     let(:json) { JSON.parse(response.body) }
-    let(:agency1_response) { json['budgetItems'][0] }
+    let(:agency1_response) { json['budgetItem'] }
 
     it 'has OK response status code and has no errors' do
       expect(response.status).to eq(200)

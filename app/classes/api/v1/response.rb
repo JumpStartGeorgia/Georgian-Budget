@@ -23,11 +23,8 @@ class API::V1::Response
             'budgetItemFields must be supplied in query'
     end
 
-    response[:budget_items] = []
-
     if budget_item_id.present?
-      response[:budget_items] = []
-      response[:budget_items] = [get_budget_item_by_id]
+      response[:budget_item] = get_budget_item_by_id
       return response
     end
 
