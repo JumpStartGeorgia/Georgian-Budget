@@ -18,11 +18,28 @@ class API::V1::Response
     response = {}
     response[:errors] = errors
 
-    response[:budget_items] = budget_items if budget_items
-    return response
+    unless budget_item_fields.present?
+      raise API::V1::InvalidQueryError,
+            'budgetItemFields must be supplied in query'
+    end
+
+    response[:budget_items] = []
+
+    if budget_item_id.present?
+      response[:budget_items] = []
+      response[:budget_items] = [get_budget_item_by_id]
+      return response
+    end
+
+    if budget_item_type.present?
+      response[:budget_items] = []
+      response[:budget_items] = get_budget_items_by_type
+      return response
+    end
+
+    raise API::V1::InvalidQueryError, 'budgetItemId or budgetItemType filter must be supplied in query'
   rescue API::V1::InvalidQueryError => e
     add_error("Failed to process the request: #{e.message}")
-    response[:budget_items] = []
     return response
   end
 
@@ -60,32 +77,23 @@ class API::V1::Response
     return budget_items
   end
 
-  def get_budget_items
-    unless budget_item_fields.present?
-      raise API::V1::InvalidQueryError,
-            'budgetItemFields must be supplied in query'
+  def get_budget_item_by_id
+    budget_item = BudgetItem.find_by_perma_id(budget_item_id)
+
+    return budget_item_hash(budget_item) if budget_item.present?
+
+    raise API::V1::InvalidQueryError,
+          "budget item with id #{budget_item_id} does not exist"
+  end
+
+  def get_budget_items_by_type
+    budget_items = budget_type_class.all
+    budget_items = budget_items.with_most_recent_names if budget_item_fields.include?('name')
+    budget_items = include_finances(budget_items)
+
+    return budget_items.map do |budget_item|
+      budget_item_hash(budget_item)
     end
-
-    if budget_item_id.present?
-      budget_item = BudgetItem.find_by_perma_id(budget_item_id)
-
-      return [budget_item_hash(budget_item)] if budget_item.present?
-
-      raise API::V1::InvalidQueryError,
-            "budget item with id #{budget_item_id} does not exist"
-    end
-
-    if budget_item_type.present?
-      budget_items = budget_type_class.all
-      budget_items = budget_items.with_most_recent_names if budget_item_fields.include?('name')
-      budget_items = include_finances(budget_items)
-
-      return budget_items.map do |budget_item|
-        budget_item_hash(budget_item)
-      end
-    end
-
-    raise API::V1::InvalidQueryError, 'budgetItemId or budgetItemType filter must be supplied in query'
   end
 
   def budget_item_hash(budget_item)
