@@ -17,19 +17,11 @@ class API::V1::BudgetItemHash
       hash['type'] = budget_item.type if fields.include? 'type'
 
       if fields.include? 'spent_finances'
-        hash['spent_finances'] = if time_period_type.present?
-          budget_item.spent_finances.where(time_period_type: time_period_type)
-        else
-          budget_item.spent_finances
-        end
+        hash['spent_finances'] = budget_item.spent_finances
       end
 
       if fields.include? 'planned_finances'
-        hash['planned_finances'] = if time_period_type.present?
-          budget_item.planned_finances.where(time_period_type: time_period_type)
-        else
-          budget_item.planned_finances
-        end
+        hash['planned_finances'] = budget_item.planned_finances
       end
     end
   end

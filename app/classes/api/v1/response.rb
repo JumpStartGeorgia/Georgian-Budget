@@ -46,6 +46,20 @@ class API::V1::Response
     @budget_items ||= get_budget_items
   end
 
+  def include_finances(budget_items)
+    if budget_item_fields.include?('spent_finances')
+      budget_items = budget_items.joins(:spent_finances).includes(:spent_finances)
+      budget_items = budget_items.merge(SpentFinance.where(time_period_type: time_period_type)) if time_period_type.present?
+    end
+
+    if budget_item_fields.include?('planned_finances')
+      budget_items = budget_items.joins(:planned_finances).includes(:planned_finances)
+      budget_items = budget_items.merge(PlannedFinance.where(time_period_type: time_period_type)) if time_period_type.present?
+    end
+
+    return budget_items
+  end
+
   def get_budget_items
     unless budget_item_fields.present?
       raise API::V1::InvalidQueryError, 'budgetItemFields must be supplied in query'
@@ -61,7 +75,9 @@ class API::V1::Response
         item
       end
     elsif budget_item_type.present?
-      budget_items = budget_type_class.all.with_most_recent_names
+      budget_items = budget_type_class.all
+      budget_items = budget_items.with_most_recent_names if budget_item_fields.include?('name')
+      budget_items = include_finances(budget_items)
     else
       raise API::V1::InvalidQueryError, 'budgetItemIds or budgetItemType filter must be supplied in query'
     end
