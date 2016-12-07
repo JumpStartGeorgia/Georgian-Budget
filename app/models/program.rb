@@ -10,6 +10,10 @@ class Program < ApplicationRecord
   belongs_to :priority
   belongs_to :parent, polymorphic: true
 
+  def parent_program
+    
+  end
+
   def update_parent
     update_attribute(:parent, find_parent_codeable)
   end

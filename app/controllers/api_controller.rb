@@ -27,7 +27,7 @@ class ApiController < ApplicationController
       :locale,
       :budget_item_fields,
       :filters,
-      budget_item_ids: [],
+      :budget_item_id,
       filters: [
         :finance_type,
         :budget_item_type,

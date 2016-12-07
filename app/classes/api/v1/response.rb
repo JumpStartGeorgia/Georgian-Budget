@@ -11,7 +11,7 @@ class API::V1::Response
     end
 
     @budget_item_fields = validate_budget_item_fields(params['budget_item_fields']) if params['budget_item_fields'].present?
-    @budget_item_ids = params['budget_item_ids'] if params['budget_item_ids'].present?
+    @budget_item_id = params['budget_item_id'] if params['budget_item_id'].present?
   end
 
   def to_hash
@@ -36,7 +36,7 @@ class API::V1::Response
 
   attr_accessor :errors
 
-  attr_reader :budget_item_ids,
+  attr_reader :budget_item_id,
               :time_period_type,
               :budget_item_fields,
               :budget_item_type,
@@ -62,29 +62,30 @@ class API::V1::Response
 
   def get_budget_items
     unless budget_item_fields.present?
-      raise API::V1::InvalidQueryError, 'budgetItemFields must be supplied in query'
+      raise API::V1::InvalidQueryError,
+            'budgetItemFields must be supplied in query'
     end
 
-    if budget_item_ids.present?
-      budget_items = budget_item_ids.map do |perma_id|
-        item = BudgetItem.find_by_perma_id(perma_id)
-        unless item.present?
-          raise API::V1::InvalidQueryError, "budget item with id #{perma_id} does not exist"
-        end
+    if budget_item_id.present?
+      budget_item = BudgetItem.find_by_perma_id(budget_item_id)
 
-        item
-      end
-    elsif budget_item_type.present?
+      return [budget_item_hash(budget_item)] if budget_item.present?
+
+      raise API::V1::InvalidQueryError,
+            "budget item with id #{budget_item_id} does not exist"
+    end
+
+    if budget_item_type.present?
       budget_items = budget_type_class.all
       budget_items = budget_items.with_most_recent_names if budget_item_fields.include?('name')
       budget_items = include_finances(budget_items)
-    else
-      raise API::V1::InvalidQueryError, 'budgetItemIds or budgetItemType filter must be supplied in query'
+
+      return budget_items.map do |budget_item|
+        budget_item_hash(budget_item)
+      end
     end
 
-    return budget_items.map do |budget_item|
-      budget_item_hash(budget_item)
-    end
+    raise API::V1::InvalidQueryError, 'budgetItemId or budgetItemType filter must be supplied in query'
   end
 
   def budget_item_hash(budget_item)
