@@ -69,6 +69,9 @@ RSpec.describe 'API' do
       JSON.parse(response.body)['budgetItems']
     end
 
+    let(:program1_response) { budget_items[1] }
+    let(:program2_response) { budget_items[0] }
+
     before do
       FactoryGirl.create(:spending_agency)
 
@@ -93,37 +96,37 @@ RSpec.describe 'API' do
     end
 
     it 'returns info (id, name, etc.) for each program' do
-      expect(budget_items[0]['id']).to eq(program1.perma_id)
-      expect(budget_items[0]['name']).to eq(program1.name)
-      expect(budget_items[0]['type']).to eq('program')
+      expect(program1_response['id']).to eq(program1.perma_id)
+      expect(program1_response['name']).to eq(program1.name)
+      expect(program1_response['type']).to eq('program')
 
-      expect(budget_items[1]['id']).to eq(program2.perma_id)
-      expect(budget_items[1]['name']).to eq(program2.name)
-      expect(budget_items[1]['type']).to eq('program')
+      expect(program2_response['id']).to eq(program2.perma_id)
+      expect(program2_response['name']).to eq(program2.name)
+      expect(program2_response['type']).to eq('program')
     end
 
     it 'returns spent finances for each program' do
-      program1_spent = budget_items[0]['spentFinances']
+      program1_spent = program1_response['spentFinances']
 
       expect(program1_spent.length).to eq(1)
       expect(program1_spent[0]['amount']).to eq(program1_spent_2012.amount.to_s)
       expect(program1_spent[0]['timePeriod']).to eq(program1_spent_2012.time_period)
 
-      program2_spent = budget_items[1]['spentFinances']
+      program2_spent = program2_response['spentFinances']
       expect(program2_spent.length).to eq(1)
       expect(program2_spent[0]['amount']).to eq(program2_spent_2014.amount.to_s)
     end
 
     it 'returns planned finances for each program' do
-      program1_plans = budget_items[0]['plannedFinances']
+      program1_plans = program1_response['plannedFinances']
       expect(program1_plans.length).to eq(1)
       expect(program1_plans[0]['amount']).to eq(program1_plan_2012.amount.to_s)
       expect(program1_plans[0]['timePeriod']).to eq(program1_plan_2012.time_period)
 
-      program2_plans = budget_items[1]['plannedFinances']
+      program2_plans = program2_response['plannedFinances']
       expect(program2_plans.length).to eq(2)
-      expect(program2_plans[0]['amount']).to eq(program2_plan_2011.amount.to_s)
-      expect(program2_plans[1]['amount']).to eq(program2_plan_2013.amount.to_s)
+      expect(program2_plans[1]['amount']).to eq(program2_plan_2011.amount.to_s)
+      expect(program2_plans[0]['amount']).to eq(program2_plan_2013.amount.to_s)
     end
   end
 
