@@ -69,8 +69,17 @@ RSpec.describe 'API' do
       JSON.parse(response.body)['budgetItems']
     end
 
-    let(:program1_response) { budget_items[1] }
-    let(:program2_response) { budget_items[0] }
+    let(:program1_response) do
+      budget_items.find do |item_response|
+        item_response['id'] == program1.perma_id
+      end
+    end
+
+    let(:program2_response) do
+      budget_items.find do |item_response|
+        item_response['id'] == program2.perma_id
+      end
+    end
 
     before do
       FactoryGirl.create(:spending_agency)
@@ -127,8 +136,12 @@ RSpec.describe 'API' do
 
       program2_plans = program2_response['plannedFinances']
       expect(program2_plans.length).to eq(2)
-      expect(program2_plans[1]['amount']).to eq(program2_plan_2011.amount.to_s)
-      expect(program2_plans[0]['amount']).to eq(program2_plan_2013.amount.to_s)
+
+      program2_plan2011_response = program2_plans.find { |plan| plan['id'] === program2_plan_2011.id }
+      expect(program2_plan2011_response['amount']).to eq(program2_plan_2011.amount.to_s)
+
+      program2_plan2013_response = program2_plans.find { |plan| plan['id'] === program2_plan_2013.id }
+      expect(program2_plan2013_response['amount']).to eq(program2_plan_2013.amount.to_s)
     end
   end
 
