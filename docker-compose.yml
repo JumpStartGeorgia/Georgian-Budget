@@ -19,9 +19,15 @@ services:
       - /var/log/postgresql
       - /var/lib/postgresql
 
-  web:
-    build: .
-    image: georgianbudget_web
+  bundle:
+    image: georgianbudget_api
+    volumes:
+      - /bundle
+    command: echo "Loading up bundled gems!"
+
+  api:
+    build: ./
+    image: georgianbudget_api
     command: /bin/sh -c "rm -f tmp/pids/server.pid; bundle exec rails server --port 3000 --binding 0.0.0.0"
     ports:
       - "3000:3000"
@@ -31,12 +37,6 @@ services:
       - .:/myapp
     volumes_from:
       - bundle
-    # enables debugging with binding.pry
-    tty: true
+    # enables debugging with binding.pry - commented out because it causes DOCKER_COMPOSE_TIMEOUT issue
+    # tty: true
     stdin_open: true
-
-  bundle:
-    image: georgianbudget_web
-    volumes:
-      - /bundle
-    command: echo "Loading up bundled gems!"
