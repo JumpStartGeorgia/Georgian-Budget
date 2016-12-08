@@ -2,38 +2,33 @@ require 'rails_helper'
 
 RSpec.describe BudgetDataSaver do
   describe '#save_data' do
+    let!(:total_data_holder) do
+      data_holder = instance_double(MonthlyBudgetSheet::ItemSaver)
+      allow(data_holder).to receive(:code_number).and_return('00')
+      allow(data_holder).to receive(:spent_finance_data).and_return(      {
+        time_period_obj: Month.for_date(Date.new(2012, 1, 1)),
+        amount: 101
+      })
+
+      data_holder
+    end
+
     context 'when code is 00 and total does not yet exist' do
       it 'creates total with new spent finance' do
-        data_holder = instance_double(MonthlyBudgetSheet::ItemSaver)
-        allow(data_holder).to receive(:code_number).and_return('00')
-        allow(data_holder).to receive(:spent_finance_data).and_return(      {
-          time_period_obj: Month.for_date(Date.new(2012, 1, 1)),
-          amount: 101
-        })
-
-        BudgetDataSaver.new(data_holder).save_data
+        BudgetDataSaver.new(total_data_holder).save_data
 
         expect(Total.first).to_not eq(nil)
         expect(Total.first.spent_finances[0].amount).to eq(101)
       end
+    end
 
-      context 'and total already exists' do
-        let(:total) { FactoryGirl.create(:total) }
+    context 'when code is 00 and total already exists' do
+      let!(:total) { FactoryGirl.create(:total) }
 
-        it 'adds spent finance data to the total' do
-          total
+      it 'adds spent finance data to the total' do
+        BudgetDataSaver.new(total_data_holder).save_data
 
-          data_holder = instance_double(MonthlyBudgetSheet::ItemSaver)
-          allow(data_holder).to receive(:code_number).and_return('00')
-          allow(data_holder).to receive(:spent_finance_data).and_return(      {
-            time_period_obj: Month.for_date(Date.new(2012, 1, 1)),
-            amount: 101
-          })
-
-          BudgetDataSaver.new(data_holder).save_data
-
-          expect(Total.first.spent_finances[0].amount).to eq(101)
-        end
+        expect(total.spent_finances[0].amount).to eq(101)
       end
     end
 
@@ -58,6 +53,13 @@ RSpec.describe BudgetDataSaver do
         expect(program.perma_ids[0].text).to eq(
           Digest::SHA1.hexdigest '01_0555_my_name'
         )
+      end
+    end
+
+    context 'when item is not a total' do
+      it 'sets overall_budget to first total' do
+        data_holder = instance_double(MonthlyBudgetSheet::ItemSaver)
+
       end
     end
   end
