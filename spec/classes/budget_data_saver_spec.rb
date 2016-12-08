@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe BudgetDataSaver do
   describe '#save_data' do
-    let!(:total_data_holder) do
+    let(:total_data_holder) do
       data_holder = instance_double(MonthlyBudgetSheet::ItemSaver)
       allow(data_holder).to receive(:code_number).and_return('00')
       allow(data_holder).to receive(:spent_finance_data).and_return(      {
@@ -53,13 +53,6 @@ RSpec.describe BudgetDataSaver do
         expect(program.perma_ids[0].text).to eq(
           Digest::SHA1.hexdigest '01_0555_my_name'
         )
-      end
-    end
-
-    context 'when item is not a total' do
-      it 'sets overall_budget to first total' do
-        data_holder = instance_double(MonthlyBudgetSheet::ItemSaver)
-
       end
     end
   end
