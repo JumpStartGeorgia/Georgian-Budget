@@ -26,6 +26,7 @@ class API::V1::BudgetItemHash
 
       if fields.include? 'related_budget_items'
         set_overall_budget(hash)
+        set_child_programs(hash)
       end
     end
   end
@@ -41,6 +42,16 @@ class API::V1::BudgetItemHash
     hash['overall_budget'] = Hash.new.tap do |h|
       h['id'] = Total.first.perma_id
       h['name'] = Total.first.name
+    end
+  end
+
+  def set_child_programs(hash)
+    return unless budget_item.respond_to?(:child_programs)
+
+    hash['child_programs'] = budget_item.child_programs.pluck(:perma_id).map do |child_program_perma_id|
+      {
+        id: child_program_perma_id
+      }
     end
   end
 end

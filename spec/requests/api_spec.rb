@@ -154,7 +154,7 @@ RSpec.describe 'API' do
       q1_2015 = Quarter.for_date(Date.new(2015, 1, 1))
 
       FactoryGirl.create(:spending_agency)
-      .add_code(FactoryGirl.attributes_for(:code))
+      .add_code(FactoryGirl.attributes_for(:code, number: '043 00'))
       .add_name(FactoryGirl.attributes_for(:name))
       .save_perma_id
       .add_spent_finance(FactoryGirl.attributes_for(:spent_finance))
@@ -167,7 +167,23 @@ RSpec.describe 'API' do
         time_period_obj: q1_2015.next))
     end
 
+    let!(:child_program1) do
+      FactoryGirl.create(:program)
+      .add_code(FactoryGirl.attributes_for(:code, number: '043 01'))
+      .add_name(FactoryGirl.attributes_for(:name))
+      .save_perma_id
+    end
+
+    let!(:child_program2) do
+      FactoryGirl.create(:program)
+      .add_code(FactoryGirl.attributes_for(:code, number: '043 02'))
+      .add_name(FactoryGirl.attributes_for(:name))
+      .save_perma_id
+    end
+
     before do
+      FactoryGirl.create(:program)
+
       get '/en/v1',
           params: {
             budgetItemFields: 'id,code,name,type,spent_finances,planned_finances,related_budget_items',
@@ -262,6 +278,15 @@ RSpec.describe 'API' do
     it 'includes related overall budget' do
       overall_budget_response = agency1_response['overallBudget']
       expect(overall_budget_response['id']).to eq(overall_budget.perma_id)
+    end
+
+    it 'includes child programs' do
+      child_programs_response_ids = agency1_response['childPrograms'].map { |p| p['id'] }
+
+      expect(child_programs_response_ids.length).to eq(2)
+      expect(child_programs_response_ids).to contain_exactly(
+        child_program1.perma_id, child_program2.perma_id
+      )
     end
   end
 
