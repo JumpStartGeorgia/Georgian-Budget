@@ -252,11 +252,25 @@ RSpec.describe 'API' do
     end
   end
 
-  context 'when budget_type filter is not allowed value' do
-    it "don't allow it!"
-  end
+  context 'when requesting total budget' do
+    let!(:overall_budget) do
+      FactoryGirl.create(:total).save_perma_id
+    end
 
-  context 'when budget_item_fields includes not allowed fields' do
-    it "throw an error!"
+    before do
+      get '/en/v1',
+          params: {
+            budgetItemFields: 'id,related_budget_items',
+            budgetItemId: overall_budget.perma_id
+          },
+          headers: { 'X-Key-Inflection': 'camel' }
+    end
+
+    let(:json) { JSON.parse(response.body) }
+    let(:overall_budget_response) { json['budgetItem'] }
+
+    it 'returns related items' do
+      expect(overall_budget_response['overallBudget']).to eq(nil)
+    end
   end
 end

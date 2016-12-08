@@ -25,10 +25,7 @@ class API::V1::BudgetItemHash
       end
 
       if fields.include? 'related_budget_items'
-        hash['overall_budget'] = Hash.new.tap do |h|
-          h['id'] = Total.first.perma_id
-          h['name'] = Total.first.name
-        end
+        set_overall_budget(hash)
       end
     end
   end
@@ -36,4 +33,14 @@ class API::V1::BudgetItemHash
   attr_reader :budget_item,
               :fields,
               :time_period_type
+
+  private
+
+  def set_overall_budget(hash)
+    return if budget_item.perma_id == Total.first.perma_id
+    hash['overall_budget'] = Hash.new.tap do |h|
+      h['id'] = Total.first.perma_id
+      h['name'] = Total.first.name
+    end
+  end
 end
