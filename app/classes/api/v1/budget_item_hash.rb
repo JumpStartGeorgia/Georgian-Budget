@@ -23,6 +23,10 @@ class API::V1::BudgetItemHash
       if fields.include? 'planned_finances'
         hash['planned_finances'] = budget_item.planned_finances
       end
+
+      if fields.include? 'related_budget_items'
+        hash['overall_budget'] = Total.first
+      end
     end
   end
 

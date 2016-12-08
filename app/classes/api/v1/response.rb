@@ -137,7 +137,8 @@ class API::V1::Response
       'type',
       'name',
       'spent_finances',
-      'planned_finances'
+      'planned_finances',
+      'related_budget_items'
     ]
   end
 

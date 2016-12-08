@@ -133,6 +133,10 @@ RSpec.describe 'API' do
   end
 
   context 'when requesting details for an agency' do
+    let!(:overall_budget) do
+      FactoryGirl.create(:total).save_perma_id
+    end
+
     let!(:agency1) do
       q1_2015 = Quarter.for_date(Date.new(2015, 1, 1))
 
@@ -153,7 +157,7 @@ RSpec.describe 'API' do
     before do
       get '/en/v1',
           params: {
-            budgetItemFields: 'id,code,name,type,spent_finances,planned_finances',
+            budgetItemFields: 'id,code,name,type,spent_finances,planned_finances,related_budget_items',
             budgetItemId: agency1.perma_id
           },
           headers: { 'X-Key-Inflection': 'camel' }
@@ -240,6 +244,11 @@ RSpec.describe 'API' do
 
       expect(response_planned_finance2['amount']).to eq(
         saved_planned_finance2.amount.to_s)
+    end
+
+    it 'includes related overall budget' do
+      overall_budget_response = agency1_response['overallBudget']
+      expect(overall_budget_response['permaId']).to eq(overall_budget.perma_id)
     end
   end
 
