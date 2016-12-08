@@ -248,7 +248,7 @@ RSpec.describe 'API' do
 
     it 'includes related overall budget' do
       overall_budget_response = agency1_response['overallBudget']
-      expect(overall_budget_response['permaId']).to eq(overall_budget.perma_id)
+      expect(overall_budget_response['id']).to eq(overall_budget.perma_id)
     end
   end
 

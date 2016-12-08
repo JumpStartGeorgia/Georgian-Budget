@@ -25,7 +25,10 @@ class API::V1::BudgetItemHash
       end
 
       if fields.include? 'related_budget_items'
-        hash['overall_budget'] = Total.first
+        hash['overall_budget'] = Hash.new.tap do |h|
+          h['id'] = Total.first.perma_id
+          h['name'] = Total.first.name
+        end
       end
     end
   end
