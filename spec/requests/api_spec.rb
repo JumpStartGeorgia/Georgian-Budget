@@ -208,7 +208,7 @@ RSpec.describe 'API' do
         saved_spent_finance2.amount.to_s)
     end
 
-    it 'returns program planned finances' do
+    it 'returns planned finances' do
       expect(agency1_response['plannedFinances'].length).to eq(2)
 
       response_planned_finance1 = agency1_response['plannedFinances'][0]
