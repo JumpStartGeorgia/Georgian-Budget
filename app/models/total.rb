@@ -22,4 +22,8 @@ class Total < ApplicationRecord
   def name_en
     'Complete National Budget'
   end
+
+  def child_programs
+    Program.all.where.not(parent_type: 'Program')
+  end
 end
