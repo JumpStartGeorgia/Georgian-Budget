@@ -29,6 +29,9 @@ class API::V1::BudgetItemHash
         set_child_programs(hash)
         set_priorities(hash)
         hash['spendingAgencies'] = get_spending_agencies if budget_item.respond_to?(:spending_agencies)
+        hash['spendingAgency'] = get_spending_agency if budget_item.respond_to?(:spending_agency)
+        hash['parentProgram'] = get_parent_program if budget_item.respond_to?(:parent_program)
+        hash['priority'] = get_priority if budget_item.respond_to?(:priority)
       end
     end
   end
@@ -44,6 +47,30 @@ class API::V1::BudgetItemHash
     hash['overall_budget'] = Hash.new.tap do |h|
       h['id'] = Total.first.perma_id
       h['name'] = Total.first.name
+    end
+  end
+
+  def get_parent_program
+    return nil if budget_item.parent_program.blank?
+    Hash.new.tap do |h|
+      h['id'] = budget_item.parent_program.perma_id
+      h['name'] = budget_item.parent_program.name
+    end
+  end
+
+  def get_spending_agency
+    return nil if budget_item.spending_agency.blank?
+    Hash.new.tap do |h|
+      h['id'] = budget_item.spending_agency.perma_id
+      h['name'] = budget_item.spending_agency.name
+    end
+  end
+
+  def get_priority
+    return nil if budget_item.priority.blank?
+    Hash.new.tap do |h|
+      h['id'] = budget_item.priority.perma_id
+      h['name'] = budget_item.priority.name
     end
   end
 

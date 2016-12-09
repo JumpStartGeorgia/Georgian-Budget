@@ -275,12 +275,10 @@ RSpec.describe 'API' do
         saved_planned_finance2.amount.to_s)
     end
 
-    it 'includes related overall budget' do
+    it 'includes related budget items' do
       overall_budget_response = agency1_response['overallBudget']
       expect(overall_budget_response['id']).to eq(overall_budget.perma_id)
-    end
 
-    it 'includes child programs' do
       child_programs_response_ids = agency1_response['childPrograms'].map { |p| p['id'] }
 
       expect(child_programs_response_ids.length).to eq(2)
@@ -338,6 +336,94 @@ RSpec.describe 'API' do
 
       expect(agency_ids_response).to contain_exactly(
         *spending_agencies.map(&:perma_id))
+    end
+  end
+
+  context 'when requesting subprogram with child programs' do
+    let!(:overall_budget) do
+      FactoryGirl.create(:total).save_perma_id
+    end
+
+    let!(:other_agency) do
+      FactoryGirl.create(:spending_agency)
+      .add_code(FactoryGirl.attributes_for(:code, number: '02 00'))
+      .add_name(FactoryGirl.attributes_for(:name))
+      .save_perma_id
+    end
+
+    let!(:agency) do
+      FactoryGirl.create(:spending_agency)
+      .add_code(FactoryGirl.attributes_for(:code, number: '01 00'))
+      .add_name(FactoryGirl.attributes_for(:name))
+      .save_perma_id
+    end
+
+    let!(:priority) do
+      FactoryGirl.create(:priority)
+      .add_name(FactoryGirl.attributes_for(:name))
+      .save_perma_id
+    end
+
+    let!(:other_priority) do
+      FactoryGirl.create(:priority)
+      .add_name(FactoryGirl.attributes_for(:name))
+      .save_perma_id
+    end
+
+    let!(:parent_program) do
+      FactoryGirl.create(:program)
+      .add_code(FactoryGirl.attributes_for(:code, number: '01 01'))
+      .add_name(FactoryGirl.attributes_for(:name))
+      .save_perma_id
+    end
+
+    let!(:program) do
+      program = FactoryGirl.create(:program)
+      .add_code(FactoryGirl.attributes_for(:code, number: '01 01 02'))
+      .add_name(FactoryGirl.attributes_for(:name))
+      .save_perma_id
+    end
+
+    let!(:child_program1) do
+      FactoryGirl.create(:program)
+      .add_code(FactoryGirl.attributes_for(:code, number: '01 01 02 04'))
+      .add_name(FactoryGirl.attributes_for(:name))
+      .save_perma_id
+    end
+
+    let!(:child_program2) do
+      FactoryGirl.create(:program)
+      .add_code(FactoryGirl.attributes_for(:code, number: '01 01 02 05'))
+      .add_name(FactoryGirl.attributes_for(:name))
+      .save_perma_id
+    end
+
+    before do
+      program.update(priority: priority)
+
+      get '/en/v1',
+          params: {
+            budgetItemFields: 'id,relatedBudgetItems',
+            budgetItemId: program.perma_id
+          },
+          headers: { 'X-Key-Inflection': 'camel' }
+    end
+
+    let(:json) { JSON.parse(response.body) }
+    let(:program_response) { json['budgetItem'] }
+
+    it 'includes related items' do
+      expect(program_response['overallBudget']['id']).to eq(overall_budget.perma_id)
+
+      child_program_response_ids = program_response['childPrograms'].map { |p| p['id'] }
+      expect(child_program_response_ids).to contain_exactly(
+        child_program1.perma_id,
+        child_program2.perma_id
+      )
+
+      expect(program_response['parentProgram']['id']).to eq(parent_program.perma_id)
+      expect(program_response['priority']['id']).to eq(priority.perma_id)
+      expect(program_response['spendingAgency']['id']).to eq(agency.perma_id)
     end
   end
 end

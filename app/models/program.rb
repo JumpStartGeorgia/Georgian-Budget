@@ -11,7 +11,12 @@ class Program < ApplicationRecord
   belongs_to :parent, polymorphic: true
 
   def parent_program
-    
+    return parent if parent_type == 'Program'
+    nil
+  end
+
+  def spending_agency
+    SpendingAgency.first
   end
 
   def update_parent
