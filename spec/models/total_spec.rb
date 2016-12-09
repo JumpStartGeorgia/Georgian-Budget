@@ -76,4 +76,22 @@ RSpec.describe Total do
       )
     end
   end
+
+  describe '#priorities' do
+    it 'returns all priorities' do
+      overall_budget = FactoryGirl.create(:total)
+      FactoryGirl.create_list(:priority, 4)
+
+      expect(overall_budget.priorities.length).to eq(4)
+    end
+  end
+
+  describe '#spending_agencies' do
+    it 'returns all spending agencies' do
+      overall_budget = FactoryGirl.create(:total)
+      FactoryGirl.create_list(:spending_agency, 3)
+
+      expect(overall_budget.spending_agencies.length).to eq(3)
+    end
+  end
 end

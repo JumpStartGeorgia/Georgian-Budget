@@ -121,16 +121,22 @@ class API::V1::Response
 
   def validate_budget_item_fields(fields)
     return nil unless fields.present? && fields.is_a?(String)
-    fields.split(',').select do |field|
+    validated = fields.split(',').select do |field|
       valid = budget_item_permitted_fields.include? field
       unless valid
         raise API::V1::InvalidQueryError, "Budget item field \"#{field}\" not permitted. Allowed values: #{budget_item_permitted_fields.join(',')}"
       end
       valid
     end
+
+    validated.map(&:underscore)
   end
 
   def budget_item_permitted_fields
+    add_camel_case_fields(item_fields_snake_case)
+  end
+
+  def item_fields_snake_case
     [
       'id',
       'code',
@@ -138,8 +144,12 @@ class API::V1::Response
       'name',
       'spent_finances',
       'planned_finances',
-      'related_budget_items'
+      'related_budget_items',
     ]
+  end
+
+  def add_camel_case_fields(fields)
+    (fields + fields.map { |field| field.camelize(:lower) }).uniq
   end
 
   def budget_type_class

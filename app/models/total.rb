@@ -26,4 +26,12 @@ class Total < ApplicationRecord
   def child_programs
     Program.all.where.not(parent_type: 'Program')
   end
+
+  def priorities
+    Priority.all
+  end
+
+  def spending_agencies
+    SpendingAgency.all
+  end
 end

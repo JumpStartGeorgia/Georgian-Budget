@@ -27,6 +27,8 @@ class API::V1::BudgetItemHash
       if fields.include? 'related_budget_items'
         set_overall_budget(hash)
         set_child_programs(hash)
+        set_priorities(hash)
+        hash['spendingAgencies'] = get_spending_agencies if budget_item.respond_to?(:spending_agencies)
       end
     end
   end
@@ -51,6 +53,24 @@ class API::V1::BudgetItemHash
     hash['child_programs'] = budget_item.child_programs.pluck(:perma_id).map do |child_program_perma_id|
       {
         id: child_program_perma_id
+      }
+    end
+  end
+
+  def set_priorities(hash)
+    return unless budget_item.respond_to?(:priorities)
+
+    hash['priorities'] = budget_item.priorities.pluck(:perma_id).map do |perma_id|
+      {
+        id: perma_id
+      }
+    end
+  end
+
+  def get_spending_agencies
+    budget_item.spending_agencies.pluck(:perma_id).map do |perma_id|
+      {
+        id: perma_id
       }
     end
   end

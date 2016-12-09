@@ -87,7 +87,7 @@ RSpec.describe 'API' do
       # exercise
       get '/en/v1',
           params: {
-            budgetItemFields: 'id,name,code,type,spent_finances,planned_finances',
+            budgetItemFields: 'id,name,code,type,spentFinances,plannedFinances',
             filters: {
               budgetItemType: 'program',
               timePeriodType: 'year'
@@ -186,7 +186,7 @@ RSpec.describe 'API' do
 
       get '/en/v1',
           params: {
-            budgetItemFields: 'id,code,name,type,spent_finances,planned_finances,related_budget_items',
+            budgetItemFields: 'id,code,name,type,spentFinances,plannedFinances,relatedBudgetItems',
             budgetItemId: agency1.perma_id
           },
           headers: { 'X-Key-Inflection': 'camel' }
@@ -295,10 +295,27 @@ RSpec.describe 'API' do
       FactoryGirl.create(:total).save_perma_id
     end
 
+    let!(:priorities) do
+      FactoryGirl.create_list(:priority, 2).each do |priority|
+        priority
+        .add_name(FactoryGirl.attributes_for(:name))
+        .save_perma_id
+      end
+    end
+
+    let!(:spending_agencies) do
+      FactoryGirl.create_list(:spending_agency, 3).each do |spending_agency|
+        spending_agency
+        .add_name(FactoryGirl.attributes_for(:name))
+        .add_code(FactoryGirl.attributes_for(:code))
+        .save_perma_id
+      end
+    end
+
     before do
       get '/en/v1',
           params: {
-            budgetItemFields: 'id,related_budget_items',
+            budgetItemFields: 'id,relatedBudgetItems',
             budgetItemId: overall_budget.perma_id
           },
           headers: { 'X-Key-Inflection': 'camel' }
@@ -309,6 +326,18 @@ RSpec.describe 'API' do
 
     it 'returns related items' do
       expect(overall_budget_response['overallBudget']).to eq(nil)
+
+      priority_ids_response = overall_budget_response['priorities']
+        .map { |priority_response| priority_response['id'] }
+
+      expect(priority_ids_response).to contain_exactly(
+        *priorities.map(&:perma_id))
+
+      agency_ids_response = overall_budget_response['spendingAgencies']
+        .map { |agency_response| agency_response['id'] }
+
+      expect(agency_ids_response).to contain_exactly(
+        *spending_agencies.map(&:perma_id))
     end
   end
 end
