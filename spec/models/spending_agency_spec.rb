@@ -4,7 +4,6 @@ require Rails.root.join('spec', 'models', 'concerns', 'nameable_spec')
 require Rails.root.join('spec', 'models', 'concerns', 'finance_spendable_spec')
 require Rails.root.join('spec', 'models', 'concerns', 'finance_plannable_spec')
 require Rails.root.join('spec', 'models', 'concerns', 'budget_item_duplicatable_spec')
-require Rails.root.join('spec', 'models', 'concerns', 'child_programmable_spec')
 require Rails.root.join('spec', 'models', 'concerns', 'perma_idable_spec')
 
 RSpec.describe SpendingAgency, type: :model do
@@ -13,7 +12,6 @@ RSpec.describe SpendingAgency, type: :model do
   it_behaves_like 'FinanceSpendable'
   it_behaves_like 'FinancePlannable'
   it_behaves_like 'BudgetItemDuplicatable'
-  it_behaves_like 'ChildProgrammable'
   it_behaves_like 'PermaIdable'
 
   let(:spending_agency) { FactoryGirl.create(:spending_agency) }
@@ -28,6 +26,21 @@ RSpec.describe SpendingAgency, type: :model do
       expect(spending_agency.perma_id).to eq(
         Digest::SHA1.hexdigest "00_1_a_b"
       )
+    end
+  end
+
+  describe '#child_programs' do
+    it 'returns programs that point to the agency' do
+      spending_agency = FactoryGirl.create(:spending_agency)
+
+      child1 = FactoryGirl.create(:program)
+      child1.update_attribute(:parent, spending_agency)
+
+      child2 = FactoryGirl.create(:program)
+      child2.update_attribute(:parent, spending_agency)
+
+      spending_agency.reload
+      expect(spending_agency.child_programs).to include(child1, child2)
     end
   end
 end

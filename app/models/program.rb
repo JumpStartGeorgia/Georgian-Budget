@@ -4,11 +4,14 @@ class Program < ApplicationRecord
   include FinanceSpendable
   include FinancePlannable
   include BudgetItemDuplicatable
-  include ChildProgrammable
   include PermaIdable
 
   belongs_to :priority
   belongs_to :parent, polymorphic: true
+
+  has_many :child_programs,
+           class_name: 'Program',
+           as: :parent
 
   def parent_program
     return parent if parent_type == 'Program'

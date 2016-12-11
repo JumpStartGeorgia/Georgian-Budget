@@ -4,7 +4,6 @@ require Rails.root.join('spec', 'models', 'concerns', 'nameable_spec')
 require Rails.root.join('spec', 'models', 'concerns', 'finance_spendable_spec')
 require Rails.root.join('spec', 'models', 'concerns', 'finance_plannable_spec')
 require Rails.root.join('spec', 'models', 'concerns', 'budget_item_duplicatable_spec')
-require Rails.root.join('spec', 'models', 'concerns', 'child_programmable_spec')
 require Rails.root.join('spec', 'models', 'concerns', 'perma_idable_spec')
 
 RSpec.describe Program, type: :model do
@@ -13,7 +12,6 @@ RSpec.describe Program, type: :model do
   it_behaves_like 'FinanceSpendable'
   it_behaves_like 'FinancePlannable'
   it_behaves_like 'BudgetItemDuplicatable'
-  it_behaves_like 'ChildProgrammable'
   it_behaves_like 'PermaIdable'
 
   let(:new_program) { FactoryGirl.create(:program) }
@@ -105,6 +103,19 @@ RSpec.describe Program, type: :model do
       expect(new_program.perma_id).to eq(
         Digest::SHA1.hexdigest "00_1_a_b"
       )
+    end
+  end
+
+  describe '#child_programs' do
+    it 'returns programs that point to the new program' do
+      child1 = FactoryGirl.create(:program)
+      child1.update_attribute(:parent, new_program)
+
+      child2 = FactoryGirl.create(:program)
+      child2.update_attribute(:parent, new_program)
+
+      new_program.reload
+      expect(new_program.child_programs).to include(child1, child2)
     end
   end
 end
