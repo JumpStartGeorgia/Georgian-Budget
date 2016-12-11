@@ -24,7 +24,7 @@ RSpec.describe 'BudgetFiles' do
       end
 
       after :context do
-        [Program, SpendingAgency, Priority, Total].each(&:destroy_all)
+        Deleter.delete_all
       end
 
       context 'total:' do
@@ -136,6 +136,10 @@ RSpec.describe 'BudgetFiles' do
           expect(spending_agency1_array.length).to eq(1)
         end
 
+        it 'has three child programs' do
+          expect(spending_agency1.child_programs.length).to eq(3)
+        end
+
         it 'saves perma_id' do
           require 'digest/sha1'
           expect(spending_agency1.perma_ids[0].text).to eq(
@@ -229,6 +233,10 @@ RSpec.describe 'BudgetFiles' do
           expect(spending_agency2.code).to eq('04 00')
         end
 
+        it 'has no child programs' do
+          expect(spending_agency2.child_programs.length).to eq(0)
+        end
+
         it 'saves perma_id' do
           require 'digest/sha1'
           expect(spending_agency2.perma_ids[0].text).to eq(
@@ -261,6 +269,19 @@ RSpec.describe 'BudgetFiles' do
             expect(finance.most_recently_announced).to eq(true)
             expect(finance.official).to eq(true)
           end
+        end
+      end
+
+      context 'spending agency (georgian economic ministry):' do
+        let(:agency) do
+          BudgetItem.find(name: 'საქართველოს ეკონომიკისა და მდგრადი განვითარების სამინისტრო', code: '24 00')
+        end
+        it 'saves 13 programs' do
+          expect(agency.programs.length).to eq(13)
+        end
+
+        it 'saves 8 child programs' do
+          expect(agency.child_programs.length).to eq(8)
         end
       end
 
@@ -313,8 +334,12 @@ RSpec.describe 'BudgetFiles' do
           )
         end
 
-        it 'saves parent agency' do
-          expect(program1.parent).to eq(SpendingAgency.find_by_code('01 00'))
+        it 'saves agency' do
+          expect(program1.spending_agency).to eq(SpendingAgency.find_by_code('01 00'))
+        end
+
+        it 'has no parent program' do
+          expect(program1.parent_program).to eq(nil)
         end
 
         it 'saves correct start date of name' do
@@ -344,8 +369,8 @@ RSpec.describe 'BudgetFiles' do
           expect(program2.code).to eq('03 01')
         end
 
-        it 'saves parent' do
-          expect(program2.parent).to eq(SpendingAgency.find_by_code('03 00'))
+        it 'saves agency' do
+          expect(program2.spending_agency).to eq(SpendingAgency.find_by_code('03 00'))
         end
 
         it 'saves correct start date for name' do
@@ -358,8 +383,12 @@ RSpec.describe 'BudgetFiles' do
           Program.find_by_code('32 03 01')
         end
 
-        it 'saves parent' do
-          expect(program.parent).to eq(Program.find_by_code('32 03'))
+        it 'saves agency' do
+          expect(program.spending_agency).to eq(SpendingAgency.find_by_code('32 00'))
+        end
+
+        it 'saves parent program' do
+          expect(program.parent_program).to eq(Program.find_by_code('32 03'))
         end
 
         it 'saves perma_id' do

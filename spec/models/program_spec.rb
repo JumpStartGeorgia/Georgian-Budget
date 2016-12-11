@@ -18,77 +18,55 @@ RSpec.describe Program, type: :model do
   let(:new_code_attr) { FactoryGirl.attributes_for(:code) }
 
   describe '#add_code' do
-    context 'when code points to parent spending agency' do
-      let(:agency) do
-        FactoryGirl.create(:spending_agency)
-      end
+    let!(:agency0200) do
+      FactoryGirl.create(:spending_agency)
+      .add_code(FactoryGirl.attributes_for(:code,
+        number: '02 00',
+        start_date: Date.new(2012, 1, 1)))
+    end
 
-      before :each do
-        agency.add_code(FactoryGirl.attributes_for(:code,
-          number: '01 00',
+    let!(:agency0100) do
+      FactoryGirl.create(:spending_agency)
+      .add_code(FactoryGirl.attributes_for(:code,
+        number: '01 00',
+        start_date: Date.new(2012, 1, 1)))
+    end
+
+    let!(:program0101) do
+      FactoryGirl.create(:program)
+      .add_code(FactoryGirl.attributes_for(:code,
+        number: '01 01',
+        start_date: Date.new(2012, 1, 1)))
+    end
+
+    context 'when code is the most recent' do
+      it 'updates parent program and spending agency' do
+        new_program
+        .add_code(FactoryGirl.attributes_for(:code,
+          number: '01 01 01',
           start_date: Date.new(2012, 1, 1)))
 
-        new_code_attr[:number] = '01 01'
-        new_code_attr[:start_date] = Date.new(2012, 1, 1)
-      end
+        new_program.reload
 
-      context 'and it is the most recent code' do
-        it 'updates program.parent to that agency' do
-          new_program.add_code(new_code_attr)
-          new_program.reload
-
-          expect(new_program.parent).to eq(agency)
-        end
-      end
-
-      context 'but it is not the most recent code' do
-        it 'does not update program.parent attribute' do
-          new_program
-          .add_code(FactoryGirl.attributes_for(:code,
-            number: '02 05',
-            start_date: Date.new(2012, 1, 2)))
-          .add_code(new_code_attr)
-          new_program.reload
-
-          expect(new_program.parent).to eq(nil)
-        end
+        expect(new_program.spending_agency).to eq(agency0100)
+        expect(new_program.parent_program).to eq(program0101)
       end
     end
 
-    context 'when code points to parent program' do
-      let(:program) do
-        FactoryGirl.create(:program)
-      end
-
-      before :each do
-        program.add_code(FactoryGirl.attributes_for(:code,
-          number: '01 01',
+    context 'when code is not the most recent' do
+      it 'does not update parent program and spending agency' do
+        new_program
+        .add_code(FactoryGirl.attributes_for(:code,
+          number: '02 05',
+          start_date: Date.new(2012, 1, 2)))
+        .add_code(FactoryGirl.attributes_for(:code,
+          number: '01 01 01',
           start_date: Date.new(2012, 1, 1)))
 
-        new_code_attr[:number] = '01 01 01'
-        new_code_attr[:start_date] = Date.new(2012, 1, 1)
-      end
+        new_program.reload
 
-      context 'and it is the most recent code' do
-        it 'updates program.parent to that program' do
-          new_program.add_code(new_code_attr)
-          new_program.reload
-
-          expect(new_program.parent).to eq(program)
-        end
-      end
-
-      context 'and it is not the most recent code' do
-        it 'does not update program.parent attribute' do
-          new_program
-          .add_code(FactoryGirl.attributes_for(:code,
-            start_date: Date.new(2012, 1, 2)),
-            number: '01 05')
-          .add_code(new_code_attr)
-          new_program.reload
-
-          expect(new_program.parent).to eq(nil)
-        end
+        expect(new_program.spending_agency).to eq(agency0200)
+        expect(new_program.parent_program).to eq(nil)
       end
     end
   end
@@ -108,14 +86,12 @@ RSpec.describe Program, type: :model do
 
   describe '#child_programs' do
     it 'returns programs that point to the new program' do
-      child1 = FactoryGirl.create(:program)
-      child1.update_attribute(:parent, new_program)
+      children = FactoryGirl.create_list(:program, 2, parent_program: new_program)
 
-      child2 = FactoryGirl.create(:program)
-      child2.update_attribute(:parent, new_program)
+      FactoryGirl.create(:program)
 
       new_program.reload
-      expect(new_program.child_programs).to include(child1, child2)
+      expect(new_program.child_programs).to contain_exactly(children[0], children[1])
     end
   end
 end

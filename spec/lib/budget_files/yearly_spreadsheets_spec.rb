@@ -48,7 +48,7 @@ RSpec.describe 'BudgetFiles' do
       end
 
       after :context do
-        [Program, SpendingAgency, Priority, Total].each(&:destroy_all)
+        Deleter.delete_all
       end
 
       describe 'total:' do

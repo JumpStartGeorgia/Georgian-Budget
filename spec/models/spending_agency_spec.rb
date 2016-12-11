@@ -30,17 +30,47 @@ RSpec.describe SpendingAgency, type: :model do
   end
 
   describe '#child_programs' do
-    it 'returns programs that point to the agency' do
+    it 'returns top-level programs that point to the agency' do
       spending_agency = FactoryGirl.create(:spending_agency)
+      .add_code(FactoryGirl.attributes_for(:code, number: '01 00'))
 
       child1 = FactoryGirl.create(:program)
-      child1.update_attribute(:parent, spending_agency)
+      .add_code(FactoryGirl.attributes_for(:code, number: '01 02'))
 
       child2 = FactoryGirl.create(:program)
-      child2.update_attribute(:parent, spending_agency)
+      .add_code(FactoryGirl.attributes_for(:code, number: '01 045'))
+
+      FactoryGirl.create(:program)
+      .add_code(FactoryGirl.attributes_for(:code, number: '01 045 01'))
+
+      FactoryGirl.create(:program)
+      .add_code(FactoryGirl.attributes_for(:code, number: '02 01'))
 
       spending_agency.reload
-      expect(spending_agency.child_programs).to include(child1, child2)
+      expect(spending_agency.child_programs).to contain_exactly(child1, child2)
+    end
+  end
+
+  describe '#programs' do
+    it 'returns all programs that point to the agency' do
+      spending_agency = FactoryGirl.create(:spending_agency)
+      .add_code(FactoryGirl.attributes_for(:code, number: '01 00'))
+
+      child1 = FactoryGirl.create(:program)
+      .add_code(FactoryGirl.attributes_for(:code, number: '01 02'))
+
+      child2 = FactoryGirl.create(:program)
+      .add_code(FactoryGirl.attributes_for(:code, number: '01 045'))
+
+      grandchild = FactoryGirl.create(:program)
+      .add_code(FactoryGirl.attributes_for(:code, number: '01 045 01'))
+
+      FactoryGirl.create(:program)
+      .add_code(FactoryGirl.attributes_for(:code, number: '02 01'))
+
+      spending_agency.reload
+      expect(spending_agency.programs)
+      .to contain_exactly(child1, child2, grandchild)
     end
   end
 end

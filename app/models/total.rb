@@ -24,7 +24,7 @@ class Total < ApplicationRecord
   end
 
   def child_programs
-    Program.all.where.not(parent_type: 'Program')
+    Program.all.where(parent_program: nil)
   end
 
   def priorities

@@ -7,33 +7,18 @@ class Program < ApplicationRecord
   include PermaIdable
 
   belongs_to :priority
-  belongs_to :parent, polymorphic: true
+  belongs_to :spending_agency
+  belongs_to :parent_program, class_name: 'Program'
 
   has_many :child_programs,
            class_name: 'Program',
-           as: :parent
-
-  def parent_program
-    return parent if parent_type == 'Program'
-    nil
-  end
-
-  def spending_agency
-    SpendingAgency.first
-  end
-
-  def update_parent
-    update_attribute(:parent, find_parent_codeable)
-  end
+           foreign_key: :parent_program_id
 
   def type
     self.class.to_s.underscore
   end
 
-  private
-
-  def find_parent_codeable
-    return nil if codes.blank?
-    codes.last.parent_codeable
+  def take_programs_from(other_program)
+    other_program.child_programs.update(parent_program: self)
   end
 end

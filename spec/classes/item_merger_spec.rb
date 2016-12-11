@@ -427,20 +427,27 @@ RSpec.describe ItemMerger do
       end
     end
 
-    context 'when giver has child programs' do
+    context 'when giver is program with has child programs' do
       let(:receiver) { FactoryGirl.create(:program) }
       let(:giver) { FactoryGirl.create(:program) }
-      let(:child1) { FactoryGirl.create(:program) }
-      let(:child2) { FactoryGirl.create(:program) }
 
-      it 'changes parent of those programs to receiver' do
-        receiver
-        giver
-        child1.update_attribute(:parent, giver)
-        child2.update_attribute(:parent, giver)
+      it 'changes parent program of those programs to receiver' do
+        child_programs = FactoryGirl.create_list(:program, 2, parent_program: giver)
 
         ItemMerger.new(receiver).merge(giver)
-        expect(receiver.child_programs).to include(child1, child2)
+        expect(receiver.child_programs).to contain_exactly(*child_programs)
+      end
+    end
+
+    context 'when giver is spending agency with programs' do
+      let(:receiver) { FactoryGirl.create(:spending_agency) }
+      let(:giver) { FactoryGirl.create(:spending_agency) }
+
+      it 'changes spending agency of those programs to receiver' do
+        programs = FactoryGirl.create_list(:program, 2, spending_agency: giver)
+
+        ItemMerger.new(receiver).merge(giver)
+        expect(receiver.programs).to contain_exactly(*programs)
       end
     end
 

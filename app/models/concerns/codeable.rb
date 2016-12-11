@@ -44,7 +44,7 @@ module Codeable
 
     unless code == codes.last.number
       update_column(:code, codes.last.number)
-      update_parent if respond_to?(:update_parent)
+      ProgramAncestorsUpdater.new(self).update if self.is_a?(Program)
     end
   end
 

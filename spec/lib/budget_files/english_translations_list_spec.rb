@@ -6,7 +6,7 @@ RSpec.describe 'BudgetFiles' do
     before :example do
       I18n.locale = 'ka'
     end
-    
+
     context 'with english translations list' do
       before :context do
         start_date_2015_jan_1 = Date.new(2015, 1, 1)
@@ -51,7 +51,7 @@ RSpec.describe 'BudgetFiles' do
       end
 
       after :context do
-        [Program, SpendingAgency, Priority, Total].each(&:destroy_all)
+        Deleter.delete_all
       end
 
       it 'saves English translation of priority' do

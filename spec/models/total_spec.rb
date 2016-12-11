@@ -54,18 +54,12 @@ RSpec.describe Total do
   end
 
   describe '#child_programs' do
-    it 'returns all top-level programs (those without a parent program)' do
-      FactoryGirl.create(:spending_agency)
-      .add_code(FactoryGirl.attributes_for(:code, number: '01 00'))
-
+    it 'returns all top-level programs' do
       program1 = FactoryGirl.create(:program)
       .add_code(FactoryGirl.attributes_for(:code, number: '01 01'))
 
       FactoryGirl.create(:program)
       .add_code(FactoryGirl.attributes_for(:code, number: '01 01 01'))
-
-      FactoryGirl.create(:spending_agency)
-      .add_code(FactoryGirl.attributes_for(:code, number: '022 00'))
 
       program3 = FactoryGirl.create(:program)
       .add_code(FactoryGirl.attributes_for(:code, number: '022 05'))

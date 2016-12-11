@@ -24,12 +24,12 @@ class ItemMerger
       merge_planned_finances(giver.all_planned_finances)
     end
 
-    if receiver.respond_to?(:child_programs)
-      merge_child_programs(giver.child_programs)
-    end
-
     if receiver.respond_to?(:save_possible_duplicates)
       merge_possible_duplicates_from(giver)
+    end
+
+    if receiver.respond_to?(:take_programs_from)
+      receiver.take_programs_from(giver)
     end
 
     if receiver.respond_to?(:perma_ids)

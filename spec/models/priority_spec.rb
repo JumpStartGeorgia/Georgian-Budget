@@ -247,10 +247,10 @@ RSpec.describe Priority, type: :model do
       let!(:agency2) { FactoryGirl.create(:spending_agency) }
 
       before do
-        FactoryGirl.create(:program, parent: agency1, priority: priority)
-        FactoryGirl.create(:program, parent: agency1, priority: priority)
-        program = FactoryGirl.create(:program, parent: agency2, priority: priority)
-        FactoryGirl.create(:program, parent: program, priority: priority)
+        FactoryGirl.create(:program, spending_agency: agency1, priority: priority)
+        FactoryGirl.create(:program, spending_agency: agency1, priority: priority)
+        program = FactoryGirl.create(:program, spending_agency: agency2, priority: priority)
+        FactoryGirl.create(:program, parent_program: program, priority: priority)
       end
 
       it 'returns those two agencies' do

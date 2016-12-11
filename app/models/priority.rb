@@ -7,9 +7,7 @@ class Priority < ApplicationRecord
   has_many :programs
   has_many :spending_agencies,
            -> { distinct },
-           through: :programs,
-           source: :parent,
-           source_type: 'SpendingAgency'
+           through: :programs
 
   def type
     self.class.to_s.underscore
