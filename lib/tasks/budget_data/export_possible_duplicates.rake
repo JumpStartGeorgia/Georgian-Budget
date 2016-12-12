@@ -11,16 +11,15 @@ namespace :budget_data do
     require 'csv'
     CSV.open(csv_file_path, 'wb') do |csv|
       csv << [
+        'Merge? (yes / no)',
         'Budget Item Type',
         'Budget Item 1 Code',
         'Budget Item 2 Code',
         'Budget Item 1 Name',
-        'Budget Item 2 Name',
-        'Budget Item 1 Dates',
-        'Budget Item 2 Dates',
-        'Marked on Date',
-        'Priority Names (if different)',
-        'Merge? (yes / no)'
+        'Budget Item 2 Name'
+        # 'Budget Item 1 Dates',
+        # 'Budget Item 2 Dates',
+        # 'Marked on Date'
       ]
 
       pairs.each do |possible_duplicate_pair|
@@ -28,16 +27,15 @@ namespace :budget_data do
         item2 = possible_duplicate_pair.item2
 
         csv << [
+          '',
           possible_duplicate_pair.pair_type,
           possible_duplicate_pair.item1_code_when_found,
           possible_duplicate_pair.item2_code_when_found,
           possible_duplicate_pair.item1_name_when_found,
-          possible_duplicate_pair.item2_name_when_found,
-          "#{item1.start_date} - #{item1.end_date}",
-          "#{item2.start_date} - #{item2.end_date}",
-          possible_duplicate_pair.date_when_found,
-          possible_duplicate_pair.priorities_differ? ? "Item 1 priority: #{item1.priority.name} |||||| Item 2 priority: #{item2.priority.name}" : '',
-          ''
+          possible_duplicate_pair.item2_name_when_found
+          # "#{item1.start_date} - #{item1.end_date}",
+          # "#{item2.start_date} - #{item2.end_date}",
+          # possible_duplicate_pair.date_when_found
         ]
       end
     end
