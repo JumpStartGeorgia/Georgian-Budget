@@ -463,5 +463,18 @@ RSpec.describe ItemMerger do
         expect(receiver.perma_ids).to include(perma_id1, perma_id2)
       end
     end
+
+    context 'when giver has priority connections' do
+      let(:receiver) { FactoryGirl.create(:spending_agency) }
+      let(:giver) { FactoryGirl.create(:spending_agency) }
+
+      it 'changes priority_connectable on priority connections to receiver' do
+        create_list(:priority_connection, 3, priority_connectable: giver)
+        create(:priority_connection)
+
+        ItemMerger.new(receiver).merge(giver)
+        expect(receiver.priority_connections.length).to eq(3)
+      end
+    end
   end
 end

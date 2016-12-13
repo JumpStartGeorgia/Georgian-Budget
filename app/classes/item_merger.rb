@@ -36,6 +36,10 @@ class ItemMerger
       merge_perma_ids(giver.perma_ids)
     end
 
+    if receiver.respond_to?(:priority_connections)
+      merge_priority_connections(giver.priority_connections)
+    end
+
     giver.reload.destroy
   end
 
@@ -131,5 +135,11 @@ class ItemMerger
     new_perma_ids.each do |new_perma_id|
       receiver.take_perma_id(new_perma_id)
     end
+  end
+
+  def merge_priority_connections(priority_connections)
+    return if priority_connections.blank?
+
+    priority_connections.update(priority_connectable: receiver)
   end
 end
