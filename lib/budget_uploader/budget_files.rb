@@ -205,7 +205,9 @@ class BudgetFiles
   def save_priority_finances
     puts "\nSaving priority finances"
     time_prettifier.run do
-      Priority.all.each(&:update_finances)
+      Priority.all.each do |priority|
+        PriorityFinancer::Main.new(priority).update_finances
+      end
     end
     finished_message = "Finished saving priority finances in #{time_prettifier.elapsed_prettified}"
     puts finished_message
