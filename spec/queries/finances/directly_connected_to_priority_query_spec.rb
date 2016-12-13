@@ -42,6 +42,26 @@ RSpec.describe Finances::DirectlyConnectedToPriorityQuery do
       .to contain_exactly(finance1, finance2, finance3)
     end
 
+    it 'does not return same finance twice' do
+      year_2012 = Year.new(2012)
+      finance1 = create(:spent_finance, time_period_obj: year_2012)
+
+      create(:priority_connection,
+        time_period_obj: year_2012,
+        priority_connectable: finance1.finance_spendable,
+        priority: priority,
+        direct: true)
+
+      create(:priority_connection,
+        time_period_obj: year_2012,
+        priority_connectable: finance1.finance_spendable,
+        priority: priority,
+        direct: true)
+
+      expect(directly_connected_spent_finances!)
+      .to contain_exactly(finance1)
+    end
+
     it 'does not return finance belonging to directly connected item but in different period' do
       finance = create(:spent_finance, time_period_obj: Year.new(2014))
 
