@@ -13,6 +13,7 @@ RSpec.describe Program, type: :model do
   it_behaves_like 'FinancePlannable'
   it_behaves_like 'BudgetItemDuplicatable'
   it_behaves_like 'PermaIdable'
+  it_behaves_like 'PriorityConnectable'
 
   let(:new_program) { FactoryGirl.create(:program) }
   let(:new_code_attr) { FactoryGirl.attributes_for(:code) }

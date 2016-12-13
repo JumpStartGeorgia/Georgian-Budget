@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161211085012) do
+ActiveRecord::Schema.define(version: 20161213055549) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -111,6 +111,22 @@ ActiveRecord::Schema.define(version: 20161211085012) do
     t.string   "perma_id"
   end
 
+  create_table "priority_connections", force: :cascade do |t|
+    t.date     "start_date"
+    t.date     "end_date"
+    t.boolean  "direct"
+    t.integer  "priority_id"
+    t.string   "priority_connectable_type"
+    t.integer  "priority_connectable_id"
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+    t.index ["direct"], name: "index_priority_connections_on_direct", using: :btree
+    t.index ["end_date"], name: "index_priority_connections_on_end_date", using: :btree
+    t.index ["priority_connectable_type", "priority_connectable_id"], name: "index_priority_connection_on_priority_connectable", using: :btree
+    t.index ["priority_id"], name: "index_priority_connections_on_priority_id", using: :btree
+    t.index ["start_date"], name: "index_priority_connections_on_start_date", using: :btree
+  end
+
   create_table "programs", force: :cascade do |t|
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
@@ -188,6 +204,7 @@ ActiveRecord::Schema.define(version: 20161211085012) do
     t.index ["role_id"], name: "index_users_on_role_id", using: :btree
   end
 
+  add_foreign_key "priority_connections", "priorities"
   add_foreign_key "programs", "priorities"
   add_foreign_key "programs", "programs", column: "parent_program_id"
   add_foreign_key "programs", "spending_agencies"

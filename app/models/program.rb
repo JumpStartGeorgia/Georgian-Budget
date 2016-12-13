@@ -14,6 +14,12 @@ class Program < ApplicationRecord
            class_name: 'Program',
            foreign_key: :parent_program_id
 
+  has_many :priority_connections, as: :priority_connectable
+
+  def direct_priority_connections
+    priority_connections.direct
+  end
+
   def type
     self.class.to_s.underscore
   end

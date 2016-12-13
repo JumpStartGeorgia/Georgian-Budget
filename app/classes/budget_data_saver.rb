@@ -9,6 +9,8 @@ class BudgetDataSaver
     save_spent_finance
     save_planned_finances
     save_perma_id
+    save_dates
+    save_priority_connection
 
     duplicate_finder = DuplicateFinder.new(new_item)
     exact_match = duplicate_finder.find_exact_match
@@ -78,6 +80,18 @@ class BudgetDataSaver
     return unless new_item.respond_to?(:perma_ids)
 
     new_item.save_perma_id
+  end
+
+  def save_dates
+    return unless data_holder.respond_to?(:end_date) || data_holder.respond_to?(:start_date)
+
+    DatesUpdater.new(new_item, data_holder).update
+  end
+
+  def save_priority_connection
+    return unless data_holder.respond_to?(:priority_connection_data)
+
+    PriorityConnector.new(new_item).connect(data_holder.priority_connection_data)
   end
 
   def merge_items(other_item)

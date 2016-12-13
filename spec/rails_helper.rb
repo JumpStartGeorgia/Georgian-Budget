@@ -4,11 +4,14 @@ require 'spec_helper'
 require File.expand_path('../../config/environment', __FILE__)
 require 'rspec/rails'
 
+include FactoryGirl::Syntax::Methods
+
 # Extra config
 require 'helpers/authentication_helper'
 require 'helpers/capybara_helper'
 require 'helpers/database_cleaner_helper'
 require 'helpers/locale_helper'
+require 'helpers/factory_girl_helpers'
 
 # Shared contexts
 require 'shared_contexts/months'

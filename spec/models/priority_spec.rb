@@ -12,6 +12,16 @@ RSpec.describe Priority, type: :model do
 
   let(:priority) { FactoryGirl.create(:priority) }
 
+  describe '#connections' do
+    it 'returns all priority connections attached to this priority' do
+      connections = create_list(:priority_connection, 2, priority: priority)
+      create_list(:priority_connection, 3)
+
+      expect(priority.connections.map(&:id))
+      .to contain_exactly(*connections.map(&:id))
+    end
+  end
+
   describe '#update_finances' do
     context 'when priority has no programs' do
       it 'adds no spent finances to priority' do

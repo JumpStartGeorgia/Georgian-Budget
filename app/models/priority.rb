@@ -9,6 +9,9 @@ class Priority < ApplicationRecord
            -> { distinct },
            through: :programs
 
+  has_many :connections,
+           class_name: 'PriorityConnection'
+
   def type
     self.class.to_s.underscore
   end

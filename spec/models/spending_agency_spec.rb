@@ -13,6 +13,7 @@ RSpec.describe SpendingAgency, type: :model do
   it_behaves_like 'FinancePlannable'
   it_behaves_like 'BudgetItemDuplicatable'
   it_behaves_like 'PermaIdable'
+  it_behaves_like 'PriorityConnectable'
 
   let(:spending_agency) { FactoryGirl.create(:spending_agency) }
 

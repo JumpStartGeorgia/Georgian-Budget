@@ -1,5 +1,7 @@
 require 'rails_helper'
 
+require Rails.root.join('lib', 'budget_uploader', 'priority_associations', 'row')
+
 RSpec.describe BudgetDataSaver do
   describe '#save_data' do
     let(:total_data_holder) do
@@ -53,6 +55,36 @@ RSpec.describe BudgetDataSaver do
         expect(program.perma_ids[0].text).to eq(
           Digest::SHA1.hexdigest '01_0555_my_name'
         )
+      end
+    end
+
+    context 'when data holder has priority connection data' do
+      it 'saves priority connection data' do
+        data_holder = instance_double(PriorityAssociations::Row)
+
+        code_attr = FactoryGirl.attributes_for(:code)
+        expect(data_holder).to receive(:code_number).and_return(code_attr[:number])
+        expect(data_holder).to receive(:publish_date).and_return(code_attr[:start_date])
+        expect(data_holder).to receive(:code_data).and_return(code_attr)
+
+        name_attr = FactoryGirl.attributes_for(:name)
+        expect(data_holder).to receive(:name_data).and_return(name_attr)
+
+        priority_connection_attr =
+        attributes_with_foreign_keys(:priority_connection)
+
+        expect(data_holder).to receive(:priority_connection_data)
+        .and_return(priority_connection_attr)
+
+        BudgetDataSaver.new(data_holder).save_data
+
+        priority_connection = BudgetItem.find(code: code_attr[:number], name: name_attr[:text_ka])
+        .priority_connections[0]
+
+        expect(priority_connection.start_date).to eq(priority_connection_attr[:start_date])
+        expect(priority_connection.end_date).to eq(priority_connection_attr[:end_date])
+        expect(priority_connection.direct).to eq(priority_connection_attr[:direct])
+        expect(priority_connection.priority_id).to eq(priority_connection_attr[:priority_id])
       end
     end
   end

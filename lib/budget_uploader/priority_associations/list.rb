@@ -1,3 +1,5 @@
+require_relative 'row'
+
 module PriorityAssociations
   class List
     def self.new_from_file(file_path, args)
@@ -12,12 +14,19 @@ module PriorityAssociations
 
     def save
       rows.each_with_index do |row, index|
+        remaining_rows = rows.count - index
+        if remaining_rows % 100 == 0
+          puts "#{remaining_rows} remaining rows to process in priority associations spreadsheet"
+        end
+
         next if index == 0
-        Row.new(
+        row = Row.new(
           row,
           priorities_list: priorities_list,
           row_number: index
-        ).save
+        )
+        next if row.data_missing?
+        BudgetDataSaver.new(row).save_data
       end
     end
 

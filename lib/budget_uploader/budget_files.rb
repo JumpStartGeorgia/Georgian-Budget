@@ -3,7 +3,6 @@ require_relative 'budget_item_translations'
 
 require_relative 'priorities_list'
 require_relative 'priority_associations/list'
-require_relative 'priority_associations/row'
 
 class BudgetFiles
   def self.monthly_spreadsheet_dir

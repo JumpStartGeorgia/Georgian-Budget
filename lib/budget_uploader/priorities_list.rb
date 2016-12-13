@@ -22,7 +22,7 @@ class PrioritiesList
       raise "Priorities list has no priority with identifier #{identifier}"
     end
 
-    Priority.with_name_in_history(name)[0]
+    BudgetItem.find(name: name)
   end
 
   attr_reader :rows
