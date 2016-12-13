@@ -1,4 +1,4 @@
-class PriorityFinancer
+class PriorityFinancer::Main
   attr_reader :priority
 
   def initialize(priority)
@@ -6,29 +6,8 @@ class PriorityFinancer
   end
 
   def update_finances
-    update_spent_finances
+    PriorityFinancer::Spent.new(priority).update_spent_finances
     update_planned_finances
-  end
-
-  private
-
-  def update_spent_finances
-    program_spent_finances = SpentFinance.select(
-      'SUM(amount) AS amount, start_date, end_date, time_period_type'
-    ).where(
-      finance_spendable: priority.programs
-    ).group(
-      :start_date,
-      :end_date,
-      :time_period_type
-    )
-
-    program_spent_finances.each do |program_spent_finance|
-      priority.add_spent_finance(
-        time_period_obj: program_spent_finance.time_period_obj,
-        amount: program_spent_finance.amount,
-        official: false)
-    end
   end
 
   def update_planned_finances
@@ -43,6 +22,8 @@ class PriorityFinancer
       create_planned_finance_with_dates(new_planned_finance_dates)
     end
   end
+
+  private
 
   def create_planned_finance_with_dates(dates)
     priority.add_planned_finance(
