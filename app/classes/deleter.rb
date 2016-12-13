@@ -6,6 +6,7 @@ class Deleter
       SpentFinance,
       PlannedFinance,
       PossibleDuplicatePair,
+      PriorityConnection,
       PermaId,
       Code,
       Name,

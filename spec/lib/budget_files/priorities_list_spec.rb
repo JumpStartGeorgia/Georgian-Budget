@@ -15,6 +15,10 @@ RSpec.describe 'BudgetFiles' do
         ).upload
       end
 
+      after :context do
+        Deleter.delete_all
+      end
+
       let(:social_welfare_priority) do
         BudgetItem.find(name: 'ხელმისაწვდომი, ხარისხიანი ჯანმრთელობის დაცვა და სოციალური უზრუნველყოფა')
       end
