@@ -8,6 +8,33 @@ RSpec.describe 'BudgetFiles' do
     end
 
     context 'with priorities list and priority associations list' do
+      # add some finances to allow basic testing of functionality
+      # that saves priority finances from directly connected items
+
+      agency45_00 = create(:spending_agency)
+      .add_code(attributes_for(:code, number: '45 00'))
+      .add_name(attributes_for(:name, text_ka: 'საქართველოს საპატრიარქო'))
+      .add_spent_finance(attributes_for(:spent_finance,
+        time_period_obj: Year.new(2013)))
+      .add_planned_finance(attributes_for(:planned_finance,
+        time_period_obj: Year.new(2014)))
+
+      create(:program)
+      .add_code(attributes_for(:code, number: '45 01'))
+      .add_name(attributes_for(:name, text_ka: 'სასულიერო განათლების ხელშეწყობის გრანტი'))
+      .add_spent_finance(attributes_for(:spent_finance,
+        time_period_obj: Year.new(2013)))
+      .add_planned_finance(attributes_for(:planned_finance,
+        time_period_obj: Year.new(2014)))
+
+      create(:program)
+      .add_code(attributes_for(:code, number: '45 02'))
+      .add_name(attributes_for(:name, text_ka: 'საქართველოს საპატრიარქოს წმინდა სიმონ კანანელის სახელობის სასულიერო სწავლების ცენტრისათვის გადასაცემი გრანტი'))
+      .add_spent_finance(attributes_for(:spent_finance,
+        time_period_obj: Year.new(2013)))
+      .add_planned_finance(attributes_for(:planned_finance,
+        time_period_obj: Year.new(2014)))
+
       before :context do
         BudgetFiles.new(
           priorities_list: BudgetFiles.priorities_list,
@@ -86,6 +113,22 @@ RSpec.describe 'BudgetFiles' do
 
       it 'makes correct number of connections to defense priority' do
         expect(defense_priority.connections.length).to eq(79)
+      end
+
+      it 'saves spent amount for culture priority in 2013 from 45 00 agency' do
+        expect(culture_priority.spent_finances
+          .with_time_period(Year.new(2013).first.amount))
+        .to eq(agency45_00.spent_finances
+          .with_time_period(Year.new(2013).first.amount))
+      end
+
+      it 'saves plan amount for culture priority in 2014 from 45 00 child programs' do
+        child_programs = Program.where(code: ['45 01', '45 02'])
+
+        expect(culture_priority.planned_finances
+          .with_time_period(Year.new(2014).first.amount))
+        .to eq(child_programs.planned_finances
+          .with_time_period(Year.new(2014).pluck(:amount).sum))
       end
 
       # it 'assigns parliament no direct priority connections' do
