@@ -9,7 +9,7 @@ class PriorityFinancer::Main
     PriorityFinancer::Spent.new(priority).update_from(
       directly_connected_spent_finances)
 
-    PriorityFinancer::Planned.new(priority).update_planned_finances
+    # PriorityFinancer::Planned.new(priority).update_planned_finances
   end
 
   def directly_connected_spent_finances
