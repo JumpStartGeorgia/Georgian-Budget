@@ -10,8 +10,10 @@ class PrioritiesList
   end
 
   def save
-    rows.each do |row|
-      create_priority_from_row(row)
+    I18n.with_locale('ka') do
+      rows.each do |row|
+        create_priority_from_row(row)
+      end
     end
   end
 

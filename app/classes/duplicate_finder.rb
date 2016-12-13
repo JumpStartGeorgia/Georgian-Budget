@@ -21,11 +21,11 @@ class DuplicateFinder
     end
 
     items_with_same_name.each do |possible_item|
-      return possible_item if is_duplicate?(possible_item)
+      return possible_item if is_exact_match?(possible_item)
     end
 
     items_with_same_code.each do |possible_item|
-      return possible_item if is_duplicate?(possible_item)
+      return possible_item if is_exact_match?(possible_item)
     end
 
     nil
@@ -82,7 +82,7 @@ class DuplicateFinder
     .where.not(id: source_item)
   end
 
-  def is_duplicate?(other_item)
+  def is_exact_match?(other_item)
     return false unless code_generation_matches?(other_item)
     return false unless name_matches?(other_item)
     return false if items_overlap?(other_item)

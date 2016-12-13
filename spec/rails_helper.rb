@@ -4,8 +4,6 @@ require 'spec_helper'
 require File.expand_path('../../config/environment', __FILE__)
 require 'rspec/rails'
 
-include FactoryGirl::Syntax::Methods
-
 # Extra config
 require 'helpers/authentication_helper'
 require 'helpers/capybara_helper'
@@ -38,6 +36,8 @@ require 'shared_contexts/months'
 ActiveRecord::Migration.maintain_test_schema!
 
 RSpec.configure do |config|
+  include FactoryGirl::Syntax::Methods
+  
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
