@@ -1,84 +1,66 @@
 require 'rails_helper'
 
-RSpec.describe PriorityFinancer::Main do
+RSpec.describe PriorityFinancer::Spent do
   let(:priority) { FactoryGirl.create(:priority) }
-  
-  describe '#update_spent_finances' do
-    context 'when priority has two programs with spent finances' do
-      let(:program1) do
-        FactoryGirl.create(
-          :program,
-          code: '01 01',
-          priority: priority)
+  let(:spent_finances) { SpentFinance.all }
+
+  let(:do_update_spent_finances!) do
+    PriorityFinancer::Spent.new(priority)
+    .update_from(spent_finances)
+  end
+
+  describe '#update_from' do
+    context 'when spent finances fall belong to three time periods' do
+      before do
+        create_list(:spent_finance, 3, time_period_obj: Year.new(2012))
+        create_list(:spent_finance, 2,
+          time_period_obj: Quarter.for_date(Date.new(2012, 1, 1)))
+        create(:spent_finance, time_period_obj:
+          Month.for_date(Date.new(2015, 1, 1)))
       end
 
-      let(:program2) do
-        FactoryGirl.create(
-          :program,
-          code: '01 02',
-          priority: priority)
+      it 'saves three spent finances to priority' do
+        do_update_spent_finances!
+        expect(priority.all_spent_finances.length).to eq(3)
+      end
+    end
+
+    context 'when time period has one nil and two non-nil amount finances' do
+      before do
+        spent = create_list(:spent_finance, 3, time_period_obj: Year.new(2013))
+
+        spent[2].update_attributes(amount: nil)
       end
 
-      let(:program1_spent_finance1_amount) { 241 }
-      let(:program2_spent_finance1_amount) { 2414 }
+      it 'saves spent finance to priority with the sum of the non-nil amounts' do
+        do_update_spent_finances!
 
-      let(:program1_spent_finance2_amount) { 343 }
-      let(:program2_spent_finance2_amount) { nil }
+        expect(priority.all_spent_finances.length).to eq(1)
+        expect(priority.all_spent_finances[0].amount)
+        .to eq(spent_finances[0].amount + spent_finances[1].amount)
 
-      let(:program1_spent_finance3_amount) { nil }
+        expect(priority.all_spent_finances[0].time_period_obj)
+        .to eq(spent_finances[0].time_period_obj)
 
-      let(:spent_finance_time_period1) { Month.for_date(Date.new(2012, 1, 1)) }
-      let(:spent_finance_time_period2) { Month.for_date(Date.new(2012, 7, 1)) }
-      let(:spent_finance_time_period3) { Month.for_date(Date.new(2013, 1, 1)) }
+        expect(priority.all_spent_finances[0].official)
+        .to eq(false)
+      end
+    end
 
-      before :example do
-        program1.add_spent_finance(FactoryGirl.attributes_for(:spent_finance,
-          amount: program1_spent_finance1_amount,
-          time_period_obj: spent_finance_time_period1))
-
-        program2.add_spent_finance(FactoryGirl.attributes_for(:spent_finance,
-          amount: program2_spent_finance1_amount,
-          time_period_obj: spent_finance_time_period1))
-
-        program1.add_spent_finance(FactoryGirl.attributes_for(:spent_finance,
-          amount: program1_spent_finance2_amount,
-          time_period_obj: spent_finance_time_period2))
-
-        program2.add_spent_finance(FactoryGirl.attributes_for(:spent_finance,
-          amount: program2_spent_finance2_amount,
-          time_period_obj: spent_finance_time_period2))
-
-        program1.add_spent_finance(FactoryGirl.attributes_for(:spent_finance,
-          amount: program1_spent_finance3_amount,
-          time_period_obj: spent_finance_time_period3))
+    context 'when time period has two nil amount finances' do
+      before do
+        create_list(:spent_finance,
+          2,
+          amount: nil,
+          time_period_obj: Year.new(2013))
       end
 
-      it "sets priority's spent finances to program spent finance sums" do
-        PriorityFinancer::Spent.new(priority).update_spent_finances
+      it 'saves spent finance with nil amount' do
+        do_update_spent_finances!
 
-        expect(priority.spent_finances[0].time_period_obj).to eq(
-          spent_finance_time_period1)
-
-        expect(priority.spent_finances[0].amount).to eq(
-          program1_spent_finance1_amount + program2_spent_finance1_amount)
-
-        expect(priority.spent_finances[0].official).to eq(false)
-
-        expect(priority.spent_finances[1].time_period_obj).to eq(
-          spent_finance_time_period2)
-
-        expect(priority.spent_finances[1].amount).to eq(
-          program1_spent_finance2_amount)
-
-        expect(priority.spent_finances[1].official).to eq(false)
-
-        expect(priority.spent_finances[2].time_period_obj).to eq(
-          spent_finance_time_period3)
-
-        expect(priority.spent_finances[2].amount).to eq(
-          program1_spent_finance3_amount)
-
-        expect(priority.spent_finances[2].official).to eq(false)
+        expect(priority.all_spent_finances.length).to eq(1)
+        expect(priority.all_spent_finances[0].amount).to eq(nil)
+        expect(priority.all_spent_finances[0].official).to eq(false)
       end
     end
   end

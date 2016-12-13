@@ -20,6 +20,14 @@ class PlannedFinance < ApplicationRecord
 
   before_validation :set_primary_default
 
+  def self.budget_item_id_field
+    :finance_plannable_id
+  end
+
+  def self.budget_item_type_field
+    :finance_plannable_type
+  end
+
   def budget_item
     finance_plannable
   end

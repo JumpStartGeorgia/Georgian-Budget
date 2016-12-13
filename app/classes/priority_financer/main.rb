@@ -6,7 +6,13 @@ class PriorityFinancer::Main
   end
 
   def update_finances
-    PriorityFinancer::Spent.new(priority).update_spent_finances
+    PriorityFinancer::Spent.new(priority).update_from(
+      directly_connected_spent_finances)
+
     PriorityFinancer::Planned.new(priority).update_planned_finances
+  end
+
+  def directly_connected_spent_finances
+    Finances::DirectlyConnectedToPriorityQuery.new(priority, SpentFinance).call
   end
 end
