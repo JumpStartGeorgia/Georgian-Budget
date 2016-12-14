@@ -16,10 +16,10 @@ namespace :budget_data do
         'Budget Item 1 Code',
         'Budget Item 2 Code',
         'Budget Item 1 Name',
-        'Budget Item 2 Name'
+        'Budget Item 2 Name',
+        'Marked on Date'
         # 'Budget Item 1 Dates',
         # 'Budget Item 2 Dates',
-        # 'Marked on Date'
       ]
 
       pairs.each do |possible_duplicate_pair|
@@ -32,10 +32,10 @@ namespace :budget_data do
           possible_duplicate_pair.item1_code_when_found,
           possible_duplicate_pair.item2_code_when_found,
           possible_duplicate_pair.item1_name_when_found,
-          possible_duplicate_pair.item2_name_when_found
+          possible_duplicate_pair.item2_name_when_found,
+          possible_duplicate_pair.date_when_found
           # "#{item1.start_date} - #{item1.end_date}",
           # "#{item2.start_date} - #{item2.end_date}",
-          # possible_duplicate_pair.date_when_found
         ]
       end
     end
