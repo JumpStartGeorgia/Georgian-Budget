@@ -81,5 +81,117 @@ RSpec.describe PriorityFinancer::Main do
         )
       end
     end
+
+    context 'when priority has items with planned finances' do
+      let(:jan_2012) { Month.for_date(Date.new(2012, 1, 1)) }
+      let(:year_2012) { Year.new(2012) }
+
+      let(:program) { create(:program) }
+      let(:agency) { create(:spending_agency) }
+
+      before do
+        create(:planned_finance,
+          time_period_obj: Year.new(2011),
+          finance_plannable: program)
+
+        create(:planned_finance,
+          time_period_obj: jan_2012,
+          finance_plannable: program,
+          announce_date: Date.new(2011, 1, 1))
+
+        create(:planned_finance,
+          time_period_obj: jan_2012,
+          finance_plannable: program,
+          announce_date: Date.new(2012, 1, 1))
+
+        create(:planned_finance,
+          time_period_obj: year_2012,
+          finance_plannable: program,
+          announce_date: Date.new(2011, 1, 1))
+
+        create(:planned_finance,
+          time_period_obj: Year.new(2013),
+          finance_plannable: program)
+
+        # agency spent
+        create(:planned_finance,
+          time_period_obj: jan_2012,
+          finance_plannable: agency,
+          announce_date: Date.new(2011, 1, 1))
+
+        # connect them to priority
+        create(:priority_connection,
+          priority: priority,
+          priority_connectable: program,
+          time_period_obj: year_2012,
+          direct: true)
+
+        create(:priority_connection,
+          priority: priority,
+          priority_connectable: program,
+          time_period_obj: Year.new(2013),
+          direct: false)
+
+        create(:priority_connection,
+          priority: priority,
+          priority_connectable: agency,
+          time_period_obj: year_2012,
+          direct: true)
+      end
+
+      it 'saves sums of directly connected planned finances' do
+        do_update_finances!
+
+        expect(priority.all_planned_finances.length).to eq(3)
+
+        expect(priority.all_planned_finances.map(&:time_period_obj))
+        .to contain_exactly(jan_2012, jan_2012, year_2012)
+
+        expect(priority.all_planned_finances.map(&:announce_date))
+        .to contain_exactly(Date.new(2011, 1, 1), Date.new(2011, 1, 1), Date.new(2012, 1, 1))
+
+        jan_2012_announced_2011 = priority
+        .all_planned_finances
+        .with_time_period(jan_2012)
+        .where(announce_date: Date.new(2011, 1, 1))
+        .first
+
+        expect(jan_2012_announced_2011.amount).to eq(
+          program
+          .planned_finances
+          .with_time_period(jan_2012)
+          .where(announce_date: Date.new(2011, 1, 1))
+          .first
+          .amount +
+          agency
+          .planned_finances
+          .with_time_period(jan_2012)
+          .where(announce_date: Date.new(2011, 1, 1))
+          .first
+          .amount
+        )
+
+        jan_2012_announced_2012 = priority
+        .all_planned_finances
+        .with_time_period(jan_2012)
+        .where(announce_date: Date.new(2012, 1, 1))
+        .first
+
+        expect(jan_2012_announced_2012.amount).to eq(
+          program
+          .planned_finances
+          .with_time_period(jan_2012)
+          .where(announce_date: Date.new(2012, 1, 1))
+          .first
+          .amount +
+          agency
+          .planned_finances
+          .with_time_period(jan_2012)
+          .where(announce_date: Date.new(2011, 1, 1))
+          .first
+          .amount
+        )
+      end
+    end
   end
 end

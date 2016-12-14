@@ -72,6 +72,10 @@ class PlannedFinance < ApplicationRecord
     where(primary: true)
   end
 
+  def self.announced(date)
+    where(announce_date: date)
+  end
+
   def self.prefer_official
     ids = self.find_by_sql(
       <<-STRING

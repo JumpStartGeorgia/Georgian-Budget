@@ -17,24 +17,42 @@ RSpec.describe 'BudgetFiles' do
         .add_name(attributes_for(:name, text_ka: 'საქართველოს საპატრიარქო'))
         .add_spent_finance(attributes_for(:spent_finance,
           time_period_obj: Year.new(2013)))
-        .add_planned_finance(attributes_for(:planned_finance,
+        .add_spent_finance(attributes_for(:spent_finance,
           time_period_obj: Year.new(2014)))
+        .add_planned_finance(attributes_for(:planned_finance,
+          time_period_obj: Year.new(2013),
+          announce_date: Date.new(2013, 1, 1)))
+        .add_planned_finance(attributes_for(:planned_finance,
+          time_period_obj: Year.new(2014),
+          announce_date: Date.new(2014, 1, 1)))
 
         create(:program)
         .add_code(attributes_for(:code, number: '45 01'))
         .add_name(attributes_for(:name, text_ka: 'სასულიერო განათლების ხელშეწყობის გრანტი'))
         .add_spent_finance(attributes_for(:spent_finance,
           time_period_obj: Year.new(2013)))
-        .add_planned_finance(attributes_for(:planned_finance,
+        .add_spent_finance(attributes_for(:spent_finance,
           time_period_obj: Year.new(2014)))
+        .add_planned_finance(attributes_for(:planned_finance,
+          time_period_obj: Year.new(2013),
+          announce_date: Date.new(2013, 1, 1)))
+        .add_planned_finance(attributes_for(:planned_finance,
+          time_period_obj: Year.new(2014),
+          announce_date: Date.new(2014, 1, 1)))
 
         create(:program)
-        .add_code(attributes_for(:code, number: '45 02'))
-        .add_name(attributes_for(:name, text_ka: 'საქართველოს საპატრიარქოს წმინდა სიმონ კანანელის სახელობის სასულიერო სწავლების ცენტრისათვის გადასაცემი გრანტი'))
+        .add_code(attributes_for(:code, number: '45 05'))
+        .add_name(attributes_for(:name, text_ka: 'საქართველოს საპატრიარქოს ბათუმის წმინდა მოწამე ეკატერინეს სახელობის სათნოების სავანისათვის გადასაცემი გრანტი'))
         .add_spent_finance(attributes_for(:spent_finance,
           time_period_obj: Year.new(2013)))
-        .add_planned_finance(attributes_for(:planned_finance,
+        .add_spent_finance(attributes_for(:spent_finance,
           time_period_obj: Year.new(2014)))
+        .add_planned_finance(attributes_for(:planned_finance,
+          time_period_obj: Year.new(2013),
+          announce_date: Date.new(2013, 1, 1)))
+        .add_planned_finance(attributes_for(:planned_finance,
+          time_period_obj: Year.new(2014),
+          announce_date: Date.new(2014, 1, 1)))
 
         BudgetFiles.new(
           priorities_list: BudgetFiles.priorities_list,
@@ -126,12 +144,32 @@ RSpec.describe 'BudgetFiles' do
           .with_time_period(Year.new(2013)).first.amount)
       end
 
+      it 'saves spent amount for culture priority in 2014 from 45 00 child programs' do
+        child_programs = Program.where(code: ['45 01', '45 05'])
+
+        expect(culture_priority.spent_finances
+          .with_time_period(Year.new(2014)).first.amount)
+        .to eq(SpentFinance.where(finance_spendable: child_programs)
+          .with_time_period(Year.new(2014)).pluck(:amount).sum)
+      end
+
+      it 'saves plan amount for culture priority in 2013 from 45 00 agency' do
+        agency45_00 = BudgetItem.find(
+          code: '45 00',
+          name: 'საქართველოს საპატრიარქო')
+
+        expect(culture_priority.planned_finances
+          .with_time_period(Year.new(2013)).first.amount)
+        .to eq(agency45_00.planned_finances
+          .with_time_period(Year.new(2013)).first.amount)
+      end
+
       it 'saves plan amount for culture priority in 2014 from 45 00 child programs' do
-        child_programs = Program.where(code: ['45 01', '45 02'])
+        child_programs = Program.where(code: ['45 01', '45 05'])
 
         expect(culture_priority.planned_finances
           .with_time_period(Year.new(2014)).first.amount)
-        .to eq(child_programs.planned_finances
+        .to eq(PlannedFinance.where(finance_plannable: child_programs)
           .with_time_period(Year.new(2014)).pluck(:amount).sum)
       end
 
