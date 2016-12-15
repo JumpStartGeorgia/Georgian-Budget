@@ -56,7 +56,7 @@ RSpec.describe Finances::DirectlyConnectedToPriorityQuery do
         time_period_obj: year_2012,
         priority_connectable: finance1.finance_spendable,
         priority: priority,
-        direct: true)
+        direct: false)
 
       expect(directly_connected_spent_finances!)
       .to contain_exactly(finance1)

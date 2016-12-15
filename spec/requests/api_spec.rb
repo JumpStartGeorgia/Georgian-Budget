@@ -358,18 +358,6 @@ RSpec.describe 'API' do
       .save_perma_id
     end
 
-    let!(:priority) do
-      FactoryGirl.create(:priority)
-      .add_name(FactoryGirl.attributes_for(:name))
-      .save_perma_id
-    end
-
-    let!(:other_priority) do
-      FactoryGirl.create(:priority)
-      .add_name(FactoryGirl.attributes_for(:name))
-      .save_perma_id
-    end
-
     let!(:parent_program) do
       FactoryGirl.create(:program)
       .add_code(FactoryGirl.attributes_for(:code, number: '01 01'))
@@ -399,8 +387,6 @@ RSpec.describe 'API' do
     end
 
     before do
-      program.update(priority: priority)
-
       get '/en/v1',
           params: {
             budgetItemFields: 'id,relatedBudgetItems',
@@ -422,7 +408,6 @@ RSpec.describe 'API' do
       )
 
       expect(program_response['parentProgram']['id']).to eq(parent_program.perma_id)
-      expect(program_response['priority']['id']).to eq(priority.perma_id)
       expect(program_response['spendingAgency']['id']).to eq(agency.perma_id)
     end
   end
