@@ -2,46 +2,50 @@ require 'rails_helper'
 
 RSpec.describe PriorityConnector do
   let!(:priority) { create(:priority) }
-  let!(:agency) { create(:spending_agency) }
-  let!(:programA) do
-    create(:program,
-      spending_agency: agency)
-  end
 
-  let!(:programAA) do
-    create(:program,
-      parent_program: programA,
-      spending_agency: agency)
-  end
+  RSpec.shared_context 'agency_program_family' do
+    let!(:agency) { create(:spending_agency) }
 
-  let!(:programAAA) do
-    create(:program,
-      parent_program: programAA,
-      spending_agency: agency)
-  end
+    let!(:programA) do
+      create(:program,
+        spending_agency: agency)
+    end
 
-  let!(:programAAAA) do
-    create(:program,
-      parent_program: programAAA,
-      spending_agency: agency)
-  end
+    let!(:programAA) do
+      create(:program,
+        parent_program: programA,
+        spending_agency: agency)
+    end
 
-  let!(:programAAAAA) do
-    create(:program,
-      parent_program: programAAAA,
-      spending_agency: agency)
-  end
+    let!(:programAAA) do
+      create(:program,
+        parent_program: programAA,
+        spending_agency: agency)
+    end
 
-  let!(:programAAAB) do
-    create(:program,
-      parent_program: programAAA,
-      spending_agency: agency)
-  end
+    let!(:programAAAA) do
+      create(:program,
+        parent_program: programAAA,
+        spending_agency: agency)
+    end
 
-  let!(:programAAB) do
-    create(:program,
-      parent_program: programAA,
-      spending_agency: agency)
+    let!(:programAAAAA) do
+      create(:program,
+        parent_program: programAAAA,
+        spending_agency: agency)
+    end
+
+    let!(:programAAAB) do
+      create(:program,
+        parent_program: programAAA,
+        spending_agency: agency)
+    end
+
+    let!(:programAAB) do
+      create(:program,
+        parent_program: programAA,
+        spending_agency: agency)
+    end
   end
 
   let(:connected_items) do
@@ -58,6 +62,8 @@ RSpec.describe PriorityConnector do
 
   describe '#connect' do
     context 'when connection is direct' do
+      include_context 'agency_program_family'
+
       it 'only directly connects the item' do
         PriorityConnector.new(
           programAAA,
@@ -123,6 +129,8 @@ RSpec.describe PriorityConnector do
     end
 
     context 'when connection is indirect' do
+      include_context 'agency_program_family'
+
       it 'only connects the item' do
         PriorityConnector.new(
           programAAA,
