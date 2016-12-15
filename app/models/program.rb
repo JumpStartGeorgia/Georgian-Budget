@@ -6,7 +6,6 @@ class Program < ApplicationRecord
   include BudgetItemDuplicatable
   include PermaIdable
 
-  belongs_to :priority
   belongs_to :spending_agency
   belongs_to :parent_program, class_name: 'Program'
 

@@ -6,8 +6,6 @@ class SpendingAgency < ApplicationRecord
   include BudgetItemDuplicatable
   include PermaIdable
 
-  belongs_to :priority
-
   has_many :child_programs,
            -> { where(parent_program: nil) },
            class_name: 'Program'

@@ -32,22 +32,4 @@ RSpec.describe Priority, type: :model do
       )
     end
   end
-
-  describe '#spending_agencies' do
-    context "when priority's programs belong to two agencies" do
-      let!(:agency1) { FactoryGirl.create(:spending_agency) }
-      let!(:agency2) { FactoryGirl.create(:spending_agency) }
-
-      before do
-        FactoryGirl.create(:program, spending_agency: agency1, priority: priority)
-        FactoryGirl.create(:program, spending_agency: agency1, priority: priority)
-        program = FactoryGirl.create(:program, spending_agency: agency2, priority: priority)
-        FactoryGirl.create(:program, parent_program: program, priority: priority)
-      end
-
-      it 'returns those two agencies' do
-        expect(priority.spending_agencies).to contain_exactly(agency1, agency2)
-      end
-    end
-  end
 end

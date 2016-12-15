@@ -12,7 +12,6 @@ class ItemMerger
       raise "Cannot merge earlier item into later item; receiver must start before giver"
     end
 
-    merge_priority(giver.priority) if receiver.respond_to?(:priority)
     merge_codes(giver.codes) if receiver.respond_to?(:take_code)
     merge_names(giver.names) if receiver.respond_to?(:take_name)
 
@@ -53,17 +52,6 @@ class ItemMerger
     receiver.start_date.present? &&
     giver.start_date.present? &&
     receiver.start_date > giver.start_date
-  end
-
-  def merge_priority(new_priority)
-    return if new_priority.nil?
-
-    if receiver.priority == nil
-      receiver.priority = new_priority
-      receiver.save!
-    else
-      raise 'Cannot merge object with different priority' if receiver.priority != new_priority
-    end
   end
 
   def merge_codes(new_codes)

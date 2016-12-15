@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161213055549) do
+ActiveRecord::Schema.define(version: 20161215134516) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -131,14 +131,12 @@ ActiveRecord::Schema.define(version: 20161213055549) do
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
     t.string   "code"
-    t.integer  "priority_id"
     t.date     "start_date"
     t.date     "end_date"
     t.string   "perma_id"
     t.integer  "spending_agency_id"
     t.integer  "parent_program_id"
     t.index ["parent_program_id"], name: "index_programs_on_parent_program_id", using: :btree
-    t.index ["priority_id"], name: "index_programs_on_priority_id", using: :btree
     t.index ["spending_agency_id"], name: "index_programs_on_spending_agency_id", using: :btree
   end
 
@@ -149,14 +147,12 @@ ActiveRecord::Schema.define(version: 20161213055549) do
   end
 
   create_table "spending_agencies", force: :cascade do |t|
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string   "code"
-    t.integer  "priority_id"
     t.date     "start_date"
     t.date     "end_date"
     t.string   "perma_id"
-    t.index ["priority_id"], name: "index_spending_agencies_on_priority_id", using: :btree
   end
 
   create_table "spent_finances", force: :cascade do |t|
@@ -205,8 +201,6 @@ ActiveRecord::Schema.define(version: 20161213055549) do
   end
 
   add_foreign_key "priority_connections", "priorities"
-  add_foreign_key "programs", "priorities"
   add_foreign_key "programs", "programs", column: "parent_program_id"
   add_foreign_key "programs", "spending_agencies"
-  add_foreign_key "spending_agencies", "priorities"
 end

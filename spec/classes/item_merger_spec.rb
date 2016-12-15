@@ -40,34 +40,6 @@ RSpec.describe ItemMerger do
       end
     end
 
-    context 'when receiver and giver have different priorities' do
-      it 'throws error' do
-        receiver = FactoryGirl.create(:program)
-        receiver.update_attributes(priority: FactoryGirl.create(:priority))
-
-        giver = FactoryGirl.create(:program)
-        giver.update_attributes(priority: FactoryGirl.create(:priority))
-
-        expect do
-          ItemMerger.new(receiver).merge(giver)
-        end.to raise_error(RuntimeError)
-      end
-    end
-
-    context 'when receiver priority is nil and giver has priority' do
-      it "updates receiver priority to giver's priority" do
-        receiver = FactoryGirl.create(:program)
-
-        giver = FactoryGirl.create(:program)
-        priority = FactoryGirl.create(:priority)
-        giver.update_attributes(priority: priority)
-
-        ItemMerger.new(receiver).merge(giver)
-
-        expect(receiver.priority).to eq(priority)
-      end
-    end
-
     context 'when receiver object has two codes' do
       context 'and giver object has two codes, one of which can be merged' do
         it 'merges giver codes into receiver' do

@@ -4,11 +4,6 @@ class Priority < ApplicationRecord
   include FinancePlannable
   include PermaIdable
 
-  has_many :programs
-  has_many :spending_agencies,
-           -> { distinct },
-           through: :programs
-
   has_many :connections,
            class_name: 'PriorityConnection'
 
