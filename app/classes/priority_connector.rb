@@ -8,10 +8,12 @@ class PriorityConnector
   end
 
   def connect
-    connection = PriorityConnection.create!(
+    connection = PriorityConnection.create(
       priority_connection_data(priority_connection_attrs))
 
-    make_indirect_connections if connection.persisted? && connection.direct
+    return unless connection.persisted?
+
+    make_indirect_connections if connection.direct
   end
 
   private

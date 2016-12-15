@@ -99,6 +99,27 @@ RSpec.describe PriorityConnector do
           programAAAB
         )
       end
+
+      it 'only creates one indirect connection even when multiple related items are directly connected' do
+        PriorityConnector.new(
+          programAAA,
+          attributes_for(:priority_connection,
+            time_period_obj: Year.new(2012),
+            direct: true,
+            priority_id: priority.id)
+        ).connect
+
+        PriorityConnector.new(
+          programAAB,
+          attributes_for(:priority_connection,
+            time_period_obj: Year.new(2012),
+            direct: true,
+            priority_id: priority.id)
+        ).connect
+
+        expect(PriorityConnection.where(priority_connectable: programAA).count).to eq(1)
+        expect(PriorityConnection.where(priority_connectable: agency).count).to eq(1)
+      end
     end
 
     context 'when connection is indirect' do
