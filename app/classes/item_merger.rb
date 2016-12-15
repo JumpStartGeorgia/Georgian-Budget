@@ -121,14 +121,6 @@ class ItemMerger
     receiver.take_possible_duplicates_from(giver)
   end
 
-  def merge_child_programs(new_child_programs)
-    return if new_child_programs.blank?
-
-    new_child_programs.each do |new_child_program|
-      new_child_program.update_attribute(:parent, receiver)
-    end
-  end
-
   def merge_perma_ids(new_perma_ids)
     return if new_perma_ids.blank?
 

@@ -12,7 +12,9 @@ class SpendingAgency < ApplicationRecord
            -> { where(parent_program: nil) },
            class_name: 'Program'
 
-  has_many :programs
+  has_many :all_programs,
+           class_name: 'Program'
+
   has_many :priority_connections, as: :priority_connectable
 
   def direct_priority_connections
@@ -24,6 +26,10 @@ class SpendingAgency < ApplicationRecord
   end
 
   def take_programs_from(other_agency)
-    other_agency.programs.update(spending_agency: self)
+    other_agency.all_programs.update(spending_agency: self)
+  end
+
+  def ancestors
+    []
   end
 end

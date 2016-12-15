@@ -5,6 +5,7 @@ require Rails.root.join('spec', 'models', 'concerns', 'finance_spendable_spec')
 require Rails.root.join('spec', 'models', 'concerns', 'finance_plannable_spec')
 require Rails.root.join('spec', 'models', 'concerns', 'budget_item_duplicatable_spec')
 require Rails.root.join('spec', 'models', 'concerns', 'perma_idable_spec')
+require Rails.root.join('spec', 'models', 'concerns', 'priority_connectable_spec')
 
 RSpec.describe SpendingAgency, type: :model do
   it_behaves_like 'Codeable'
@@ -52,7 +53,7 @@ RSpec.describe SpendingAgency, type: :model do
     end
   end
 
-  describe '#programs' do
+  describe '#all_programs' do
     it 'returns all programs that point to the agency' do
       spending_agency = FactoryGirl.create(:spending_agency)
       .add_code(FactoryGirl.attributes_for(:code, number: '01 00'))
@@ -70,8 +71,14 @@ RSpec.describe SpendingAgency, type: :model do
       .add_code(FactoryGirl.attributes_for(:code, number: '02 01'))
 
       spending_agency.reload
-      expect(spending_agency.programs)
+      expect(spending_agency.all_programs)
       .to contain_exactly(child1, child2, grandchild)
+    end
+  end
+
+  describe '#ancestors' do
+    it 'returns empty array' do
+      expect(spending_agency.ancestors).to eq([])
     end
   end
 end

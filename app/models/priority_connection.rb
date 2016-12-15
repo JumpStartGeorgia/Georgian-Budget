@@ -11,6 +11,10 @@ class PriorityConnection < ApplicationRecord
     where(direct: true)
   end
 
+  def self.indirect
+    where(direct: false)
+  end
+
   def time_period_obj=(time_period_obj)
     return if time_period_obj.blank?
 

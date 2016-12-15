@@ -277,7 +277,7 @@ RSpec.describe 'BudgetFiles' do
           BudgetItem.find(name: 'საქართველოს ეკონომიკისა და მდგრადი განვითარების სამინისტრო', code: '24 00')
         end
         it 'saves 13 programs' do
-          expect(agency.programs.length).to eq(13)
+          expect(agency.all_programs.length).to eq(13)
         end
 
         it 'saves 8 child programs' do

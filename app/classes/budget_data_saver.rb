@@ -91,7 +91,10 @@ class BudgetDataSaver
   def save_priority_connection
     return unless data_holder.respond_to?(:priority_connection_data)
 
-    PriorityConnector.new(new_item).connect(data_holder.priority_connection_data)
+    PriorityConnector.new(
+      new_item,
+      data_holder.priority_connection_data
+    ).connect
   end
 
   def merge_items(other_item)

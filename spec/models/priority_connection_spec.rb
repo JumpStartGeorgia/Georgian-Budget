@@ -4,7 +4,25 @@ require Rails.root.join('spec', 'validators', 'start_end_date_validator_spec')
 RSpec.describe PriorityConnection, type: :model do
   include_examples 'StartEndDateValidator'
 
-  let(:new_priority_connection) { FactoryGirl.create(:priority_connection) }
+  let(:new_priority_connection) { create(:priority_connection) }
+
+  describe '.direct' do
+    it 'returns only priority connections marked direct' do
+      create_list(:priority_connection, 2, direct: true)
+      create(:priority_connection, direct: false)
+
+      expect(PriorityConnection.direct.length).to eq(2)
+    end
+  end
+
+  describe '.indirect' do
+    it 'returns only priority connections marked indirect' do
+      create_list(:priority_connection, 2, direct: true)
+      create(:priority_connection, direct: false)
+
+      expect(PriorityConnection.indirect.length).to eq(1)
+    end
+  end
 
   describe '#priority_connectable' do
     it 'is required' do
@@ -31,15 +49,6 @@ RSpec.describe PriorityConnection, type: :model do
       new_priority_connection.time_period_obj = Quarter.for_date(Date.new(2011, 2, 2))
 
       expect(new_priority_connection.end_date).to eq(Date.new(2011, 3, 31))
-    end
-  end
-
-  describe '.direct' do
-    it 'returns only priority connections marked direct' do
-      FactoryGirl.create_list(:priority_connection, 2, direct: true)
-      FactoryGirl.create(:priority_connection, direct: false)
-
-      expect(PriorityConnection.direct.length).to eq(2)
     end
   end
 end

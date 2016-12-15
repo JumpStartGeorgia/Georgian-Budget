@@ -16,6 +16,26 @@ class Program < ApplicationRecord
 
   has_many :priority_connections, as: :priority_connectable
 
+  def all_programs
+    return [] if child_programs.empty?
+
+    descendants_of_children = child_programs.map do |child_program|
+      child_program.all_programs
+    end.flatten
+
+    child_programs + (descendants_of_children)
+  end
+
+  def parent
+    return parent_program if parent_program.present?
+    spending_agency
+  end
+
+  def ancestors
+    return [] if parent.nil?
+    [parent] + parent.ancestors
+  end
+
   def direct_priority_connections
     priority_connections.direct
   end
