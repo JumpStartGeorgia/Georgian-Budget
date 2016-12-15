@@ -91,6 +91,10 @@ class PossibleDuplicatePair < ApplicationRecord
     includes(:item1).includes(:item2)
   end
 
+  def found_on_first_day_of_year
+    date_when_found == date_when_found.beginning_of_year
+  end
+
   private
 
   def validate_item2_is_not_item1

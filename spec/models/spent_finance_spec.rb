@@ -1,9 +1,11 @@
 require 'rails_helper'
 require Rails.root.join('spec', 'validators', 'start_end_date_validator_spec')
 require Rails.root.join('spec', 'models', 'concerns', 'time_periodable_spec')
+require Rails.root.join('spec', 'models', 'concerns', 'amountable_spec')
 
 RSpec.describe SpentFinance do
   it_behaves_like 'TimePeriodable'
+  it_behaves_like 'Amountable'
   include_examples 'StartEndDateValidator'
 
   let(:new_spent_finance) do

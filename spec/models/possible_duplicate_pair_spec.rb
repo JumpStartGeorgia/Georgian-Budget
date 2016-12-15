@@ -74,6 +74,26 @@ Rspec.describe PossibleDuplicatePair, type: :model do
     end
   end
 
+  describe '#found_on_first_day_of_year' do
+    context 'when day is Jan 1 2015' do
+      it 'returns true' do
+        pair = create(:possible_duplicate_pair,
+          date_when_found: Date.new(2015, 1, 1))
+
+        expect(pair.found_on_first_day_of_year).to eq(true)
+      end
+    end
+
+    context 'when day is Feb 1 2015' do
+      it 'returns false' do
+        pair = create(:possible_duplicate_pair,
+          date_when_found: Date.new(2015, 2, 1))
+
+        expect(pair.found_on_first_day_of_year).to eq(false)
+      end
+    end
+  end
+
   context '#create' do
     context 'with items array' do
       let(:earlier_item) do

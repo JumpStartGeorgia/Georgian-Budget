@@ -17,9 +17,10 @@ namespace :budget_data do
         'Budget Item 2 Code',
         'Budget Item 1 Name',
         'Budget Item 2 Name',
-        'Marked on Date'
-        # 'Budget Item 1 Dates',
-        # 'Budget Item 2 Dates',
+        'Marked on Date',
+        'Budget Item 1 Average Monthly Spent',
+        'Budget Item 2 Average Monthly Spent',
+        'Budget Item 2 First Month Average Amount'
       ]
 
       pairs.each do |possible_duplicate_pair|
@@ -33,9 +34,10 @@ namespace :budget_data do
           possible_duplicate_pair.item2_code_when_found,
           possible_duplicate_pair.item1_name_when_found,
           possible_duplicate_pair.item2_name_when_found,
-          possible_duplicate_pair.date_when_found
-          # "#{item1.start_date} - #{item1.end_date}",
-          # "#{item2.start_date} - #{item2.end_date}",
+          possible_duplicate_pair.date_when_found,
+          possible_duplicate_pair.item1.spent_finances.monthly.average_amount,
+          possible_duplicate_pair.item2.spent_finances.monthly.average_amount,
+          possible_duplicate_pair.found_on_first_day_of_year ? nil : possible_duplicate_pair.item2.spent_finances.monthly.first.amount
         ]
       end
     end
