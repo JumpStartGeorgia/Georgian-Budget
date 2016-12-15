@@ -13,6 +13,8 @@ namespace :budget_data do
       csv << [
         'Merge? (yes / no)',
         'Budget Item Type',
+        'Budget Item 1 perma id',
+        'Budget Item 2 perma id',
         'Budget Item 1 Code',
         'Budget Item 2 Code',
         'Budget Item 1 Name',
@@ -30,14 +32,16 @@ namespace :budget_data do
         csv << [
           '',
           possible_duplicate_pair.pair_type,
+          possible_duplicate_pair.item1.perma_id,
+          possible_duplicate_pair.item2.perma_id,
           possible_duplicate_pair.item1_code_when_found,
           possible_duplicate_pair.item2_code_when_found,
           possible_duplicate_pair.item1_name_when_found,
           possible_duplicate_pair.item2_name_when_found,
           possible_duplicate_pair.date_when_found,
-          possible_duplicate_pair.item1.spent_finances.monthly.average_amount,
-          possible_duplicate_pair.item2.spent_finances.monthly.average_amount,
-          possible_duplicate_pair.found_on_first_day_of_year ? nil : possible_duplicate_pair.item2.spent_finances.monthly.first.amount
+          format_amount(possible_duplicate_pair.item1.spent_finances.monthly.average_amount),
+          format_amount(possible_duplicate_pair.item2.spent_finances.monthly.average_amount),
+          possible_duplicate_pair.found_on_first_day_of_year ? nil : format_amount(possible_duplicate_pair.item2.spent_finances.monthly.first.amount)
         ]
       end
     end
@@ -45,5 +49,9 @@ namespace :budget_data do
     puts "Finished exporting CSV of possible duplicate pairs"
     puts "File path: #{csv_file_path}"
     puts "Number of Possible Duplicate Pairs: #{pairs.count}"
+  end
+
+  def format_amount(amount)
+    AmountFormatter.new(amount).remove_decimals.to_s_with_commas
   end
 end
