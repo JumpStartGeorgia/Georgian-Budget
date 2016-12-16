@@ -32,4 +32,73 @@ RSpec.describe Priority, type: :model do
       )
     end
   end
+
+  describe '#all_programs' do
+    it 'gets all programs connected to priority' do
+      programA = create(:program)
+      programAA = create(:program)
+      create(:program)
+
+      create(:priority_connection,
+        priority: priority,
+        priority_connectable: programA,
+        direct: true)
+
+      create(:priority_connection,
+        priority: priority,
+        priority_connectable: programA,
+        direct: false)
+
+      create(:priority_connection,
+        priority: priority,
+        priority_connectable: programAA,
+        direct: true)
+
+      expect(priority.all_programs).to contain_exactly(programA, programAA)
+    end
+  end
+
+  describe '#child_programs' do
+    it 'gets all programs connected to priority without a parent program' do
+      programA = create(:program)
+      programAA = create(:program, parent_program: programA)
+      create(:program)
+
+      create(:priority_connection,
+      priority: priority,
+      priority_connectable: programA,
+      direct: true)
+
+      create(:priority_connection,
+      priority: priority,
+      priority_connectable: programA,
+      direct: false)
+
+      create(:priority_connection,
+      priority: priority,
+      priority_connectable: programAA,
+      direct: true)
+
+      expect(priority.child_programs).to contain_exactly(programA)
+    end
+  end
+
+  describe '#spending_agencies' do
+    it 'gets all agencies connected to priority' do
+      agency = create(:spending_agency)
+      create(:spending_agency)
+
+      create(:priority_connection,
+      priority: priority,
+      priority_connectable: agency,
+      direct: true)
+
+      create(:priority_connection,
+      priority: priority,
+      priority_connectable: agency,
+      direct: false)
+
+      expect(priority.spending_agencies).to contain_exactly(agency)
+    end
+  end
 end
