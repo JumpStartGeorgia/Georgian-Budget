@@ -7,12 +7,14 @@ This web application visualizes the national budget of the Republic of Georgia.
   1. `cp .env.example .env`
   2. Add Secrets (use `rake secret` to generate values)
   3. Use `postgres` as the value for `DB_USER` and `TEST_DB_USER`
-  4. Set database names for `DB_NAME` and `TEST_DB_NAME`, such as starter_template_dev and starter_template_test
-2. Install [docker](https://www.docker.com/products/overview)
-3. `docker-compose build`
-4. `docker-compose up`
-5. `docker-compose run web rake db:create db:migrate`
-6. `docker-compose run web rake db:seed` (See db/seeds.rb for more seeding options)
+  4. Set database names for `DB_NAME` and `TEST_DB_NAME`, such as 'budget_dev' and 'budget_test'
+1. Install [docker](https://www.docker.com/products/overview)
+1. `docker-compose up` (takes a while)
+1. `docker-compose run api rake db:create db:migrate db:seed`
+1. Add budget data to database. Two options:
+  1. Restore the dev database from a db dump: `docker-compose run db pg_restore --clean --no-owner -d "dev_db_name" -U "postgres" /path/to/dump/file`
+  1. If you don't have a dump file to restore from, you can run the budget uploader (takes a long time, probably a couple hours): `docker-compose run api rake budget_data:sync_with_repo budget_data:upload`
+1. Go to localhost:3000 or start using the API :)
 
 ## Deploy (or run any mina command) from within `web` container
 
