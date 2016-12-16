@@ -2,7 +2,7 @@
 
 This web application visualizes the national budget of the Republic of Georgia.
 
-## Get Started with Docker
+## Get Started
 1. Setup .env file
   1. `cp .env.example .env`
   2. Add Secrets (use `rake secret` to generate values)
