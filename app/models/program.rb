@@ -15,6 +15,10 @@ class Program < ApplicationRecord
 
   has_many :priority_connections, as: :priority_connectable
 
+  has_many :priorities,
+           -> { distinct },
+           through: :priority_connections
+
   def all_programs
     return [] if child_programs.empty?
 

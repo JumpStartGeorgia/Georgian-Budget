@@ -156,4 +156,27 @@ RSpec.describe Program, type: :model do
       end
     end
   end
+
+  describe '#priorities' do
+    it 'returns all connected priorities' do
+      program = create(:program)
+      priority1 = create(:priority)
+      priority2 = create(:priority)
+      create(:priority)
+
+      create(:priority_connection,
+        priority_connectable: program,
+        priority: priority1)
+
+      create(:priority_connection,
+        priority_connectable: program,
+        priority: priority1)
+
+      create(:priority_connection,
+        priority_connectable: program,
+        priority: priority2)
+
+      expect(program.priorities).to contain_exactly(priority1, priority2)
+    end
+  end
 end
