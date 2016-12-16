@@ -12,8 +12,14 @@ This web application visualizes the national budget of the Republic of Georgia.
 1. `docker-compose up` (takes a while)
 1. `docker-compose run api rake db:create db:migrate db:seed`
 1. Add budget data to database. Two options:
-  1. Restore the dev database from a db dump: `docker-compose run db pg_restore --clean --no-owner -d "insert_dev_db_name_here" -U "postgres" /path/to/dump/file`
-  1. If you don't have a dump file to restore from, you can run the budget uploader (takes a long time, probably a couple hours): `docker-compose run api rake budget_data:sync_with_repo budget_data:upload`
+  1. Restore the dev database from a db dump:
+
+    `docker-compose run db pg_restore --clean --no-owner -d "insert_dev_db_name_here" -U "postgres" /path/to/dump/file`
+
+  1. If you don't have a dump file to restore from, you can run the uploader on the budget files (takes a long time, probably an hour or more):
+
+    `docker-compose run api rake budget_data:sync_with_repo budget_data:upload`
+
 1. Go to localhost:3000 or start using the API :)
 
 ## Deploy (or run any mina command) from within `web` container
