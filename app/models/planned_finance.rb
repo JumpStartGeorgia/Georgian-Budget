@@ -4,6 +4,7 @@ class PlannedFinance < ApplicationRecord
 
   belongs_to :finance_plannable, polymorphic: true
 
+  validates_with StartEndDateValidator
   validates :finance_plannable, presence: true
   validates :announce_date,
             presence: true,

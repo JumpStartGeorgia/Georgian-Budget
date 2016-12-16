@@ -1,10 +1,6 @@
 module StartEndDateable
   extend ActiveSupport::Concern
 
-  included do
-    validates_with StartEndDateValidator
-  end
-
   module ClassMethods
     def with_time_period(time_period)
       where(start_date: time_period.start_date, end_date: time_period.end_date)
