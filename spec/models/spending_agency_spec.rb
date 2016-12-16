@@ -81,4 +81,27 @@ RSpec.describe SpendingAgency, type: :model do
       expect(spending_agency.ancestors).to eq([])
     end
   end
+
+  describe '#priorities' do
+    it 'returns all connected priorities' do
+      agency = create(:spending_agency)
+      priority1 = create(:priority)
+      priority2 = create(:priority)
+      create(:priority)
+
+      create(:priority_connection,
+        priority_connectable: agency,
+        priority: priority1)
+
+      create(:priority_connection,
+        priority_connectable: agency,
+        priority: priority1)
+
+      create(:priority_connection,
+        priority_connectable: agency,
+        priority: priority2)
+
+      expect(agency.priorities).to contain_exactly(priority1, priority2)
+    end
+  end
 end

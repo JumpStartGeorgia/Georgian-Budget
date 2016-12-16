@@ -15,6 +15,10 @@ class SpendingAgency < ApplicationRecord
 
   has_many :priority_connections, as: :priority_connectable
 
+  has_many :priorities,
+           -> { distinct },
+           through: :priority_connections
+
   def direct_priority_connections
     priority_connections.direct
   end
