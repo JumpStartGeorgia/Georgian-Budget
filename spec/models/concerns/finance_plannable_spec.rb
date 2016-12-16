@@ -120,36 +120,58 @@ RSpec.shared_examples_for 'FinancePlannable' do
   end
 
   describe '#all_planned_finances' do
-    let!(:primary_plan_q1_2015) do
-      finance_plannable1.add_planned_finance(
-        FactoryGirl.attributes_for(:planned_finance,
-          time_period_obj: q1_2015,
-          announce_date: q1_2015.start_date,
-          official: true),
-        return_finance: true)
-    end
+    it 'gets both primary and non primary planned finances' do
+      primary_plan_q2_2015 = create(:planned_finance,
+        finance_plannable: finance_plannable1,
+        primary: false)
 
-    let!(:non_primary_plan_q1_2015) do
-      finance_plannable1.add_planned_finance(
-        FactoryGirl.attributes_for(:planned_finance,
-          time_period_obj: q1_2015,
-          announce_date: q1_2015.start_date + 1,
-          official: false),
-        return_finance: true)
-    end
+      non_primary_plan_q1_2015 = create(:planned_finance,
+        finance_plannable: finance_plannable1,
+        primary: true)
 
-    let!(:primary_plan_q2_2015) do
-      finance_plannable1.add_planned_finance(
-        FactoryGirl.attributes_for(:planned_finance,
-          time_period_obj: q2_2015),
-        return_finance: true)
-    end
-
-    it 'gets both primary and non primary planned finances ordered by start date and then announce date' do
-      expect(finance_plannable1.all_planned_finances).to match_array([
-        primary_plan_q1_2015,
+      expect(finance_plannable1.all_planned_finances).to contain_exactly(
         non_primary_plan_q1_2015,
         primary_plan_q2_2015
+      )
+    end
+
+    it 'orders planned finances by announce date' do
+      plan_q1_2015_jan2 = create(:planned_finance,
+        finance_plannable: finance_plannable1,
+        time_period_obj: q1_2015,
+        announce_date: q1_2015.start_date + 1)
+
+      plan_q1_2015_jan1 = create(:planned_finance,
+        finance_plannable: finance_plannable1,
+        time_period_obj: q1_2015,
+        announce_date: q1_2015.start_date)
+
+      expect(finance_plannable1.all_planned_finances).to eq([
+        plan_q1_2015_jan1,
+        plan_q1_2015_jan2
+      ])
+    end
+
+    it 'orders planned finances by start date and then announce date' do
+      plan_q2_2015 = create(:planned_finance,
+        finance_plannable: finance_plannable1,
+        time_period_obj: q2_2015,
+        announce_date: Date.new(2014, 1, 1))
+
+      plan_q1_2015_jan2 = create(:planned_finance,
+        finance_plannable: finance_plannable1,
+        time_period_obj: q1_2015,
+        announce_date: q1_2015.start_date + 1)
+
+      plan_q1_2015_jan1 = create(:planned_finance,
+        finance_plannable: finance_plannable1,
+        time_period_obj: q1_2015,
+        announce_date: q1_2015.start_date)
+
+      expect(finance_plannable1.all_planned_finances).to eq([
+        plan_q1_2015_jan1,
+        plan_q1_2015_jan2,
+        plan_q2_2015
       ])
     end
   end

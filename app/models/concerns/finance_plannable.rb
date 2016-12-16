@@ -25,7 +25,7 @@ module FinancePlannable
 
   included do
     has_many :all_planned_finances,
-             -> { order('planned_finances.start_date') },
+             -> { order('planned_finances.start_date').order('planned_finances.announce_date') },
              as: :finance_plannable,
              class_name: 'PlannedFinance',
              dependent: :destroy
