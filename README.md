@@ -20,7 +20,7 @@ This web application visualizes the national budget of the Republic of Georgia.
 
     `docker-compose run api rake budget_data:sync_with_repo budget_data:upload`
 
-1. Go to localhost:3000 or start using the API :)
+1. Go to [localhost:3000](localhost:3000) or start using the API :)
 
 ## Deploy (or run any mina command) from within `web` container
 
