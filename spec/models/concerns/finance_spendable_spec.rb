@@ -29,14 +29,20 @@ RSpec.shared_examples_for 'FinanceSpendable' do
   end
 
   describe '#destroy' do
-    it 'should destroy associated spent_finances' do
-      spent_finance1
-      spent_finance1b
+    it 'should destroy all associated spent finances' do
+      create(:spent_finance,
+        finance_spendable: finance_spendable1,
+        primary: true)
+
+      create(:spent_finance,
+        finance_spendable: finance_spendable1,
+        primary: false)
+
+      other_finance = create(:spent_finance)
 
       finance_spendable1.destroy
 
-      expect(SpentFinance.exists?(spent_finance1.id)).to eq(false)
-      expect(SpentFinance.exists?(spent_finance1b.id)).to eq(false)
+      expect(SpentFinance.all).to contain_exactly(other_finance)
     end
   end
 

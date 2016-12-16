@@ -70,15 +70,20 @@ RSpec.shared_examples_for 'FinancePlannable' do
   end
 
   describe '#destroy' do
-    it 'should destroy associated planned_finances' do
-      planned_finance1
-      planned_finance1b
+    it 'should destroy associated planned finances' do
+      create(:planned_finance,
+        finance_plannable: finance_plannable1,
+        primary: true)
 
-      finance_plannable1.reload
+      create(:planned_finance,
+        finance_plannable: finance_plannable1,
+        primary: false)
+
+      other_plan = create(:planned_finance)
+
       finance_plannable1.destroy
 
-      expect(PlannedFinance.exists?(planned_finance1.id)).to eq(false)
-      expect(PlannedFinance.exists?(planned_finance1b.id)).to eq(false)
+      expect(PlannedFinance.all).to contain_exactly(other_plan)
     end
   end
 

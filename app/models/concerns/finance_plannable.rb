@@ -17,42 +17,23 @@ End date: March 31, 2015
 Amount: 2,000,000
 
 In this example, the second plan will be marked with the flag
-most_recently_announced, and it will be used by default as the plan
-for the first quarter of 2015.
+most_recently_announced.
 
 =end
 module FinancePlannable
   extend ActiveSupport::Concern
 
   included do
+    has_many :all_planned_finances,
+             -> { order('planned_finances.start_date') },
+             as: :finance_plannable,
+             class_name: 'PlannedFinance',
+             dependent: :destroy
+
     has_many :planned_finances,
              -> { primary.order('planned_finances.start_date') },
              as: :finance_plannable
   end
-
-  # planned_finances only gets records that are most_recently_announced.
-  # all_planned_finances gets both records that are and are not
-  # most_recently_announced.
-  def all_planned_finances
-    planned_finances
-    .unscope(where: :primary)
-    .order('planned_finances.announce_date')
-  end
-
-  # planned_finances doesn't get all dependent finances, so we can't
-  # use dependent: destroy on it. The following workaround calls
-  # all_planned_finances.destroy_all first, and then the original
-  # destroy method
-  module DestroyAllDependentPlannedFinances
-    def destroy
-      transaction do
-        all_planned_finances.destroy_all
-        super
-      end
-    end
-  end
-
-  prepend DestroyAllDependentPlannedFinances
 
   def add_planned_finance(params, args = {})
     transaction do

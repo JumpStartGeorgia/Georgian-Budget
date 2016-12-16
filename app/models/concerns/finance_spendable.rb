@@ -2,20 +2,21 @@ module FinanceSpendable
   extend ActiveSupport::Concern
 
   included do
+    has_many :all_spent_finances,
+             -> { order('spent_finances.start_date') },
+             as: :finance_spendable,
+             class_name: 'SpentFinance',
+             dependent: :destroy
+
     has_many :spent_finances,
              -> { primary.order('spent_finances.start_date') },
-             as: :finance_spendable,
-             dependent: :destroy
+             as: :finance_spendable
   end
 
   module ClassMethods
     def with_spent_finances
       includes(:spent_finances)
     end
-  end
-
-  def all_spent_finances
-    spent_finances.unscope(where: :primary)
   end
 
   def add_spent_finance(spent_finance_attributes, args = {})
