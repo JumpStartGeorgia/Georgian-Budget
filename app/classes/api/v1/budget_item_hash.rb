@@ -31,7 +31,6 @@ class API::V1::BudgetItemHash
         hash['spendingAgencies'] = get_spending_agencies if budget_item.respond_to?(:spending_agencies)
         hash['spendingAgency'] = get_spending_agency if budget_item.respond_to?(:spending_agency)
         hash['parentProgram'] = get_parent_program if budget_item.respond_to?(:parent_program)
-        hash['priority'] = get_priority if budget_item.respond_to?(:priority)
       end
     end
   end
@@ -63,14 +62,6 @@ class API::V1::BudgetItemHash
     Hash.new.tap do |h|
       h['id'] = budget_item.spending_agency.perma_id
       h['name'] = budget_item.spending_agency.name
-    end
-  end
-
-  def get_priority
-    return nil if budget_item.priority.blank?
-    Hash.new.tap do |h|
-      h['id'] = budget_item.priority.perma_id
-      h['name'] = budget_item.priority.name
     end
   end
 
