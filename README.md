@@ -9,7 +9,8 @@ This web application visualizes the national budget of the Republic of Georgia.
   3. Use `postgres` as the value for `DB_USER` and `TEST_DB_USER`
   4. Set database names for `DB_NAME` and `TEST_DB_NAME`, such as 'budget_dev' and 'budget_test'
 1. Install [docker](https://www.docker.com/products/overview)
-1. `docker-compose up` (takes a while)
+1. `docker-compose build` (takes a while)
+1. `docker-compose up`
 1. `docker-compose run api rake db:create db:migrate db:seed`
 1. Add budget data to database. Two options:
   1. Restore the dev database from a db dump:
