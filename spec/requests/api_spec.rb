@@ -44,6 +44,14 @@ RSpec.describe 'API' do
       .save_perma_id
     end
 
+
+    let!(:program3) do
+      FactoryGirl.create(:program)
+      .add_code(FactoryGirl.attributes_for(:code))
+      .add_name(FactoryGirl.attributes_for(:name))
+      .save_perma_id
+    end
+
     let!(:program2_spent_2014) do
       program2.add_spent_finance(
         FactoryGirl.attributes_for(:spent_finance,
@@ -101,7 +109,7 @@ RSpec.describe 'API' do
     end
 
     it 'returns correct number of budget items' do
-      expect(budget_items.length).to eq(2)
+      expect(budget_items.length).to eq(3)
     end
 
     it 'returns info (id, name, etc.) for each program' do
