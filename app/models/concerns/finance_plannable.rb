@@ -33,6 +33,11 @@ module FinancePlannable
     has_many :planned_finances,
              -> { primary.order('planned_finances.start_date') },
              as: :finance_plannable
+
+    has_many :yearly_planned_finances,
+             -> { primary.order('planned_finances.start_date').where(time_period_type: 'year') },
+             as: :finance_plannable,
+             class_name: 'PlannedFinance'
   end
 
   def add_planned_finance(params, args = {})

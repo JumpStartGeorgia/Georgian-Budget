@@ -17,11 +17,11 @@ class API::V1::BudgetItemHash
       hash['type'] = budget_item.type if fields.include? 'type'
 
       if fields.include? 'spent_finances'
-        hash['spent_finances'] = budget_item.spent_finances
+        hash['spent_finances'] = get_spent_finances(budget_item)
       end
 
       if fields.include? 'planned_finances'
-        hash['planned_finances'] = budget_item.planned_finances
+        hash['planned_finances'] = get_planned_finances(budget_item)
       end
 
       if fields.include? 'related_budget_items'
@@ -40,6 +40,24 @@ class API::V1::BudgetItemHash
               :time_period_type
 
   private
+
+  def get_spent_finances(budget_item)
+    case time_period_type
+    when 'year'
+      budget_item.yearly_spent_finances
+    else
+      budget_item.spent_finances
+    end
+  end
+
+  def get_planned_finances(budget_item)
+    case time_period_type
+    when 'year'
+      budget_item.yearly_planned_finances
+    else
+      budget_item.planned_finances
+    end
+  end
 
   def set_overall_budget(hash)
     return if budget_item.perma_id == Total.first.perma_id

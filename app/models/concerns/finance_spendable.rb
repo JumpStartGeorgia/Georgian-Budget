@@ -11,6 +11,11 @@ module FinanceSpendable
     has_many :spent_finances,
              -> { primary.order('spent_finances.start_date') },
              as: :finance_spendable
+
+    has_many :yearly_spent_finances,
+             -> { primary.order('spent_finances.start_date').where(time_period_type: 'year') },
+             as: :finance_spendable,
+             class_name: 'SpentFinance'
   end
 
   module ClassMethods

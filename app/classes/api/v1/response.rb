@@ -60,18 +60,22 @@ class API::V1::Response
     @budget_items ||= get_budget_items
   end
 
-  def include_finances(budget_items)
-    if budget_item_fields.include?('spent_finances')
-      budget_items = budget_items.joins(:spent_finances).includes(:spent_finances)
-      budget_items = budget_items.merge(SpentFinance.where(time_period_type: time_period_type)) if time_period_type.present?
+  def include_spent_finances(budget_items)
+    case time_period_type
+    when 'year'
+      return budget_items.includes(:yearly_spent_finances)
+    else
+      return budget_items.includes(:spent_finances)
     end
+  end
 
-    if budget_item_fields.include?('planned_finances')
-      budget_items = budget_items.joins(:planned_finances).includes(:planned_finances)
-      budget_items = budget_items.merge(PlannedFinance.where(time_period_type: time_period_type)) if time_period_type.present?
+  def include_planned_finances(budget_items)
+    case time_period_type
+    when 'year'
+      return budget_items.includes(:yearly_planned_finances)
+    else
+      return budget_items.includes(:planned_finances)
     end
-
-    return budget_items
   end
 
   def get_budget_item_by_id
@@ -86,7 +90,8 @@ class API::V1::Response
   def get_budget_items_by_type
     budget_items = budget_type_class.all
     budget_items = budget_items.with_most_recent_names if budget_item_fields.include?('name')
-    budget_items = include_finances(budget_items)
+    budget_items = include_spent_finances(budget_items) if budget_item_fields.include?('spent_finances')
+    budget_items = include_planned_finances(budget_items) if budget_item_fields.include?('planned_finances')
 
     return budget_items.map do |budget_item|
       budget_item_hash(budget_item)
