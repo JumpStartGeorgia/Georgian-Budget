@@ -14,8 +14,9 @@ This web application visualizes the national budget of the Republic of Georgia.
 1. `docker-compose run api rake db:create db:migrate db:seed`
 1. Add budget data to database. Two options:
   1. Restore the dev database from a db dump:
-
-    `docker-compose run db pg_restore --clean --no-owner -d "insert_dev_db_name_here" -U "postgres" /path/to/dump/file`
+    1. `docker-compose ps` ---> get the name of the `db` container
+    1. `docker cp /path/to/db/file db_container_name:/tmp/backup.sql`
+    1. `docker-compose run db pg_restore --clean --no-owner -d "dev_db_name" -U "postgres" /tmp/backup.sql`
 
   1. If you don't have a dump file to restore from, you can run the uploader on the budget files (takes a long time, probably an hour or more):
 
