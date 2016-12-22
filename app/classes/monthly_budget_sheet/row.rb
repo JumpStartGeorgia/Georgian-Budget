@@ -2,10 +2,10 @@ module MonthlyBudgetSheet
   class Row
     def initialize(data, args = {})
       @data = data
-      @code_column = args[:code_column] || 0
-      @name_column = args[:name_column] || 1
-      @spent_finance_column = args[:spent_finance_column] || 6
-      @planned_finance_column = args[:planned_finance_column] || 2
+      @code_column = args[:code_column]
+      @name_column = args[:name_column]
+      @spent_finance_column = args[:spent_finance_column]
+      @planned_finance_column = args[:planned_finance_column]
     end
 
     # returns true if this is the header row of an item
@@ -83,6 +83,7 @@ module MonthlyBudgetSheet
     end
 
     def planned_finance
+      return nil if planned_finance_cell.nil?
       value = planned_finance_cell.value
       return nil if value.to_s.empty?
 
@@ -94,6 +95,7 @@ module MonthlyBudgetSheet
     end
 
     def spent_finance
+      return nil if spent_finance_cell.nil?
       value = spent_finance_cell.value
       return nil if value.to_s.empty?
 

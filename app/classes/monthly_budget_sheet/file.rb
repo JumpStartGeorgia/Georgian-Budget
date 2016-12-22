@@ -35,8 +35,16 @@ module MonthlyBudgetSheet
 
         row = create_row(row_data)
 
-        set_columns(row) if !columns_set? && row.contains_column_names?
+        if row.contains_column_names?
+          if columns_set?
+            raise "Two rows found in spreadsheet #{spreadsheet_path} with column headers"
+          end
 
+          set_columns(row)
+          next
+        end
+
+        next unless columns_set?
         next unless row.contains_data?
 
         if row.is_header?
