@@ -8,7 +8,8 @@ namespace :budget_data do
       yearly_folder: BudgetFiles.yearly_spreadsheet_dir,
       priorities_list: BudgetFiles.priorities_list,
       priority_associations_list: BudgetFiles.priority_associations_list,
-      budget_item_translations: BudgetFiles.english_translations_file
+      budget_item_translations: BudgetFiles.english_translations_file,
+      duplicate_pairs_file: BudgetFiles.duplicate_pairs_file
     ).upload
   end
 
