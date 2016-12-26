@@ -6,7 +6,7 @@ class WrongDuplicateDestroyer
   def destroy_non_duplicate_pairs(pairs)
     pairs.each do |pair|
       next if DuplicateFinder.new(pair.item1).is_possible_duplicate?(pair.item2)
-      pair.destroy
+      pair.resolve_as_non_duplicates
     end
   end
 end

@@ -107,7 +107,7 @@ class DuplicateFinder
   end
 
   def code_matches?(other_item)
-    other_item.codes.pluck(:number).include? source_item.code
+    other_item.codes.pluck(:number).include? source_item.codes.last.number
   end
 
   def code_generation_matches?(other_item)

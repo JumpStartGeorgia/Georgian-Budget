@@ -95,6 +95,15 @@ class PossibleDuplicatePair < ApplicationRecord
     date_when_found == date_when_found.beginning_of_year
   end
 
+  def resolve_as_duplicates
+    ItemMerger.new(item1).merge(item2)
+    destroy
+  end
+
+  def resolve_as_non_duplicates
+    destroy
+  end
+
   private
 
   def validate_item2_is_not_item1

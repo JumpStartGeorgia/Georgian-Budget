@@ -1,7 +1,7 @@
 require 'rubyXL'
 require_relative 'budget_item_translations'
-
 require_relative 'priorities_list'
+require_relative 'duplicate_pairs_list'
 require_relative 'priority_associations/list'
 
 class BudgetFiles
@@ -25,6 +25,10 @@ class BudgetFiles
     budget_files_dir.join('priority_associations.csv').to_s
   end
 
+  def self.duplicate_pairs_file
+    budget_files_dir.join('duplicate_pairs.csv').to_s
+  end
+
   def initialize(args)
     @start_time = Time.now
     @num_monthly_sheets_processed = 0
@@ -35,6 +39,7 @@ class BudgetFiles
     @yearly_sheets = get_yearly_sheets(args)
     @priorities_list = get_priorities_list(args)
     @priority_associations_list = get_priority_associations_list(args)
+    @duplicate_pairs_list = get_duplicate_pairs_list(args)
   end
 
   def upload
@@ -45,6 +50,7 @@ class BudgetFiles
     save_priorities_list if priorities_list.present?
     save_priority_associations_list if priority_associations_list.present?
     save_budget_item_translations if budget_item_translations.present?
+    process_duplicate_pairs if duplicate_pairs_list.present?
     save_other_time_period_spent_finances
     save_priority_finances
     destroy_non_duplicate_pairs
@@ -69,7 +75,8 @@ class BudgetFiles
               :priorities_list,
               :priority_associations_list,
               :start_time,
-              :time_prettifier
+              :time_prettifier,
+              :duplicate_pairs_list
 
   private
 
@@ -122,6 +129,13 @@ class BudgetFiles
     return nil unless args[:budget_item_translations]
 
     BudgetItemTranslations.new(args[:budget_item_translations])
+  end
+
+  def get_duplicate_pairs_list(args)
+    duplicate_pairs_file_path = args[:duplicate_pairs_file]
+    return nil unless duplicate_pairs_file_path.present?
+
+    DuplicatePairsList.new(duplicate_pairs_file_path)
   end
 
   def upload_monthly_sheets
@@ -202,6 +216,9 @@ class BudgetFiles
     end_messages << finished_message
   end
 
+  def process_duplicate_pairs
+  end
+
   def save_priority_finances
     puts "\nSaving priority finances"
     time_prettifier.run do
@@ -223,6 +240,17 @@ class BudgetFiles
     end
 
     finished_message = "Finished saving quarterly and yearly spent finances in #{time_prettifier.elapsed_prettified}"
+    puts finished_message
+    end_messages << finished_message
+  end
+
+  def process_duplicate_pairs
+    puts "\nProcessing duplicate pairs"
+    time_prettifier.run do
+      @duplicate_pairs_list.process
+    end
+
+    finished_message = "Finished processing duplicate pairs in #{time_prettifier.elapsed_prettified}"
     puts finished_message
     end_messages << finished_message
   end

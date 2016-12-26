@@ -129,4 +129,42 @@ Rspec.describe PossibleDuplicatePair, type: :model do
       end
     end
   end
+
+  describe '#resolve_as_duplicates' do
+    it 'combines the two items' do
+      pair = create(:possible_duplicate_pair)
+      item2_id = create(:perma_id, perma_idable: pair.item2)
+
+      pair.resolve_as_duplicates
+
+      expect(BudgetItem.find_by_perma_id(item2_id.text)).to eq(pair.item1)
+    end
+
+    it 'destroys the pair' do
+      pair = create(:possible_duplicate_pair)
+
+      pair.resolve_as_duplicates
+
+      expect(pair.persisted?).to eq(false)
+    end
+  end
+
+  describe '#resolve_as_non_duplicates' do
+    it 'does not merge the two items' do
+      pair = create(:possible_duplicate_pair)
+      item2_id = create(:perma_id, perma_idable: pair.item2)
+
+      pair.resolve_as_non_duplicates
+
+      expect(BudgetItem.find_by_perma_id(item2_id.text)).to eq(pair.item2)
+    end
+
+    it 'destroys the pair' do
+      pair = create(:possible_duplicate_pair)
+
+      pair.resolve_as_non_duplicates
+
+      expect(pair.persisted?).to eq(false)
+    end
+  end
 end
