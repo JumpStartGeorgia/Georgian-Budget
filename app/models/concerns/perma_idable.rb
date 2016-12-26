@@ -37,7 +37,7 @@ module PermaIdable
   def compute_perma_id
     PermaIdCreator.new(Hash.new.tap do |hash|
       hash[:name] = name_ka
-      hash[:code] = code if respond_to?(:code)
+      hash[:code] = codes.last.number if respond_to?(:code)
     end).compute
   end
 end
