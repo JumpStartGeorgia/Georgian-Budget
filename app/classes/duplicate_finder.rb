@@ -44,7 +44,7 @@ class DuplicateFinder
   end
 
   def is_possible_duplicate?(other_item)
-    return false if other_item.start_date > source_item.end_date
+    return false if other_item.start_date.present? && source_item.end_date.present? && other_item.start_date > source_item.end_date
     return false if items_overlap?(other_item)
     return true if code_matches?(other_item)
     return true if name_matches?(other_item)
