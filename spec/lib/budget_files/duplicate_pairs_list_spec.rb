@@ -15,7 +15,7 @@ RSpec.describe 'BudgetFiles' do
         create(:name, text_ka: 'მეწარმეობის განვითარება', nameable: item2)
         item2.save_perma_id
 
-        pair = create(:possible_duplicate_pair, item1: item1, item2: item2)
+        create(:possible_duplicate_pair, item1: item1, item2: item2)
 
         BudgetFiles.new(
           duplicate_pairs_file: BudgetFiles.duplicate_pairs_file
@@ -45,7 +45,7 @@ RSpec.describe 'BudgetFiles' do
         create(:name, text_ka: 'საქართველოს მთავრობის ადმინისტრაცია', nameable: item2)
         item2.save_perma_id
 
-        pair = create(:possible_duplicate_pair, item1: item1, item2: item2)
+        create(:possible_duplicate_pair, item1: item1, item2: item2)
 
         BudgetFiles.new(
           duplicate_pairs_file: BudgetFiles.duplicate_pairs_file
