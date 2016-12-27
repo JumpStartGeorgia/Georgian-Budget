@@ -4,13 +4,7 @@ class ItemMerger
   end
 
   def merge(giver)
-    unless receiver.class == giver.class
-      raise "Merging #{giver.class} into #{receiver.class} is not allowed; types must be the same"
-    end
-
-    if receiver_after_giver?(giver)
-      raise "Cannot merge earlier item into later item; receiver must start before giver"
-    end
+    MergeGuard.new(receiver, giver).enforce_merge_okay
 
     merge_codes(giver.codes) if receiver.respond_to?(:take_code)
     merge_names(giver.names) if receiver.respond_to?(:take_name)
@@ -45,14 +39,6 @@ class ItemMerger
   private
 
   attr_reader :receiver
-
-  def receiver_after_giver?(giver)
-    receiver.respond_to?(:start_date) &&
-    giver.respond_to?(:start_date) &&
-    receiver.start_date.present? &&
-    giver.start_date.present? &&
-    receiver.start_date > giver.start_date
-  end
 
   def merge_codes(new_codes)
     return if new_codes.blank?
