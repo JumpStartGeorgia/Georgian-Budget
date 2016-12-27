@@ -216,9 +216,6 @@ class BudgetFiles
     end_messages << finished_message
   end
 
-  def process_duplicate_pairs
-  end
-
   def save_priority_finances
     puts "\nSaving priority finances"
     time_prettifier.run do
