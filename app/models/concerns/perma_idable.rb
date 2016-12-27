@@ -35,9 +35,18 @@ module PermaIdable
   private
 
   def compute_perma_id
+    # try to use "codes" instead of just "code" in order to make testing
+    # easier
+    current_code = nil
+    if respond_to?(:codes) && codes.present?
+      current_code = codes.last.number
+    elsif respond_to?(:code) && code.present?
+      current_code = code
+    end
+
     PermaIdCreator.new(Hash.new.tap do |hash|
       hash[:name] = name_ka
-      hash[:code] = codes.last.number if respond_to?(:code)
+      hash[:code] = current_code if current_code.present?
     end).compute
   end
 end
