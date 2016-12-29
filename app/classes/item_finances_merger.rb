@@ -7,7 +7,11 @@ class ItemFinancesMerger
   end
 
   def merge
-    return if finances.blank?
+    finances.each do |finance|
+      if cumulative_finances.include?(finance)
+        update_amount_to_non_cumulative(finance)
+      end
+    end
 
     finances.each do |finance|
       receiver_take(finance)
@@ -16,17 +20,30 @@ class ItemFinancesMerger
 
   private
 
+  def update_amount_to_non_cumulative(finance)
+    finance.update_attributes!(
+      amount: NonCumulativeFinanceCalculator.new(
+        finances: primary_finances_of_receiver,
+        cumulative_amount: finance.amount,
+        time_period_obj: finance.time_period_obj,
+        cumulative_within: Year
+      ).calculate
+    )
+  end
+
+  def primary_finances_of_receiver
+    if finances_model == PlannedFinance
+      return receiver.planned_finances
+    elsif finances_model == SpentFinance
+      return receiver.spent_finances
+    end
+  end
+
   def receiver_take(finance)
     if finances_model == PlannedFinance
-      receiver.take_planned_finance(
-        finance,
-        cumulative_within: cumulative_period_for(finance)
-      )
+      receiver.take_planned_finance(finance)
     elsif finances_model == SpentFinance
-      receiver.take_spent_finance(
-        finance,
-        cumulative_within: cumulative_period_for(finance)
-      )
+      receiver.take_spent_finance(finance)
     end
   end
 
