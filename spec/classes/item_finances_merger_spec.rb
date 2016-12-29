@@ -1,12 +1,18 @@
 require 'rails_helper'
 
 RSpec.describe ItemFinancesMerger do
-  describe '#merge' do
+  let(:receiver) { create(:program) }
+  let(:do_merge_finances!) { ItemFinancesMerger.new(receiver, finances).merge }
+
+  context '' do
+    let(:program) do
+      create(:program, all_planned_finances: create_list(:planned_finance, 4))
+    end
+
+    let(:finances) { program.all_planned_finances }
+
     it 'moves all finances to receiver' do
-      receiver = create(:program)
-      program = create(:program)
-      create_list(:planned_finance, 4, finance_plannable: program)
-      ItemFinancesMerger.new(receiver, program.all_planned_finances).merge
+      do_merge_finances!
 
       expect(receiver.all_planned_finances.count).to eq(4)
     end
