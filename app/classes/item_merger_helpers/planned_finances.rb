@@ -5,13 +5,7 @@ class ItemMergerHelpers::PlannedFinances
     @receiver = receiver
   end
 
-  def merge(giver)
-    merge_finances(giver.all_planned_finances)
-  end
-
-  private
-
-  def merge_finances(finances)
+  def merge(finances)
     return if finances.blank?
 
     first_new_quarter_plan = finances.quarterly.first
