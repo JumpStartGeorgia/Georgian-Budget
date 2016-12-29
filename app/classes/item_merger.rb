@@ -10,11 +10,11 @@ class ItemMerger
     merge_names(giver.names) if receiver.respond_to?(:take_name)
 
     if receiver.respond_to?(:take_spent_finance)
-      merge_spent_finances(giver.spent_finances)
+      ItemFinancesMerger.new(receiver, giver.all_spent_finances).merge
     end
 
     if receiver.respond_to?(:take_planned_finance)
-      ItemMergerHelpers::PlannedFinances.new(receiver, giver.all_planned_finances).merge
+      ItemFinancesMerger.new(receiver, giver.all_planned_finances).merge
     end
 
     if receiver.respond_to?(:save_possible_duplicates)
