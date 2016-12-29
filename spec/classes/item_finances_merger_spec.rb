@@ -17,4 +17,7 @@ RSpec.describe ItemFinancesMerger do
       expect(receiver.all_planned_finances.count).to eq(4)
     end
   end
+
+  it 'updates both primary and non-primary finance amounts to be non cumulative'
+  it 'updates finances in multiple years to be non cumulative'
 end

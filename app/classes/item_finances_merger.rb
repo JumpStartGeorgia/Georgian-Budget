@@ -1,9 +1,10 @@
 class ItemFinancesMerger
-  attr_reader :receiver, :finances
+  attr_reader :receiver, :giver, :finances_model
 
-  def initialize(receiver, finances)
+  def initialize(receiver, giver, finances_model)
     @receiver = receiver
-    @finances = finances
+    @giver = giver
+    @finances_model = finances_model
   end
 
   def merge
@@ -76,7 +77,15 @@ class ItemFinancesMerger
     end
   end
 
-  def finances_model
-    finances.model
+  def finances
+    @finances ||= get_finances
+  end
+
+  def get_finances
+    if finances_model == PlannedFinance
+      giver.all_planned_finances
+    elsif finances_model == SpentFinance
+      giver.all_spent_finances
+    end
   end
 end
