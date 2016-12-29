@@ -1,25 +1,41 @@
 class ItemMergerHelpers::PlannedFinances
-  attr_reader :receiver
+  attr_reader :receiver, :finances
 
-  def initialize(receiver)
+  def initialize(receiver, finances)
     @receiver = receiver
+    @finances = finances
   end
 
-  def merge(finances)
+  def merge
     return if finances.blank?
 
-    first_new_quarter_plan = finances.quarterly.first
-
-    cumulative_within_year = first_new_quarter_plan.blank? ? []
-      : finances.with_time_period(first_new_quarter_plan.time_period_obj)
-
-    finances.each do |new_planned_finance|
-      calculate_cumulative = cumulative_within_year.include?(new_planned_finance)
-
-      receiver.take_planned_finance(
-        new_planned_finance,
-        cumulative_within: calculate_cumulative ? Year : nil
-      )
+    finances.each do |finance|
+      receiver_take(finance)
     end
+  end
+
+  private
+
+  def receiver_take(finance)
+    receiver.take_planned_finance(
+      finance,
+      cumulative_within: cumulative_period_for(finance)
+    )
+  end
+
+  # returns nil if it is not cumulative, otherwise Year
+  def cumulative_period_for(finance)
+    cumulative_finances.include?(finance) ? Year : nil
+  end
+
+  def cumulative_finances
+    @cumulative_finances ||= get_cumulative_finances
+  end
+
+  def get_cumulative_finances
+    first_finance = finances.quarterly.first
+
+    first_finance.blank? ? []
+      : finances.with_time_period(first_finance.time_period_obj)
   end
 end

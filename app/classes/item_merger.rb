@@ -14,7 +14,7 @@ class ItemMerger
     end
 
     if receiver.respond_to?(:take_planned_finance)
-      ItemMergerHelpers::PlannedFinances.new(receiver).merge(giver.all_planned_finances)
+      ItemMergerHelpers::PlannedFinances.new(receiver, giver.all_planned_finances).merge
     end
 
     if receiver.respond_to?(:save_possible_duplicates)
