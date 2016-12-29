@@ -68,17 +68,6 @@ module FinancePlannable
   private
 
   def update_with_new_planned_finance(new_planned_finance, args = {})
-    if args[:cumulative_within].present?
-      new_planned_finance.update_attributes!(
-        amount: NonCumulativeFinanceCalculator.new(
-          finances: planned_finances,
-          cumulative_amount: new_planned_finance.amount,
-          time_period_obj: new_planned_finance.time_period_obj,
-          cumulative_within: args[:cumulative_within]
-        ).calculate
-      )
-    end
-
     planned_finance = merge_new_planned_finance(new_planned_finance)
     update_most_recently_announced_with(planned_finance)
     DatesUpdater.new(self, planned_finance).update
