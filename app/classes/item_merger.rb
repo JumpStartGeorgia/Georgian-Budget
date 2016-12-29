@@ -14,7 +14,7 @@ class ItemMerger
     end
 
     if receiver.respond_to?(:take_planned_finance)
-      merge_planned_finances(giver.all_planned_finances)
+      ItemMergerHelpers::PlannedFinances.new(receiver).merge(giver)
     end
 
     if receiver.respond_to?(:save_possible_duplicates)
@@ -66,24 +66,6 @@ class ItemMerger
 
       receiver.take_spent_finance(
         new_spent_finance,
-        cumulative_within: calculate_cumulative ? Year : nil
-      )
-    end
-  end
-
-  def merge_planned_finances(new_planned_finances)
-    return if new_planned_finances.blank?
-
-    first_new_quarter_plan = new_planned_finances.quarterly.first
-
-    cumulative_within_year = first_new_quarter_plan.blank? ? []
-      : new_planned_finances.with_time_period(first_new_quarter_plan.time_period_obj)
-
-    new_planned_finances.each do |new_planned_finance|
-      calculate_cumulative = cumulative_within_year.include?(new_planned_finance)
-
-      receiver.take_planned_finance(
-        new_planned_finance,
         cumulative_within: calculate_cumulative ? Year : nil
       )
     end
