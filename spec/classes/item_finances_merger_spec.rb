@@ -202,8 +202,55 @@ RSpec.describe ItemFinancesMerger do
     end
   end
 
-  it 'deaccumulates receiver quarterly planned finances'
-  it 'deaccumulates receiver monthly spent finances'
+  context '' do
+    let!(:giver_plan_q1) do
+      create(:planned_finance,
+        finance_plannable: giver,
+        time_period_obj: Quarter.for_date(Date.new(2013, 1, 1)),
+        primary: true
+      )
+    end
+
+    let!(:receiver_plan_q2) do
+      create(:planned_finance,
+        finance_plannable: receiver,
+        time_period_obj: Quarter.for_date(Date.new(2013, 4, 1))
+      )
+    end
+
+    it 'deaccumulates receiver quarterly planned finances' do
+      original_amount = receiver_plan_q2.amount
+      do_merge_planned_finances!
+
+      expect(receiver_plan_q2.reload.amount).to eq(
+        original_amount - giver_plan_q1.amount
+      )
+    end
+  end
+
+  context '' do
+    let!(:giver_spent_jan) do
+      create(:spent_finance,
+        finance_spendable: giver,
+        time_period_obj: Month.for_date(Date.new(2012, 1, 1)),
+        primary: true)
+    end
+
+    let!(:receiver_spent_feb) do
+      create(:spent_finance,
+        finance_spendable: receiver,
+        time_period_obj: Month.for_date(Date.new(2012, 2, 1)))
+    end
+
+    it 'deaccumulates receiver monthly spent finances' do
+      original_amount = receiver_spent_feb.amount
+      do_merge_spent_finances!
+
+      expect(receiver_spent_feb.reload.amount).to eq(
+        original_amount - giver_spent_jan.amount
+      )
+    end
+  end
 
   context 'when giver has two plans preceded by receiver plan' do
     let!(:receiver_plan_q1) do
@@ -249,7 +296,51 @@ RSpec.describe ItemFinancesMerger do
     end
   end
 
-  it 'deaccumulates finances in multiple years'
+  context 'when giver and receiver have finances in two years' do
+    let!(:receiver_spent_2011_jan) do
+      create(:spent_finance,
+        finance_spendable: receiver,
+        time_period_obj: Month.for_date(Date.new(2011, 1, 1)),
+        primary: true)
+    end
+
+    let!(:giver_spent_2011_feb) do
+      create(:spent_finance,
+        finance_spendable: giver,
+        time_period_obj: Month.for_date(Date.new(2011, 2, 1)))
+    end
+
+    let!(:receiver_spent_2012_jan) do
+      create(:spent_finance,
+        finance_spendable: receiver,
+        time_period_obj: Month.for_date(Date.new(2012, 1, 1)),
+        primary: true)
+    end
+
+    let!(:giver_spent_2012_feb) do
+      create(:spent_finance,
+        finance_spendable: giver,
+        time_period_obj: Month.for_date(Date.new(2012, 2, 1)))
+    end
+
+    it 'deaccumulates first year finances' do
+      original_amount = giver_spent_2011_feb.amount
+      do_merge_spent_finances!
+
+      expect(giver_spent_2011_feb.reload.amount).to eq(
+        original_amount - receiver_spent_2011_jan.amount
+      )
+    end
+
+    it 'deaccumulates second year finances' do
+      original_amount = giver_spent_2012_feb.amount
+      do_merge_spent_finances!
+
+      expect(giver_spent_2012_feb.reload.amount).to eq(
+        original_amount - receiver_spent_2012_jan.amount
+      )
+    end
+  end
 
   context 'when both receiver and giver have monthly spent finances within a year' do
     it 'deaccumulates receiver finance amounts that were preceded by giver finances'
