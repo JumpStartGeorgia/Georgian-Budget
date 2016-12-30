@@ -87,11 +87,120 @@ RSpec.describe ItemFinancesMerger do
     end
   end
 
-  it 'does not deaccumulate yearly planned finances'
+  context '' do
+    let!(:receiver_plan_2011) do
+      create(:planned_finance,
+        finance_plannable: receiver,
+        time_period_obj: Year.new(2011),
+        primary: true
+      )
+    end
 
-  it 'deaccumulates monthly spent finances'
-  it 'does not deaccumulate quarterly spent finances'
-  it 'does not deaccumulate yearly spent finances'
+    let!(:giver_plan_2012) do
+      create(:planned_finance,
+        finance_plannable: giver,
+        time_period_obj: Year.new(2012)
+      )
+    end
+
+    it 'does not deaccumulate yearly planned finances' do
+      original_amount = giver_plan_2012.amount
+      do_merge_planned_finances!
+
+      expect(giver_plan_2012.reload.amount).to eq(original_amount)
+    end
+  end
+
+  context '' do
+    let!(:receiver_spent_jan) do
+      create(:spent_finance,
+        finance_spendable: receiver,
+        time_period_obj: Month.for_date(Date.new(2012, 1, 1)),
+        primary: true)
+    end
+
+    let!(:giver_spent_feb) do
+      create(:spent_finance,
+        finance_spendable: giver,
+        time_period_obj: Month.for_date(Date.new(2012, 2, 1)))
+    end
+
+    it 'deaccumulates monthly spent finances' do
+      original_amount = giver_spent_feb.amount
+      do_merge_spent_finances!
+
+      expect(giver_spent_feb.reload.amount).to eq(
+        original_amount - receiver_spent_jan.amount
+      )
+    end
+  end
+
+  context '' do
+    let!(:receiver_spent_q1) do
+      create(:spent_finance,
+        finance_spendable: receiver,
+        time_period_obj: Quarter.for_date(Date.new(2012, 1, 1)),
+        primary: true)
+    end
+
+    let!(:giver_spent_q2) do
+      create(:spent_finance,
+        finance_spendable: giver,
+        time_period_obj: Quarter.for_date(Date.new(2012, 4, 1)))
+    end
+
+
+    it 'does not deaccumulate quarterly spent finances' do
+      original_amount = giver_spent_q2.amount
+      do_merge_spent_finances!
+
+      expect(giver_spent_q2.reload.amount).to eq(original_amount)
+    end
+  end
+
+  context '' do
+    let!(:receiver_spent_2011) do
+      create(:spent_finance,
+        finance_spendable: receiver,
+        time_period_obj: Year.new(2011),
+        primary: true)
+    end
+
+    let!(:giver_spent_2012) do
+      create(:spent_finance,
+        finance_spendable: giver,
+        time_period_obj: Year.new(2012))
+    end
+
+    it 'does not deaccumulate yearly spent finances' do
+      original_amount = giver_spent_2012.amount
+      do_merge_spent_finances!
+
+      expect(giver_spent_2012.reload.amount).to eq(original_amount)
+    end
+  end
+
+  context '' do
+    let!(:receiver_spent_jan) do
+      create(:spent_finance,
+        finance_spendable: receiver,
+        time_period_obj: Month.for_date(Date.new(2012, 1, 1)),
+        primary: false)
+    end
+
+    let!(:giver_spent_feb) do
+      create(:spent_finance,
+        finance_spendable: giver,
+        time_period_obj: Month.for_date(Date.new(2012, 2, 1)))
+    end
+
+    it 'does not use non-primary finances to deaccumulate' do
+      original_amount = giver_spent_feb.amount
+      do_merge_spent_finances!
+
+      expect(giver_spent_feb.reload.amount).to eq(original_amount)
+    end
+  end
 
   it 'deaccumulates receiver quarterly planned finances'
   it 'deaccumulates receiver monthly spent finances'
