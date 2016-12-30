@@ -63,7 +63,30 @@ RSpec.describe ItemFinancesMerger do
     end
   end
 
-  it 'does not deaccumulate monthly planned finances'
+  context '' do
+    let!(:receiver_plan_jan) do
+      create(:planned_finance,
+        finance_plannable: receiver,
+        time_period_obj: Month.for_date(Date.new(2013, 1, 1)),
+        primary: true
+      )
+    end
+
+    let!(:giver_plan_apr) do
+      create(:planned_finance,
+        finance_plannable: giver,
+        time_period_obj: Month.for_date(Date.new(2013, 4, 1))
+      )
+    end
+
+    it 'does not deaccumulate monthly planned finances' do
+      original_amount = giver_plan_apr.amount
+      do_merge_planned_finances!
+
+      expect(giver_plan_apr.reload.amount).to eq(original_amount)
+    end
+  end
+
   it 'does not deaccumulate yearly planned finances'
 
   it 'deaccumulates monthly spent finances'
