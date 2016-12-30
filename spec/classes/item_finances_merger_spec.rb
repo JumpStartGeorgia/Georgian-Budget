@@ -343,9 +343,135 @@ RSpec.describe ItemFinancesMerger do
   end
 
   context 'when both receiver and giver have monthly spent finances within a year' do
-    it 'deaccumulates receiver finance amounts that were preceded by giver finances'
-    it 'does not change other receiver finance amounts'
-    it 'deaccumulates giver finance amounts that were preceded by receiver finances'
-    it 'does not update other giver finance amounts'
+    # putting the finances in a shared context so that it's possible to
+    # collapse them (as there's so much of it)
+    RSpec.shared_context 'finances' do
+      let!(:receiver_spent_jan) do
+        create(:spent_finance,
+          finance_spendable: receiver,
+          time_period_obj: Month.for_date(Date.new(2011, 1, 1)),
+          primary: true)
+      end
+
+      let!(:giver_spent_feb) do
+        create(:spent_finance,
+          finance_spendable: giver,
+          time_period_obj: Month.for_date(Date.new(2011, 2, 1)),
+          primary: true)
+      end
+
+      let!(:giver_spent_march) do
+        create(:spent_finance,
+          finance_spendable: giver,
+          time_period_obj: Month.for_date(Date.new(2011, 3, 1)),
+          primary: true)
+      end
+
+      let!(:receiver_spent_april) do
+        create(:spent_finance,
+          finance_spendable: receiver,
+          time_period_obj: Month.for_date(Date.new(2011, 4, 1)),
+          primary: true)
+      end
+
+      let!(:receiver_spent_may) do
+        create(:spent_finance,
+          finance_spendable: receiver,
+          time_period_obj: Month.for_date(Date.new(2011, 5, 1)),
+          primary: true)
+      end
+
+      let!(:giver_spent_june) do
+        create(:spent_finance,
+          finance_spendable: giver,
+          time_period_obj: Month.for_date(Date.new(2011, 6, 1)),
+          primary: true)
+      end
+
+      let!(:giver_spent_july) do
+        create(:spent_finance,
+          finance_spendable: giver,
+          time_period_obj: Month.for_date(Date.new(2011, 7, 1)),
+          primary: true)
+      end
+
+      let!(:receiver_spent_aug) do
+        create(:spent_finance,
+          finance_spendable: receiver,
+          time_period_obj: Month.for_date(Date.new(2011, 8, 1)),
+          primary: true)
+      end
+
+      let!(:receiver_spent_sep) do
+        create(:spent_finance,
+          finance_spendable: receiver,
+          time_period_obj: Month.for_date(Date.new(2011, 9, 1)),
+          primary: true)
+      end
+    end
+
+    include_context 'finances'
+
+    it 'deaccumulates first giver finance preceded by receiver finances' do
+      original_feb_amount = giver_spent_feb.amount
+
+      do_merge_spent_finances!
+
+      expect(giver_spent_feb.amount).to eq(
+        original_feb_amount - receiver_spent_jan.amount
+      )
+    end
+
+    it 'deaccumulates first receiver finance preceded by giver finances' do
+      original_april_amount = receiver_spent_april.amount
+
+      do_merge_spent_finances!
+
+      expect(receiver_spent_april.amount).to eq(
+        original_april_amount - (
+          giver_spent_feb.amount + giver_spent_march.amount
+        )
+      )
+    end
+
+    it 'deaccumulates second giver finance preceded by receiver finances' do
+      original_june_amount = giver_spent_june.amount
+
+      do_merge_spent_finances!
+
+      expect(giver_spent_june.amount).to eq(
+        original_june_amount - (
+          receiver_spent_april.amount + receiver_spent_may.amount
+        )
+      )
+    end
+
+    it 'deaccumulates second receiver finance preceded by giver finances' do
+      original_aug_amount = receiver_spent_aug.amount
+
+      do_merge_spent_finances!
+
+      expect(receiver_spent_aug.amount).to eq(
+        original_aug_amount - (
+          giver_spent_june.amount + giver_spent_july.amount
+        )
+      )
+    end
+
+    it "does not deaccumulate finances not preceded by other item's finances" do
+      original_jan_amount = receiver_spent_jan.amount
+      original_march_amount = giver_spent_march.amount
+      original_may_amount = receiver_spent_may.amount
+      original_july_amount = giver_spent_july.amount
+      original_sep_amount = receiver_spent_sep.amount
+
+      do_merge_spent_finances!
+
+      expect(receiver_spent_jan.amount).to eq(original_jan_amount)
+      expect(giver_spent_march.amount).to eq(original_march_amount)
+      expect(receiver_spent_may.amount).to eq(original_may_amount)
+      expect(giver_spent_july.amount).to eq(original_july_amount)
+      expect(receiver_spent_sep.amount).to eq(original_sep_amount)
+    end
   end
 end
