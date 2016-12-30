@@ -1,8 +1,8 @@
-set :domain, 'alpha.jumpstart.ge'
-set :user, 'prisoners'
-set :application, 'Starter-Template-Production'
+set :domain, 'delta.jumpstart.ge'
+set :user, 'budget'
+set :application, 'Budget-API-Production'
 # easier to use https; if you use ssh then you have to create key on server
-set :repository, 'https://github.com/JumpStartGeorgia/Starter-Template.git'
+set :repository, 'https://github.com/JumpStartGeorgia/Georgian-Budget'
 set :branch, 'master'
 set :web_url, ENV['PRODUCTION_WEB_URL']
-set :use_ssl, true
+set :use_ssl, false
