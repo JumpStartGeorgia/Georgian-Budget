@@ -5,4 +5,4 @@ set :application, 'Budget-API-Production'
 set :repository, 'https://github.com/JumpStartGeorgia/Georgian-Budget'
 set :branch, 'master'
 set :web_url, ENV['PRODUCTION_WEB_URL']
-set :use_ssl, false
+set :use_ssl, true
