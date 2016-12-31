@@ -43,24 +43,17 @@ class ItemFinancesMerger
   end
 
   def years_containing_cumulative_finances
-    Year.for_dates(
-      giver_all_finances_cumulative_period_type
-      .pluck(:start_date)
-    )
+    Year.for_dates(giver_all_finances_cumulative_period_type.pluck(:start_date))
   end
 
   def deaccumulate_cumulative_finances_in(year)
-    giver_finances_in_year = giver_all_finances_cumulative_period_type
+    primary_finances_in_year = finances_model
+    .where(id:
+      receiver_all_finances_cumulative_period_type +
+      giver_all_finances_cumulative_period_type)
     .primary
     .within_time_period(year)
-
-    receiver_finances_in_year = receiver_all_finances_cumulative_period_type
-    .primary
-    .within_time_period(year)
-
-    primary_finances_in_year = finances_model.where(
-      id: giver_finances_in_year + receiver_finances_in_year
-    ).order(:start_date)
+    .order(:start_date)
 
     primary_cumulative_finances = []
 
