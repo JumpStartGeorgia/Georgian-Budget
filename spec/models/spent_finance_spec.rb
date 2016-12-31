@@ -103,26 +103,6 @@ RSpec.describe SpentFinance do
     end
   end
 
-  describe '.before' do
-    it 'gets the spent finances before a certain date' do
-      spent_finance1.save!
-      spent_finance1b.save!
-
-      expect(SpentFinance.all.before(spent_finance1.end_date))
-      .to match_array([spent_finance1])
-    end
-  end
-
-  describe '.after' do
-    it 'gets the spent finances after a certain date' do
-      spent_finance1.save!
-      spent_finance1b.save!
-
-      expect(SpentFinance.all.after(spent_finance1b.start_date))
-      .to match_array([spent_finance1b])
-    end
-  end
-
   describe '.total' do
     it 'gets the sum of the spent finance amounts' do
       spent_finance1

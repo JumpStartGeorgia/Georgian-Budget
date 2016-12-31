@@ -65,9 +65,7 @@ class ItemFinancesMerger
     end
 
     primary_cumulative_finances.each do |primary_cumulative_finance|
-      extra_amount = amount_to_remove_from_finance(
-        primary_cumulative_finance
-      )
+      extra_amount = amount_to_remove_from_finance(primary_cumulative_finance)
 
       primary_cumulative_finance
       .versions

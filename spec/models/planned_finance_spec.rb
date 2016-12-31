@@ -174,26 +174,6 @@ RSpec.describe PlannedFinance do
     end
   end
 
-  describe '.before' do
-    it 'gets the planned finances before a certain date' do
-      planned_finance1.save!
-      planned_finance1b.save!
-
-      expect(PlannedFinance.all.before(planned_finance1.end_date))
-      .to match_array([planned_finance1])
-    end
-  end
-
-  describe '.after' do
-    it 'gets the planned finances after a certain date' do
-      planned_finance1.save!
-      planned_finance1b.save!
-
-      expect(PlannedFinance.all.after(planned_finance1b.start_date))
-      .to match_array([planned_finance1b])
-    end
-  end
-
   describe '.total' do
     it 'gets the sum of the planned finance amounts' do
       planned_finance1.save!

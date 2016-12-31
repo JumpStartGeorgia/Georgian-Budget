@@ -30,7 +30,7 @@ RSpec.shared_examples_for 'StartEndDateable' do
     end
   end
 
-  describe '#with_time_period' do
+  describe '.with_time_period' do
     let!(:start_end_dateable_2011a) do
       create(described_class_sym, time_period_obj: Year.new(2011))
     end
@@ -44,7 +44,7 @@ RSpec.shared_examples_for 'StartEndDateable' do
       create(described_class_sym, time_period_obj: Year.new(2012))
     end
 
-    it 'gets all finances that match the time period obj' do
+    it 'gets all items that match the time period obj' do
       expect(described_class.with_time_period(Year.new(2011)))
       .to contain_exactly(
         start_end_dateable_2011a, start_end_dateable_2011b
@@ -52,7 +52,7 @@ RSpec.shared_examples_for 'StartEndDateable' do
     end
   end
 
-  describe '#within_time_period' do
+  describe '.within_time_period' do
     let!(:start_end_dateable_2011_jan) do
       create(described_class_sym,
         time_period_obj: Month.for_date(Date.new(2011, 1, 1)))
@@ -72,10 +72,56 @@ RSpec.shared_examples_for 'StartEndDateable' do
       create(described_class_sym, time_period_obj: Year.new(2012))
     end
 
-    it 'gets all finances that have dates within the time period' do
+    it 'gets all items that have dates within the time period' do
       expect(described_class.within_time_period(Year.new(2011)))
       .to contain_exactly(
         start_end_dateable_2011_jan,
+        start_end_dateable_2011_q3,
+        start_end_dateable_2011
+      )
+    end
+  end
+
+  describe '.after' do
+    let!(:start_end_dateable_2011_q3) do
+      create(described_class_sym,
+        time_period_obj: Quarter.for_date(Date.new(2011, 8, 1)))
+    end
+
+    let!(:start_end_dateable_2011) do
+      create(described_class_sym, time_period_obj: Year.new(2011))
+    end
+
+    before do
+      create(described_class_sym, time_period_obj: Year.new(2010))
+    end
+
+    it 'gets all items with start date on or after date' do
+      expect(described_class.after(Date.new(2011, 1, 1)))
+      .to contain_exactly(
+        start_end_dateable_2011_q3,
+        start_end_dateable_2011
+      )
+    end
+  end
+
+  describe '.before' do
+    let!(:start_end_dateable_2011_q3) do
+      create(described_class_sym,
+        time_period_obj: Quarter.for_date(Date.new(2011, 8, 1)))
+    end
+
+    let!(:start_end_dateable_2011) do
+      create(described_class_sym, time_period_obj: Year.new(2011))
+    end
+
+    before do
+      create(described_class_sym, time_period_obj: Year.new(2012))
+    end
+
+    it 'gets all items with end date on or before date' do
+      expect(described_class.before(Year.new(2011).end_date))
+      .to contain_exactly(
         start_end_dateable_2011_q3,
         start_end_dateable_2011
       )

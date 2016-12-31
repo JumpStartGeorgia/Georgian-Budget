@@ -12,6 +12,14 @@ module StartEndDateable
         .and(arel_table[:end_date].lteq(time_period.end_date))
       )
     end
+
+    def before(date)
+      where(arel_table[:end_date].lteq(date))
+    end
+
+    def after(date)
+      where(arel_table[:start_date].gteq(date))
+    end
   end
 
   def time_period_obj
