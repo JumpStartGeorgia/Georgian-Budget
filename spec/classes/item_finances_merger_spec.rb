@@ -58,7 +58,7 @@ RSpec.describe ItemFinancesMerger do
       do_merge_planned_finances!
 
       expect(giver_plan_q2.reload.amount).to eq(
-        original_amount - receiver_plan_q1.amount
+        original_amount - receiver_plan_q1.reload.amount
       )
     end
   end
@@ -130,7 +130,7 @@ RSpec.describe ItemFinancesMerger do
       do_merge_spent_finances!
 
       expect(giver_spent_feb.reload.amount).to eq(
-        original_amount - receiver_spent_jan.amount
+        original_amount - receiver_spent_jan.reload.amount
       )
     end
   end
@@ -223,7 +223,7 @@ RSpec.describe ItemFinancesMerger do
       do_merge_planned_finances!
 
       expect(receiver_plan_q2.reload.amount).to eq(
-        original_amount - giver_plan_q1.amount
+        original_amount - giver_plan_q1.reload.amount
       )
     end
   end
@@ -247,7 +247,7 @@ RSpec.describe ItemFinancesMerger do
       do_merge_spent_finances!
 
       expect(receiver_spent_feb.reload.amount).to eq(
-        original_amount - giver_spent_jan.amount
+        original_amount - giver_spent_jan.reload.amount
       )
     end
   end
@@ -282,7 +282,7 @@ RSpec.describe ItemFinancesMerger do
       do_merge_planned_finances!
 
       expect(giver_plan_primary.reload.amount).to eq(
-        original_amount - receiver_plan_q1.amount
+        original_amount - receiver_plan_q1.reload.amount
       )
     end
 
@@ -291,7 +291,7 @@ RSpec.describe ItemFinancesMerger do
       do_merge_planned_finances!
 
       expect(giver_plan_non_primary.reload.amount).to eq(
-        original_amount - receiver_plan_q1.amount
+        original_amount - receiver_plan_q1.reload.amount
       )
     end
   end
@@ -328,7 +328,7 @@ RSpec.describe ItemFinancesMerger do
       do_merge_spent_finances!
 
       expect(giver_spent_2011_feb.reload.amount).to eq(
-        original_amount - receiver_spent_2011_jan.amount
+        original_amount - receiver_spent_2011_jan.reload.amount
       )
     end
 
@@ -337,7 +337,7 @@ RSpec.describe ItemFinancesMerger do
       do_merge_spent_finances!
 
       expect(giver_spent_2012_feb.reload.amount).to eq(
-        original_amount - receiver_spent_2012_jan.amount
+        original_amount - receiver_spent_2012_jan.reload.amount
       )
     end
   end
@@ -417,8 +417,8 @@ RSpec.describe ItemFinancesMerger do
 
       do_merge_spent_finances!
 
-      expect(giver_spent_feb.amount).to eq(
-        original_feb_amount - receiver_spent_jan.amount
+      expect(giver_spent_feb.reload.amount).to eq(
+        original_feb_amount - receiver_spent_jan.reload.amount
       )
     end
 
@@ -427,9 +427,9 @@ RSpec.describe ItemFinancesMerger do
 
       do_merge_spent_finances!
 
-      expect(receiver_spent_april.amount).to eq(
+      expect(receiver_spent_april.reload.amount).to eq(
         original_april_amount - (
-          giver_spent_feb.amount + giver_spent_march.amount
+          giver_spent_feb.reload.amount + giver_spent_march.reload.amount
         )
       )
     end
@@ -439,9 +439,9 @@ RSpec.describe ItemFinancesMerger do
 
       do_merge_spent_finances!
 
-      expect(giver_spent_june.amount).to eq(
+      expect(giver_spent_june.reload.amount).to eq(
         original_june_amount - (
-          receiver_spent_april.amount + receiver_spent_may.amount
+          receiver_spent_april.reload.amount + receiver_spent_may.reload.amount
         )
       )
     end
@@ -451,9 +451,9 @@ RSpec.describe ItemFinancesMerger do
 
       do_merge_spent_finances!
 
-      expect(receiver_spent_aug.amount).to eq(
+      expect(receiver_spent_aug.reload.amount).to eq(
         original_aug_amount - (
-          giver_spent_june.amount + giver_spent_july.amount
+          giver_spent_june.reload.amount + giver_spent_july.reload.amount
         )
       )
     end
@@ -467,11 +467,11 @@ RSpec.describe ItemFinancesMerger do
 
       do_merge_spent_finances!
 
-      expect(receiver_spent_jan.amount).to eq(original_jan_amount)
-      expect(giver_spent_march.amount).to eq(original_march_amount)
-      expect(receiver_spent_may.amount).to eq(original_may_amount)
-      expect(giver_spent_july.amount).to eq(original_july_amount)
-      expect(receiver_spent_sep.amount).to eq(original_sep_amount)
+      expect(receiver_spent_jan.reload.amount).to eq(original_jan_amount)
+      expect(giver_spent_march.reload.amount).to eq(original_march_amount)
+      expect(receiver_spent_may.reload.amount).to eq(original_may_amount)
+      expect(giver_spent_july.reload.amount).to eq(original_july_amount)
+      expect(receiver_spent_sep.reload.amount).to eq(original_sep_amount)
     end
   end
 end
