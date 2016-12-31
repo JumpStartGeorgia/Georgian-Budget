@@ -12,9 +12,7 @@ class MergeGuard
 
   def enforce_merge_okay
     enforce_items_are_different
-    enforce_items_diffent_types
-    enforce_monthly_spent_correctly_ordered
-    enforce_monthly_planned_correctly_ordered
+    enforce_items_have_same_type
   end
 
   private
@@ -24,41 +22,9 @@ class MergeGuard
     raise MergeImpossibleError, "Item 1 (#{item1_id}) is the same as item 2"
   end
 
-  def enforce_items_diffent_types
+  def enforce_items_have_same_type
     return if item1.class == item2.class
     raise MergeImpossibleError, "Item 1 (#{item1_id}) type #{item1.class} is different from item 2 (#{item2_id}) type #{item2.class}"
-  end
-
-  def enforce_monthly_spent_correctly_ordered
-    return if spent_monthly_correctly_ordered?
-
-    raise MergeImpossibleError, "Item 1 (#{item1_id}) has monthly spent finances after item 2 (#{item2_id})"
-  end
-
-  def enforce_monthly_planned_correctly_ordered
-    return if planned_quarterly_correctly_ordered?
-
-    raise MergeImpossibleError, "Item 1 (#{item1_id}) has quarterly planned finances after item 2 (#{item2_id})"
-  end
-
-  def spent_monthly_correctly_ordered?
-    item1_end_date = item1.all_spent_finances.monthly.maximum(:end_date)
-    return true if item1_end_date.blank?
-
-    item2_start_date = item2.all_spent_finances.monthly.minimum(:start_date)
-    return true if item2_start_date.blank?
-
-    item1_end_date <= item2_start_date
-  end
-
-  def planned_quarterly_correctly_ordered?
-    item1_end_date = item1.all_planned_finances.quarterly.maximum(:end_date)
-    return true if item1_end_date.blank?
-
-    item2_start_date = item2.all_planned_finances.quarterly.minimum(:start_date)
-    return true if item2_start_date.blank?
-
-    item1_end_date <= item2_start_date
   end
 
   def item1_id
