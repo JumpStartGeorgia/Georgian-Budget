@@ -70,6 +70,7 @@ class ItemFinancesMerger
       primary_cumulative_finance
       .versions
       .each do |version|
+        next if version.amount.nil?
         version.update_attributes(amount: version.amount - extra_amount)
       end
     end

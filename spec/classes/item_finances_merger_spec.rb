@@ -342,6 +342,56 @@ RSpec.describe ItemFinancesMerger do
     end
   end
 
+  context '' do
+    let!(:giver_spent_jan) do
+      create(:spent_finance,
+        finance_spendable: giver,
+        time_period_obj: Month.for_date(Date.new(2012, 1, 1)),
+        amount: nil,
+        primary: true)
+    end
+
+    let!(:receiver_spent_feb) do
+      create(:spent_finance,
+        finance_spendable: receiver,
+        time_period_obj: Month.for_date(Date.new(2012, 2, 1)))
+    end
+
+    it 'treats nil amount as 0 when removing extra accumulated amount' do
+      original_amount = receiver_spent_feb.amount
+      do_merge_spent_finances!
+
+      expect(receiver_spent_feb.reload.amount).to eq(
+        original_amount
+      )
+    end
+  end
+
+  context 'when accumulated amount is nil' do
+    let!(:giver_spent_jan) do
+      create(:spent_finance,
+        finance_spendable: giver,
+        time_period_obj: Month.for_date(Date.new(2012, 1, 1)),
+        primary: true)
+    end
+
+    let!(:receiver_spent_feb) do
+      create(:spent_finance,
+        finance_spendable: receiver,
+        amount: nil,
+        time_period_obj: Month.for_date(Date.new(2012, 2, 1)))
+    end
+
+    it 'does not update it' do
+      original_amount = receiver_spent_feb.amount
+      do_merge_spent_finances!
+
+      expect(receiver_spent_feb.reload.amount).to eq(
+        original_amount
+      )
+    end
+  end
+
   context 'when both receiver and giver have monthly spent finances within a year' do
     # putting the finances in a shared context so that it's possible to
     # collapse them (as there's so much of it)
