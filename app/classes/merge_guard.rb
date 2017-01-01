@@ -13,6 +13,7 @@ class MergeGuard
   def enforce_merge_okay
     enforce_items_are_different
     enforce_items_have_same_type
+    enforce_no_spent_finance_overlap
   end
 
   private
@@ -25,6 +26,11 @@ class MergeGuard
   def enforce_items_have_same_type
     return if item1.class == item2.class
     raise MergeImpossibleError, "Item 1 (#{item1_id}) type #{item1.class} is different from item 2 (#{item2_id}) type #{item2.class}"
+  end
+
+  def enforce_no_spent_finance_overlap
+    return unless ItemOverlapGuard.new(item1, item2).overlap?
+    raise MergeImpossibleError, "Item 1 (#{item1_id}) and item 2 (#{item2_id}) have overlapping official spent finances"
   end
 
   def item1_id
