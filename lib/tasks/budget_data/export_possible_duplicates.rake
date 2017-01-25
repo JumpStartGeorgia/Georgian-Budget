@@ -12,9 +12,10 @@ namespace :budget_data do
     CSV.open(csv_file_path, 'wb') do |csv|
       csv << [
         'Merge? (yes / no)',
-        'Budget Item Type',
+        'name change significant?',
         'Budget Item 1 perma id',
         'Budget Item 2 perma id',
+        'Budget Item Type',
         'Budget Item 1 Code',
         'Budget Item 2 Code',
         'Budget Item 1 Name',
