@@ -5,6 +5,21 @@ module StartEndDateable
     def with_time_period(time_period)
       where(start_date: time_period.start_date, end_date: time_period.end_date)
     end
+
+    def within_time_period(time_period)
+      where(
+        arel_table[:start_date].gteq(time_period.start_date)
+        .and(arel_table[:end_date].lteq(time_period.end_date))
+      )
+    end
+
+    def before(date)
+      where(arel_table[:end_date].lteq(date))
+    end
+
+    def after(date)
+      where(arel_table[:start_date].gteq(date))
+    end
   end
 
   def time_period_obj

@@ -11,24 +11,6 @@ RSpec.describe ItemMerger do
       expect(giver.persisted?).to eq(false)
     end
 
-    context 'when receiver start date is after giver start date' do
-      it 'throws error' do
-        receiver = FactoryGirl.create(
-          :program,
-          start_date: Date.new(2012, 1, 2)
-        )
-
-        giver = FactoryGirl.create(
-          :program,
-          start_date: Date.new(2012, 1, 1)
-        )
-
-        expect do
-          ItemMerger.new(receiver).merge(giver)
-        end.to raise_error(RuntimeError)
-      end
-    end
-
     context 'when receiver and giver do not have same class' do
       it 'throws error' do
         receiver = FactoryGirl.create(:program)
@@ -36,7 +18,7 @@ RSpec.describe ItemMerger do
 
         expect do
           ItemMerger.new(receiver).merge(giver)
-        end.to raise_error(RuntimeError)
+        end.to raise_error(MergeImpossibleError)
       end
     end
 

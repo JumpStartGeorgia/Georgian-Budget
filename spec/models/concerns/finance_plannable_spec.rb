@@ -375,33 +375,6 @@ RSpec.shared_examples_for 'FinancePlannable' do
         end
       end
     end
-
-    context 'when cumulative_within argument is set to Year' do
-      context 'and there is an earlier planned finance in the same year' do
-        before :example do
-          planned_finance_attr1[:start_date] = q1_2015.start_date
-          planned_finance_attr1[:end_date] = q1_2015.end_date
-          planned_finance_attr1[:announce_date] = q1_2015.start_date
-
-          finance_plannable1.add_planned_finance(planned_finance_attr1)
-        end
-
-        it 'removes that earlier amount from calculated amount' do
-          planned_finance_attr1b[:start_date] = q2_2015.start_date
-          planned_finance_attr1b[:end_date] = q2_2015.end_date
-          planned_finance_attr1b[:announce_date] = q2_2015.start_date
-
-          finance_plannable1.add_planned_finance(
-            planned_finance_attr1b,
-            cumulative_within: Year
-          )
-
-          expect(finance_plannable1.all_planned_finances[1].amount).to eq(
-            planned_finance_attr1b[:amount] - planned_finance_attr1[:amount]
-          )
-        end
-      end
-    end
   end
 
   describe '#take_planned_finance' do

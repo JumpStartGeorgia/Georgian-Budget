@@ -48,17 +48,6 @@ module FinanceSpendable
   private
 
   def update_with_new_spent_finance(new_spent_finance, args = {})
-    if args[:cumulative_within].present?
-      new_spent_finance.update_attributes!(
-        amount: NonCumulativeFinanceCalculator.new(
-          finances: spent_finances,
-          cumulative_amount: new_spent_finance.amount,
-          time_period_obj: new_spent_finance.time_period_obj,
-          cumulative_within: args[:cumulative_within]
-        ).calculate
-      )
-    end
-
     FinanceCategorizer.new(new_spent_finance).set_primary
     DatesUpdater.new(self, new_spent_finance).update
   end
