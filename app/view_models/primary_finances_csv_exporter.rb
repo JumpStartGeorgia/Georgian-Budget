@@ -57,7 +57,8 @@ class PrimaryFinancesCSVExporter
   def budget_item_types
     [
       Total,
-      Priority
+      Priority,
+      SpendingAgency
     ]
   end
 
@@ -90,10 +91,15 @@ class PrimaryFinancesCSVExporter
 
   def finances_for(item, finance_klass)
     uniq_time_period_strings.map do |time_period_string|
-      item_finances_for_klass(item, finance_klass)
-      .find { |f| f.time_period == time_period_string }
-      .amount
+      amount_for_item_in_time_period(item, finance_klass, time_period_string)
     end
+  end
+
+  def amount_for_item_in_time_period(item, finance_klass, time_period_string)
+    finance = item_finances_for_klass(item, finance_klass)
+    .find { |f| f.time_period == time_period_string }
+
+    finance.present? ? finance.amount : ''
   end
 
   def item_finances_for_klass(item, finance_klass)
