@@ -72,7 +72,7 @@ class PrimaryFinancesCSVExporter
   def rows_for(item)
     rows = [values_for_item_finance_type(item, SpentFinance)]
     return rows if time_period_type == 'monthly'
-    return rows + values_for_item_finance_type(item, PlannedFinance)
+    return rows << values_for_item_finance_type(item, PlannedFinance)
   end
 
   def values_for_item_finance_type(item, finance_klass)
