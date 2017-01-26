@@ -39,7 +39,8 @@ class PrimaryFinancesCSVExporter
     [
       'Type',
       'Name',
-      'Code'
+      'Code',
+      'Finance Type'
     ] + time_period_headers
   end
 
@@ -53,20 +54,45 @@ class PrimaryFinancesCSVExporter
   end
 
   def rows_for_budget_item_type(type_klass)
-    type_klass.all.map { |item| values_for(item) }
+    type_klass.all.map do |item|
+      rows_for(item)
+    end.sum
   end
 
-  def values_for(item)
+  def rows_for(item)
+    [
+      values_for_item_finance_type(item, SpentFinance),
+      values_for_item_finance_type(item, PlannedFinance)
+    ]
+  end
+
+  def values_for_item_finance_type(item, finance_klass)
+    basic_values_for_item_finance_type(item, finance_klass) +
+      finances_for(item, finance_klass)
+  end
+
+  def basic_values_for_item_finance_type(item, finance_klass)
     [
       item.class.to_s,
       item.name,
-      item.respond_to?(:code) ? item.code : 'N/A'
-    ] + finances_for(item)
+      item.respond_to?(:code) ? item.code : 'N/A',
+      finance_klass.to_s
+    ]
   end
 
-  def finances_for(item)
+  def finances_for(item, finance_klass)
     uniq_time_period_strings.map do |time_period_string|
-      item.spent_finances.find { |f| f.time_period == time_period_string }.amount
+      item_finances_for_klass(item, finance_klass)
+      .find { |f| f.time_period == time_period_string }
+      .amount
+    end
+  end
+
+  def item_finances_for_klass(item, finance_klass)
+    if finance_klass == SpentFinance
+      return item.spent_finances
+    elsif finance_klass == PlannedFinance
+      return item.planned_finances
     end
   end
 
