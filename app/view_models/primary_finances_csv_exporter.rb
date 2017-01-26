@@ -49,8 +49,16 @@ class PrimaryFinancesCSVExporter
   end
 
   def content_rows
-    rows_for_budget_item_type(Total) +
-      rows_for_budget_item_type(Priority)
+    budget_item_types
+    .map { |type_klass| rows_for_budget_item_type(type_klass) }
+    .sum
+  end
+
+  def budget_item_types
+    [
+      Total,
+      Priority
+    ]
   end
 
   def rows_for_budget_item_type(type_klass)
