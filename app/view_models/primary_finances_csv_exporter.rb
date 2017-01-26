@@ -58,7 +58,8 @@ class PrimaryFinancesCSVExporter
     [
       Total,
       Priority,
-      SpendingAgency
+      SpendingAgency,
+      Program
     ]
   end
 
@@ -69,10 +70,9 @@ class PrimaryFinancesCSVExporter
   end
 
   def rows_for(item)
-    [
-      values_for_item_finance_type(item, SpentFinance),
-      values_for_item_finance_type(item, PlannedFinance)
-    ]
+    rows = [values_for_item_finance_type(item, SpentFinance)]
+    return rows if time_period_type == 'monthly'
+    return rows + values_for_item_finance_type(item, PlannedFinance)
   end
 
   def values_for_item_finance_type(item, finance_klass)
