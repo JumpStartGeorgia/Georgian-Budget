@@ -5,7 +5,10 @@ module Csv
       end
 
       def export
-        Csv::PrimaryFinances::FileExporter.new('yearly', 'ka').export
+        Csv::PrimaryFinances::FileExporter.new(
+          time_period_type: 'yearly',
+          locale: 'ka'
+        ).export
       end
     end
   end

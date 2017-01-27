@@ -1,11 +1,14 @@
+# NOT TESTED
+
 module Csv
   module PrimaryFinances
     class FileExporter
       attr_reader :time_period_type, :locale
 
-      def initialize(time_period_type, locale)
-        @time_period_type = time_period_type
-        @locale = locale
+      def initialize(args)
+        @time_period_type = args[:time_period_type]
+        @locale = args[:locale]
+        
         unless possible_time_period_types.include?(time_period_type)
           raise "Unallowed time period type: #{time_period_type}. Possible time period types are: #{possible_time_period_types.join(', ')}"
         end
