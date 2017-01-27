@@ -1,6 +1,6 @@
 # Georgian Budget
 
-This web application visualizes the national budget of the Republic of Georgia.
+This api application visualizes the national budget of the Republic of Georgia.
 
 ## Get Started
 1. Setup .env file
@@ -24,20 +24,20 @@ This web application visualizes the national budget of the Republic of Georgia.
 
 1. Go to [localhost:3000](http://localhost:3000) or start using the API :)
 
-## Deploy (or run any mina command) from within `web` container
+## Deploy (or run any mina command) from within `api` container
 
-The web container is not configured by default to work for deploying, so you will have to do a little bit of configuration in order to do so. This section is intended to make that configuration easier.
+The api container is not configured by default to work for deploying, so you will have to do a little bit of configuration in order to do so. This section is intended to make that configuration easier.
 
 Ideally, this is only a temporary solution until we figure out how to deploy with docker.
 
 NOTE: The below commands will only work if the container you are setting up to deploy from is named `georgianbudgetapi_api_1`. If it has a different name, then use it below in the `docker cp` commands.
 
-1. Copy your global gitignore into the `web` container:
+1. Copy your global gitignore into the `api` container:
   ```
   docker cp ~/.gitignore_global georgianbudgetapi_api_1:/root/
   ```
 
-2. Run these commands from within the `web` container:
+2. Run these commands from within the `api` container:
   ```
   git config --global core.excludesfile /root/.gitignore_global
 
@@ -88,30 +88,30 @@ This is a cheat sheet for JumpStart's Rails docker projects. If you want to trul
 
 ### Bundler
 
-If you're missing a gem, you don't want to rebuild the docker web image — that takes too long, as it forces docker to install all the gems. Instead:
+If you're missing a gem, you don't want to rebuild the docker api image — that takes too long, as it forces docker to install all the gems. Instead:
 
-`docker-compose run web bundle install`
+`docker-compose run api bundle install`
 
 Or to update:
 
-`docker-compose run web bundle update`
+`docker-compose run api bundle update`
 
-### Open bash session in web container
+### Open bash session in api container
 
-If you find yourself typing a lot of commands prefixed by `docker-compose run web`, you can open a bash session in the `web` container and just type them there.
+If you find yourself typing a lot of commands prefixed by `docker-compose run api`, you can open a bash session in the `api` container and just type them there.
 
 ```
-docker-compose run web rake db:create
-docker-compose run web rake db:migrate
-docker-compose run web rake db:seed
-docker-compose run web rspec
-docker-compose run web rails g migration AddColumnDockerKnowledgeToBrain
+docker-compose run api rake db:create
+docker-compose run api rake db:migrate
+docker-compose run api rake db:seed
+docker-compose run api rspec
+docker-compose run api rails g migration AddColumnDockerKnowledgeToBrain
 ```
 
 Can be run like this:
 
 ```
-docker-compose run web bash
+docker-compose run api bash
 # then, in bash
 rake db:create
 rake db:migrate
