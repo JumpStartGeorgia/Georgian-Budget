@@ -1,15 +1,36 @@
 module Csv
   class PrimaryFinancesZipper
-    attr_reader :zip_filepath, :locale
+    attr_reader :zip_file_dir, :locale
 
     def initialize(args)
-      @zip_filepath = args[:zip_filepath]
+      @zip_file_dir = args[:zip_file_dir]
       @locale = args[:locale]
     end
 
     def export
+      create_zip_filepath_dir
+      create_zip_file
+    end
+
+    private
+
+    def create_zip_filepath_dir
+      require 'fileutils'
+
+      FileUtils.mkdir_p(File.dirname(zip_filepath))
+    end
+
+    def zip_filepath
+      zip_file_dir.join(zip_file_name).to_s
+    end
+
+    def zip_file_name
+      "primary_finances_#{locale}.zip"
+    end
+
+    def create_zip_file
       require 'zip'
-      
+
       Zip::File.open(zip_filepath, Zip::File::CREATE) do |zipfile|
         input_filepaths.each do |filepath|
           zipfile.add(File.basename(filepath), filepath)
