@@ -17,6 +17,7 @@ module Csv
       require 'fileutils'
       FileUtils.mkdir_p(csv_dir)
 
+      require 'csv'
       I18n.with_locale locale do
         CSV.open(csv_file_path, 'wb') do |csv|
           rows.each { |row| csv << row }
