@@ -30,11 +30,11 @@ The web container is not configured by default to work for deploying, so you wil
 
 Ideally, this is only a temporary solution until we figure out how to deploy with docker.
 
-NOTE: The below commands will only work if the container you are setting up to deploy from is named `georgianbudget_web_1`. If it has a different name, then use it below in the `docker cp` commands.
+NOTE: The below commands will only work if the container you are setting up to deploy from is named `georgianbudgetapi_api_1`. If it has a different name, then use it below in the `docker cp` commands.
 
 1. Copy your global gitignore into the `web` container:
   ```
-  docker cp ~/.gitignore_global georgianbudget_web_1:/root/
+  docker cp ~/.gitignore_global georgianbudgetapi_api_1:/root/
   ```
 
 2. Run these commands from within the `web` container:
@@ -53,8 +53,8 @@ NOTE: The below commands will only work if the container you are setting up to d
 
 3. Make sure your local user has an ssh key at ~/.ssh/id_rsa and ~/.ssh/id_rsa.pub.
   ```
-  docker cp ~/.ssh/id_rsa georgianbudget_web_1:/root/.ssh/
-  docker cp ~/.ssh/id_rsa.pub georgianbudget_web_1:/root/.ssh/
+  docker cp ~/.ssh/id_rsa georgianbudgetapi_api_1:/root/.ssh/
+  docker cp ~/.ssh/id_rsa.pub georgianbudgetapi_api_1:/root/.ssh/
   ```
 
 4. Add your ssh key to the container's ssh-agent so that it doesn't ask for your passphrase when you deploy. You will have to enter your ssh key's passphrase.
@@ -133,8 +133,8 @@ If you want to view the output or interact with a running container, you can att
 ```
 docker-compose ps
 # find the name of the container you want to attach to
-# below we will attach to georgianbudget_web_1
-docker attach georgianbudget_web_1
+# below we will attach to georgianbudgetapi_api_1
+docker attach georgianbudgetapi_api_1
 ```
 
 ### Convenient Aliases
