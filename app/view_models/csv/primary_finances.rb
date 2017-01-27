@@ -46,7 +46,7 @@ module Csv
     end
 
     def file_name
-      "primary_finances_#{time_period_type}_#{locale}.csv"
+      "complete_primary_finances_#{time_period_type}_#{locale}.csv"
     end
 
     def headers

@@ -25,7 +25,7 @@ module Csv
     end
 
     def zip_file_name
-      "primary_finances_#{locale}.zip"
+      "complete_primary_finances_#{locale}.zip"
     end
 
     def create_zip_file

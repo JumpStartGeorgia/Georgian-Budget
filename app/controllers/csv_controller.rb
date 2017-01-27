@@ -1,8 +1,8 @@
 # NOT TESTED
 class CsvController < ApplicationController
-  def primary_finances
+  def complete_primary_finances
     locale = params[:locale]
-    filename = "primary_finances_#{locale}.zip"
+    filename = "complete_primary_finances_#{locale}.zip"
     filepath = Rails.root.join('public', 'system', 'csv', filename)
     if (File.exist?(filepath))
       send_file filepath

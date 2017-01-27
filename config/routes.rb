@@ -28,7 +28,7 @@ Rails.application.routes.draw do
     get '/explore' => 'root#explore'
     get '/about' => 'root#about'
     get '/list' => 'root#list'
-    get '/csv/primary_finances' => 'csv#primary_finances'
+    get '/csv/complete_primary_finances' => 'csv#complete_primary_finances'
 
     get '/:version' => 'api#main',
         as: 'api',
