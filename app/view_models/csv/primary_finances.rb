@@ -54,7 +54,8 @@ module Csv
         'Type',
         'Name',
         'Code',
-        'Finance Type'
+        'Finance Type',
+        'Connected Priorities'
         ] + time_period_headers
       end
 
@@ -99,8 +100,17 @@ module Csv
           item.class.to_s,
           item.name,
           item.respond_to?(:code) ? item.code : 'N/A',
-          finance_klass.to_s
+          finance_klass.to_s,
+          priorities_for(item)
         ]
+      end
+
+      def priorities_for(item)
+        if item.respond_to?(:priorities)
+          return item.priorities.map(&:name).join(' | ')
+        else
+          return 'N/A'
+        end
       end
 
       def finances_for(item, finance_klass)
