@@ -43,7 +43,7 @@ module Csv
     end
 
     def excel_filepaths
-      csv_filepaths.each do |csv_filepath|
+      csv_filepaths.map do |csv_filepath|
         create_excel_file(csv_filepath)
       end
     end
@@ -51,7 +51,7 @@ module Csv
     def create_excel_file(csv_filepath)
       output_path = "#{File.dirname(csv_filepath)}/" + File.basename(csv_filepath, '.*') + '.xls'
 
-      CsvExcelConverter.new.convert_csv(csv_filepath, output_path)
+      return CsvExcelConverter.new.convert_csv(csv_filepath, output_path)
     end
 
     def csv_filepaths

@@ -25,5 +25,7 @@ class CsvExcelConverter
     end
 
     book.write(output_path)
+
+    return output_path
   end
 end
