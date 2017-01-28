@@ -178,6 +178,9 @@ gem 'olive_branch', '~> 1.2.0'
 # Parses excel files
 gem 'rubyXL', '~> 3.3.21', require: false
 
+# Helps for converting CSV to excel
+gem 'spreadsheet', '~> 1.1', require: false
+
 # Creates nice-lookin' charts :)
 gem 'highcharts-rails', '~> 4.2', '>= 4.2.5'
 

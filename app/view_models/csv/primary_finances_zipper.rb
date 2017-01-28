@@ -39,7 +39,23 @@ module Csv
     end
 
     def input_filepaths
-      @input_filepaths ||= [
+      csv_filepaths + excel_filepaths
+    end
+
+    def excel_filepaths
+      csv_filepaths.each do |csv_filepath|
+        create_excel_file(csv_filepath)
+      end
+    end
+
+    def create_excel_file(csv_filepath)
+      output_path = "#{File.dirname(csv_filepath)}/" + File.basename(csv_filepath, '.*') + '.xls'
+
+      CsvExcelConverter.new.convert_csv(csv_filepath, output_path)
+    end
+
+    def csv_filepaths
+      @csv_filepaths ||= [
         Csv::PrimaryFinances.new(
           time_period_type: 'yearly',
           locale: locale
