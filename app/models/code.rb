@@ -5,6 +5,11 @@ class Code < ApplicationRecord
   validates :number, presence: true
   validates :codeable, presence: true
 
+  # generation refers to how far you have to zoom into the budget
+  # to find the item with this code. Examples:
+  # spending agencies: 1
+  # top-level programs: 2
+  # subprograms of top-level programs: 3
   def generation
     return 1 if represents_spending_agency?
 
