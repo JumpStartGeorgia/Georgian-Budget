@@ -37,68 +37,14 @@ RSpec.describe do DuplicateFinder
       end
     end
 
-    context 'when there is an item with the same code' do
+    context 'when there is an item with the same code and the same name' do
       before :example do
         previously_saved_item.add_code(FactoryGirl.attributes_for(
           :code,
           number: source_item_code_attr[:number],
           start_date: source_item_code_attr[:start_date] - 1
         ))
-      end
 
-      context 'and the same name' do
-        before :example do
-          previously_saved_item.add_name(FactoryGirl.attributes_for(
-            :name,
-            text: source_item_name_attr[:text],
-            start_date: source_item_name_attr[:start_date] - 1
-          ))
-        end
-
-        it 'returns that item as exact match' do
-          exact_match = DuplicateFinder.new(source_item).find_exact_match
-
-          expect(exact_match).to eq(previously_saved_item)
-        end
-      end
-
-      context 'and a name that represents the same item' do
-        before :example do
-          previously_saved_item.add_name(FactoryGirl.attributes_for(
-            :name,
-            text: "———#{source_item_name_attr[:text]}———",
-            start_date: source_item_name_attr[:start_date] - 1
-          ))
-        end
-
-        it 'returns that item as exact match' do
-          exact_match = DuplicateFinder.new(source_item).find_exact_match
-
-          expect(exact_match).to eq(previously_saved_item)
-        end
-      end
-
-      context 'and a different name' do
-        context 'and its monthly data overlaps the source item' do
-          before :example do
-            previously_saved_item.add_spent_finance(
-              time_period_obj: Month.for_date(Date.new(2012, 1, 1)))
-
-            source_item.add_spent_finance(
-              time_period_obj: Month.for_date(Date.new(2012, 1, 1)))
-          end
-
-          it 'does not return as exact match' do
-            exact_match = DuplicateFinder.new(source_item).find_exact_match
-
-            expect(exact_match).to eq(nil)
-          end
-        end
-      end
-    end
-
-    context 'when there is an item with the same name' do
-      before :example do
         previously_saved_item.add_name(FactoryGirl.attributes_for(
           :name,
           text: source_item_name_attr[:text],
@@ -106,45 +52,129 @@ RSpec.describe do DuplicateFinder
         ))
       end
 
-      context 'and a different code' do
-        before :example do
-          previously_saved_item.add_code(FactoryGirl.attributes_for(
-            :code,
-            number: "#{source_item_code_attr[:number]}1",
-            start_date: source_item_code_attr[:start_date] - 2
-          ))
-        end
+      it 'returns that item as exact match' do
+        exact_match = DuplicateFinder.new(source_item).find_exact_match
 
-        context 'and the items are spending agencies' do
-          let(:previously_saved_item) { FactoryGirl.create(:spending_agency) }
-          let(:source_item) { FactoryGirl.create(:spending_agency) }
+        expect(exact_match).to eq(previously_saved_item)
+      end
+    end
 
-          it 'returns the item as an exact match' do
-            exact_match = DuplicateFinder.new(source_item).find_exact_match
+    context 'when there is an item with the same code and name differing in punctuation' do
+      before :example do
+        previously_saved_item.add_code(FactoryGirl.attributes_for(
+          :code,
+          number: source_item_code_attr[:number],
+          start_date: source_item_code_attr[:start_date] - 1
+        ))
 
-            expect(exact_match).to eq(previously_saved_item)
-          end
-        end
+        previously_saved_item.add_name(FactoryGirl.attributes_for(
+          :name,
+          text: "———#{source_item_name_attr[:text]}———",
+          start_date: source_item_name_attr[:start_date] - 1
+        ))
+      end
 
-        context 'and the items are programs' do
-          context 'and they have the same number of code parts' do
-            it 'returns the item as an exact match' do
-              exact_match = DuplicateFinder.new(source_item).find_exact_match
+      it 'returns that item as exact match' do
+        exact_match = DuplicateFinder.new(source_item).find_exact_match
 
-              expect(exact_match).to eq(previously_saved_item)
-            end
-          end
+        expect(exact_match).to eq(previously_saved_item)
+      end
+    end
 
-          context 'and they have different number of code parts' do
-            before :example do
-              previously_saved_item.add_code(FactoryGirl.attributes_for(
-                :code,
-                number: "#{source_item_code_attr[:number]} 1",
-                start_date: source_item_code_attr[:start_date] - 1
-              ))
-            end
-          end
-        end
+    context 'when there is an item with overlapping official monthly data' do
+      before :example do
+        previously_saved_item.add_code(FactoryGirl.attributes_for(
+          :code,
+          number: source_item_code_attr[:number],
+          start_date: source_item_code_attr[:start_date] - 1
+        ))
+
+        previously_saved_item.add_name(FactoryGirl.attributes_for(
+          :name,
+          text: source_item_name_attr[:text],
+          start_date: source_item_name_attr[:start_date] - 1
+        ))
+
+        previously_saved_item.add_spent_finance(
+          time_period_obj: Month.for_date(Date.new(2012, 1, 1)))
+
+        source_item.add_spent_finance(
+          time_period_obj: Month.for_date(Date.new(2012, 1, 1)))
+      end
+
+      it 'does not return as exact match' do
+        exact_match = DuplicateFinder.new(source_item).find_exact_match
+
+        expect(exact_match).to eq(nil)
+      end
+    end
+
+    context 'when there is a spending agency with same name and diff code' do
+      let(:previously_saved_item) { FactoryGirl.create(:spending_agency) }
+      let(:source_item) { FactoryGirl.create(:spending_agency) }
+
+      before :example do
+        previously_saved_item.add_name(FactoryGirl.attributes_for(
+          :name,
+          text: source_item_name_attr[:text],
+          start_date: source_item_name_attr[:start_date] - 1
+        ))
+
+        previously_saved_item.add_code(FactoryGirl.attributes_for(
+          :code,
+          number: "#{source_item_code_attr[:number]}1",
+          start_date: source_item_code_attr[:start_date] - 2
+        ))
+      end
+
+      it 'returns the item as an exact match' do
+        exact_match = DuplicateFinder.new(source_item).find_exact_match
+
+        expect(exact_match).to eq(previously_saved_item)
+      end
+    end
+
+    context 'when there is a program with same name, diff code, same generation' do
+      before :example do
+        previously_saved_item.add_code(FactoryGirl.attributes_for(
+          :code,
+          number: "#{source_item_code_attr[:number]}2",
+          start_date: source_item_code_attr[:start_date] - 1
+        ))
+
+        previously_saved_item.add_name(FactoryGirl.attributes_for(
+          :name,
+          text: source_item_name_attr[:text],
+          start_date: source_item_name_attr[:start_date] - 1
+        ))
+      end
+
+      it 'returns the item as an exact match' do
+        exact_match = DuplicateFinder.new(source_item).find_exact_match
+
+        expect(exact_match).to eq(previously_saved_item)
+      end
+    end
+
+    context 'when there is a program with same name, diff code, diff generation' do
+      before :example do
+        previously_saved_item.add_code(FactoryGirl.attributes_for(
+          :code,
+          number: "#{source_item_code_attr[:number]} 1",
+          start_date: source_item_code_attr[:start_date] - 1
+        ))
+
+        previously_saved_item.add_name(FactoryGirl.attributes_for(
+          :name,
+          text: source_item_name_attr[:text],
+          start_date: source_item_name_attr[:start_date] - 1
+        ))
+      end
+
+      it 'returns the item as an exact match' do
+        exact_match = DuplicateFinder.new(source_item).find_exact_match
+
+        expect(exact_match).to eq(previously_saved_item)
       end
     end
   end
