@@ -6,27 +6,27 @@ require_relative 'priority_associations/list'
 
 class BudgetFiles
   def self.monthly_spreadsheet_dir
-    budget_files_dir.join('monthly_spreadsheets')
+    budget_files_from_government.join('monthly_spreadsheets')
   end
 
   def self.yearly_spreadsheet_dir
-    budget_files_dir.join('yearly_spreadsheets')
+    budget_files_from_government.join('yearly_spreadsheets')
   end
 
   def self.english_translations_file
-    budget_files_dir.join('budget_item_translations.csv').to_s
+    budget_files_not_from_government.join('budget_item_translations.csv').to_s
   end
 
   def self.priorities_list
-    budget_files_dir.join('priorities_list.csv').to_s
+    budget_files_not_from_government.join('priorities_list.csv').to_s
   end
 
   def self.priority_associations_list
-    budget_files_dir.join('priority_associations.csv').to_s
+    budget_files_not_from_government.join('priority_associations.csv').to_s
   end
 
   def self.duplicate_pairs_file
-    budget_files_dir.join('duplicate_pairs.csv').to_s
+    budget_files_not_from_government.join('duplicate_pairs.csv').to_s
   end
 
   def initialize(args)
@@ -58,8 +58,12 @@ class BudgetFiles
     print_end_messages
   end
 
-  def self.budget_files_dir
-    budget_files_repo_dir.join('files')
+  def self.budget_files_from_government
+    budget_files_repo_dir.join('files_from_government')
+  end
+
+  def self.budget_files_not_from_government
+    budget_files_repo_dir.join('files_not_from_government')
   end
 
   def self.budget_files_repo_dir
