@@ -83,7 +83,6 @@ class DuplicateFinder
   end
 
   def is_exact_match?(other_item)
-    return false unless code_generation_matches?(other_item)
     return false unless name_matches?(other_item)
     return false if items_overlap?(other_item)
 
@@ -108,10 +107,6 @@ class DuplicateFinder
 
   def code_matches?(other_item)
     other_item.codes.pluck(:number).include? source_item.codes.last.number
-  end
-
-  def code_generation_matches?(other_item)
-    source_item.codes.last.generation == other_item.codes.last.generation
   end
 
   attr_reader :source_item
