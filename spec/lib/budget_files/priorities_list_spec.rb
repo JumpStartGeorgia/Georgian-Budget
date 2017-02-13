@@ -107,30 +107,54 @@ RSpec.describe 'BudgetFiles' do
         expect(education_priority.perma_id).to_not eq(nil)
       end
 
-      it 'makes correct number of direct connections to welfare priority' do
-        expect(social_welfare_priority.connections.direct.length).to eq(42)
-      end
-
       it 'makes correct number of direct connections to welfare priority in 2012' do
         expect(
           social_welfare_priority
           .connections
           .direct
-          .where(Year.new(2012).to_hash)
+          .with_time_period(Year.new(2012))
           .length
         ).to eq(8)
       end
 
-      it 'makes correct number of connections to welfare priority' do
-        expect(social_welfare_priority.connections.length).to eq(42)
+      it 'makes correct number of direct connections to economic stability priority in 2013' do
+        expect(
+          economic_stability_priority
+          .connections
+          .direct
+          .with_time_period(Year.new(2013))
+          .length
+        ).to eq(15)
       end
 
-      it 'makes correct number of direct connections to defense priority' do
-        expect(defense_priority.connections.direct.length).to eq(79)
+      it 'makes correct number of direct connections to education priority in 2014' do
+        expect(
+          education_priority
+          .connections
+          .direct
+          .with_time_period(Year.new(2014))
+          .length
+        ).to eq(17)
       end
 
-      it 'makes correct number of connections to defense priority' do
-        expect(defense_priority.connections.length).to eq(79)
+      it 'makes correct number of direct connections to defense priority in 2015' do
+        expect(
+          defense_priority
+          .connections
+          .direct
+          .with_time_period(Year.new(2015))
+          .length
+        ).to eq(21)
+      end
+
+      it 'makes correct number of direct connections to culture priority in 2016' do
+        expect(
+          culture_priority
+          .connections
+          .direct
+          .with_time_period(Year.new(2016))
+          .length
+        ).to eq(22)
       end
 
       it 'saves spent amount for culture priority in 2013 from 45 00 agency' do
