@@ -432,5 +432,29 @@ RSpec.describe ItemMerger do
         expect(receiver.priority_connections.length).to eq(3)
       end
     end
+
+    context 'when giver has directly connected priority and receiver has program' do
+      let!(:receiver) { FactoryGirl.create(:spending_agency) }
+      let!(:giver) { FactoryGirl.create(:spending_agency) }
+
+      let!(:receiver_child_program) do
+        create(:program, spending_agency: receiver)
+      end
+
+      before do
+        create(:priority_connection, direct: true, priority_connectable: giver)
+
+        ItemMerger.new(receiver).merge(giver)
+      end
+
+      it 'moves direct priority connection to receiver' do
+        expect(receiver.priority_connections.direct.length).to eq(1)
+      end
+
+      it "indirectly connects receiver's program to priority" do
+        expect(receiver_child_program.priority_connections.indirect.length)
+        .to eq(1)
+      end
+    end
   end
 end

@@ -98,13 +98,7 @@ class BudgetDataSaver
   end
 
   def merge_items(other_item)
-    if other_item.start_date.blank? || new_item.start_date.blank?
-      ItemMerger.new(other_item).merge(new_item)
-    elsif other_item.start_date <= new_item.start_date
-      ItemMerger.new(other_item).merge(new_item)
-    else
-      ItemMerger.new(new_item).merge(other_item)
-    end
+    ItemMerger.new(other_item).merge(new_item)
   end
 
   attr_reader :data_holder

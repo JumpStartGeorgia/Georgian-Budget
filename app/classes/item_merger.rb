@@ -73,6 +73,13 @@ class ItemMerger
   def merge_priority_connections(priority_connections)
     return if priority_connections.blank?
 
-    priority_connections.update(priority_connectable: receiver)
+    priority_connections.each do |connection|
+      PriorityConnector.new(
+        receiver,
+        connection.moveable_attributes
+      ).connect
+
+      connection.destroy
+    end
   end
 end

@@ -15,6 +15,7 @@ RSpec.describe 'BudgetFiles' do
         create(:spending_agency)
         .add_code(attributes_for(:code, number: '45 00'))
         .add_name(attributes_for(:name, text_ka: 'საქართველოს საპატრიარქო'))
+        .save_perma_id
         .add_spent_finance(attributes_for(:spent_finance,
           time_period_obj: Year.new(2013)))
         .add_spent_finance(attributes_for(:spent_finance,
@@ -29,6 +30,7 @@ RSpec.describe 'BudgetFiles' do
         create(:program)
         .add_code(attributes_for(:code, number: '45 01'))
         .add_name(attributes_for(:name, text_ka: 'სასულიერო განათლების ხელშეწყობის გრანტი'))
+        .save_perma_id
         .add_spent_finance(attributes_for(:spent_finance,
           time_period_obj: Year.new(2013)))
         .add_spent_finance(attributes_for(:spent_finance,
@@ -43,6 +45,7 @@ RSpec.describe 'BudgetFiles' do
         create(:program)
         .add_code(attributes_for(:code, number: '45 05'))
         .add_name(attributes_for(:name, text_ka: 'საქართველოს საპატრიარქოს ბათუმის წმინდა მოწამე ეკატერინეს სახელობის სათნოების სავანისათვის გადასაცემი გრანტი'))
+        .save_perma_id
         .add_spent_finance(attributes_for(:spent_finance,
           time_period_obj: Year.new(2013)))
         .add_spent_finance(attributes_for(:spent_finance,
@@ -53,6 +56,26 @@ RSpec.describe 'BudgetFiles' do
         .add_planned_finance(attributes_for(:planned_finance,
           time_period_obj: Year.new(2014),
           announce_date: Date.new(2014, 1, 1)))
+
+        create(:spending_agency)
+        .add_code(attributes_for(:code, number: '24 00'))
+        .add_name(attributes_for(:name, text_ka: 'საქართველოს ეკონომიკისა და მდგრადი განვითარების სამინისტრო'))
+        .save_perma_id
+
+        create(:program)
+        .add_code(attributes_for(:code, number: '24 01'))
+        .add_name(attributes_for(:name, text_ka: 'ეკონომიკური პოლიტიკა და სახელმწიფო ქონების მართვა'))
+        .save_perma_id
+
+        create(:spending_agency)
+        .add_code(attributes_for(:code, number: '08 00'))
+        .add_name(attributes_for(:name, text_ka: 'საქართველოს უზენაესი სასამართლო'))
+        .save_perma_id
+
+        create(:program)
+        .add_code(attributes_for(:code, number: '08 01'))
+        .add_name(attributes_for(:name, text_ka: 'საქართველოს უზენაესი სასამართლო'))
+        .save_perma_id
 
         BudgetFiles.new(
           priorities_list: BudgetFiles.priorities_list,
@@ -155,6 +178,64 @@ RSpec.describe 'BudgetFiles' do
           .with_time_period(Year.new(2016))
           .length
         ).to eq(22)
+      end
+
+      it "connects program 08 01 indirectly to 08 00's directly connected priority" do
+        # indirectly connected to priority სასამართლო სისტემა in 2012
+        # via agency 08 00
+        program_08_01 = BudgetItem.find(
+          code: '08 01',
+          name: 'საქართველოს უზენაესი სასამართლო'
+        )
+
+        # directly connected to priority სასამართლო სისტემა in 2012
+        agency_08_00 = BudgetItem.find(
+          code: '08 00',
+          name: 'საქართველოს უზენაესი სასამართლო'
+        )
+
+        expect(
+          program_08_01
+          .priority_connections
+          .indirect
+          .with_time_period(Year.new(2012))[0]
+          .priority
+        ).to eq(
+          agency_08_00
+          .priority_connections
+          .direct
+          .with_time_period(Year.new(2012))[0]
+          .priority
+        )
+      end
+
+      it "indirectly connects 24 00 to 24 01's directly connected priority" do
+        # indirectly connected to priority მაკროეკონომიკური... in 2012
+        # via program 24 01
+        agency_24_00 = BudgetItem.find(
+          code: '24 00',
+          name: 'საქართველოს ეკონომიკისა და მდგრადი განვითარების სამინისტრო'
+        )
+
+        # directly connected to priority მაკროეკონომიკური... in 2012
+        program_24_01 = BudgetItem.find(
+          code: '24 01',
+          name: 'ეკონომიკური პოლიტიკა და სახელმწიფო ქონების მართვა'
+        )
+
+        expect(
+          agency_24_00
+          .priority_connections
+          .indirect
+          .with_time_period(Year.new(2012))[0]
+          .priority
+        ).to eq(
+          program_24_01
+          .priority_connections
+          .direct
+          .with_time_period(Year.new(2012))[0]
+          .priority
+        )
       end
 
       it 'saves spent amount for culture priority in 2013 from 45 00 agency' do

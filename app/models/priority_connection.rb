@@ -1,6 +1,6 @@
 class PriorityConnection < ApplicationRecord
   include StartEndDateable
-  
+
   belongs_to :priority
   belongs_to :priority_connectable, polymorphic: true
 
@@ -16,6 +16,15 @@ class PriorityConnection < ApplicationRecord
 
   def self.indirect
     where(direct: false)
+  end
+
+  def moveable_attributes
+    {
+      start_date: start_date,
+      end_date: end_date,
+      direct: direct,
+      priority_id: priority_id
+    }
   end
 
   private
