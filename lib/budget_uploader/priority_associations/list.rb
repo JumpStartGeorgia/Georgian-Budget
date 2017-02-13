@@ -20,6 +20,7 @@ module PriorityAssociations
             puts "#{remaining_rows} remaining rows to process in priority associations spreadsheet"
           end
 
+          next if index == 0
           row = Row.new(
             row,
             priorities_list: priorities_list,
