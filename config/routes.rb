@@ -31,6 +31,7 @@ Rails.application.routes.draw do
     get '/csv/complete_primary_finances' => 'csv#complete_primary_finances'
 
     get '/:version' => 'api#main',
+        version: /v(\d+)/,
         as: 'api',
         controller: 'api',
         constraints: { format: :json }
