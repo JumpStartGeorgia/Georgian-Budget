@@ -18,11 +18,15 @@ This api application visualizes the national budget of the Republic of Georgia.
     1. `docker cp /path/to/db/file db_container_name:/tmp/backup.sql`
     1. `docker-compose run db pg_restore --clean --no-owner -d "dev_db_name" -U "postgres" /tmp/backup.sql`
 
-  1. If you don't have a dump file to restore from, you can run the uploader on the budget files (takes a long time, probably an hour or more):
-
-    `docker-compose run api rake budget_data:sync_with_repo budget_data:upload`
+  1. If you don't have a dump file to restore from, you can run the budget uploader (consult separate section below).
 
 1. Go to [localhost:3000](http://localhost:3000) or start using the API :)
+
+## Run the budget uploader
+
+1. Empty the database: `docker-compose run api rake db:reset`
+1. Sync the local budget files repo with master: `docker-compose run api rake budget_data:sync_with_repo`
+1. Run the uploader (takes a long time): `docker-compose run api rake budget_data:upload`
 
 ## Deploy (or run any mina command) from within `api` container
 
