@@ -17,9 +17,7 @@ This api application visualizes the national budget of the Republic of Georgia.
     1. `docker-compose ps` ---> get the name of the `db` container
     1. `docker cp /path/to/db/file db_container_name:/tmp/backup.sql`
     1. `docker-compose run db pg_restore --clean --no-owner -d "dev_db_name" -U "postgres" /tmp/backup.sql`
-
   1. If you don't have a dump file to restore from, you can run the budget uploader (consult separate section below).
-
 1. Go to [localhost:3000](http://localhost:3000) or start using the API :)
 
 ## Run the budget uploader
