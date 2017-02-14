@@ -31,6 +31,8 @@ module Csv
     def create_zip_file
       require 'zip'
 
+      File.delete(zip_filepath) if File.exists?(zip_filepath)
+
       Zip::File.open(zip_filepath, Zip::File::CREATE) do |zipfile|
         input_filepaths.each do |filepath|
           zipfile.add(File.basename(filepath), filepath)
