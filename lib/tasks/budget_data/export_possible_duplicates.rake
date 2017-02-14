@@ -32,9 +32,10 @@ namespace :budget_data do
 
         csv << [
           '',
-          possible_duplicate_pair.pair_type,
+          '',
           possible_duplicate_pair.item1.perma_id,
           possible_duplicate_pair.item2.perma_id,
+          possible_duplicate_pair.pair_type,
           possible_duplicate_pair.item1_code_when_found,
           possible_duplicate_pair.item2_code_when_found,
           possible_duplicate_pair.item1_name_when_found,
