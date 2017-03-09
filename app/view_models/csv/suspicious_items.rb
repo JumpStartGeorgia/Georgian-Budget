@@ -10,6 +10,10 @@ module Csv
       Csv::OnlyYearlyFinancesExporter
       .new(directory_path: directory_path)
       .export
+
+      Csv::OnlyMonthlyOrQuarterlyFinancesExporter
+      .new(directory_path: directory_path)
+      .export
     end
 
     private

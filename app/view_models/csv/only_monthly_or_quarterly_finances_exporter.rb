@@ -1,5 +1,5 @@
 module Csv
-  class OnlyYearlyFinancesExporter
+  class OnlyMonthlyOrQuarterlyFinancesExporter
     attr_reader :directory_path
 
     def initialize(options = {})
@@ -43,9 +43,9 @@ module Csv
 
     def item_rows_for_klass(budget_item_klass)
       budget_item_klass.all.select do |item|
-        item.spent_finances.yearly.official.present? &&
-        item.spent_finances.quarterly.official.empty? &&
-        item.spent_finances.monthly.official.empty?
+        (item.spent_finances.monthly.official.present? ||
+         item.spent_finances.quarterly.official.present?) &&
+        item.spent_finances.yearly.official.empty?
       end.map do |item|
         [
           item.perma_id,
@@ -63,7 +63,7 @@ module Csv
     end
 
     def csv_file_name
-      'only_yearly_finances.csv'
+      'only_monthly_or_quarterly_finances.csv'
     end
   end
 end
