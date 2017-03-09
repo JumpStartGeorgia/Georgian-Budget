@@ -27,6 +27,7 @@ module Csv
     def header_row
       [
         'perma_id',
+        'type',
         'name',
         'code',
         '# yearly spent',
@@ -49,6 +50,7 @@ module Csv
       end.map do |item|
         [
           item.perma_id,
+          item.class.to_s,
           item.name,
           item.code,
           item.spent_finances.yearly.official.count,

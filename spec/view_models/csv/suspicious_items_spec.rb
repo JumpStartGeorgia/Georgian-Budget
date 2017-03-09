@@ -21,10 +21,10 @@ RSpec.describe Csv::SuspiciousItems do
       expect(File.exist?(
         directory_path.join('only_monthly_or_quarterly_finances.csv')
       )).to eq(true)
-      
-      # expect(File.exist?(
-      #   directory_path.join('no_priority_connections.csv')
-      # )).to eq(true)
+
+      expect(File.exist?(
+        directory_path.join('no_priority_connections.csv')
+      )).to eq(true)
     end
   end
 end
