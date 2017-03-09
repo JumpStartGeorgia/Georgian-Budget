@@ -8,7 +8,7 @@ This api application visualizes the national budget of the Republic of Georgia.
   2. Add Secrets (use `rake secret` to generate values)
   3. Use `postgres` as the value for `DB_USER` and `TEST_DB_USER`
   4. Set database names for `DB_NAME` and `TEST_DB_NAME`, such as 'budget_dev' and 'budget_test'
-1. Install [docker](https://www.docker.com/products/overview)
+1. Install [docker](https://www.docker.com/products/overview) and [docker-compose](https://docs.docker.com/compose/install/)
 1. `docker-compose build` (takes a while)
 1. `docker-compose up`
 1. `docker-compose run api rake db:create db:migrate db:seed`
