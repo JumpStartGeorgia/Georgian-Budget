@@ -12,4 +12,8 @@ class BudgetItem
 
     perma_id.present? ? perma_id.perma_idable : nil
   end
+
+  def self.klasses
+    [Total, Priority, SpendingAgency, Program]
+  end
 end
