@@ -282,68 +282,6 @@ RSpec.describe 'BudgetFiles' do
         .to eq(PlannedFinance.where(finance_plannable: child_programs)
           .with_time_period(Year.new(2014)).pluck(:amount).sum)
       end
-
-      # it 'assigns parliament no direct priority connections' do
-      #   parliament = BudgetItem.find(
-      #     code: '01 00',
-      #     name: 'საქართველოს პარლამენტი და მასთან არსებული ორგანიზაციები'
-      #   )
-      #
-      #   expect(audit_regulation_program.direct_priorities).to be_empty
-      # end
-      #
-      # it 'assigns audit regulation program to economic stability priority in 2012' do
-      #   audit_regulation_program = BudgetItem.find(code: '01 02', name: 'აუდიტორული საქმიანობის სახელმწიფო რეგულირება')
-      #
-      #   expect(audit_regulation_program.direct_priorities_on_date(Date.new(2012, 1, 1)))
-      #   .to contain_exactly(economic_stability_priority)
-      #
-      #   expect(patriarch_agency.direct_priorities_on_date(Date.new(2013, 1, 1)))
-      #   .to be_empty
-      # end
-      #
-      # it 'assigns priority to library program' do
-      #   library_program = BudgetItem.find(code: '01 02', name: 'საბიბლიოთეკო საქმიანობა')
-      #
-      #   expect(patriarch_agency.direct_priorities_on_date(Date.new(2012, 1, 1)))
-      #   .to contain_exactly(culture_priority)
-      #
-      #   expect(patriarch_agency.direct_priorities_on_date(Date.new(2016, 12, 31)))
-      #   .to contain_exactly(culture_priority)
-      # end
-      #
-      # it 'assigns priority to patriach spending agency from 2012-2013' do
-      #   patriarch_agency = BudgetItem.find(
-      #     code: '45 00',
-      #     name: 'საქართველოს საპატრიარქო'
-      #   )
-      #
-      #   expect(patriarch_agency.direct_priorities_on_date(Date.new(2012, 1, 1)))
-      #   .to contain_exactly(culture_priority)
-      #
-      #   expect(patriarch_agency.direct_priorities_on_date(Date.new(2013, 12, 31)))
-      #   .to contain_exactly(culture_priority)
-      #
-      #   expect(patriarch_agency.direct_priorities_on_date(Date.new(2014, 1, 1)))
-      #   .to be_empty
-      # end
-      #
-      # it 'assigns priority to patriarch tv program from 2014-2016' do
-      #   patriarch_tv_program = BudgetItem.find(
-      #     code: '45 11',
-      #     name: 'საქართველოს საპატრიარქოს ტელევიზიის სუბსიდირების ღონისძიებები'
-      #   )
-      #
-      #   expect(patriarch_tv_program.direct_priorities_on_date(Date.new(2013, 12, 31)))
-      #   .to contain_exactly(culture_priority)
-      #
-      #   expect(patriarch_tv_program.direct_priorities_on_date(Date.new(2014, 1, 1)))
-      #   .to contain_exactly(culture_priority)
-      #
-      #   expect(
-      #     patriarch_tv_program.direct_priorities_on_date(Date.new(2016, 12, 31))
-      #   ).to contain_exactly(culture_priority)
-      # end
     end
   end
 end
