@@ -29,7 +29,7 @@ class BudgetFiles
     budget_files_not_from_government.join('duplicate_pairs.csv').to_s
   end
 
-  def initialize(args)
+  def initialize(args = {})
     @start_time = Time.now
     @num_monthly_sheets_processed = 0
     @end_messages = []
@@ -45,6 +45,7 @@ class BudgetFiles
   def upload
     print_start_messages
 
+    Deleter.delete_all_budget_data
     
     upload_monthly_sheets if monthly_sheets.present?
     upload_yearly_sheets if yearly_sheets.present?
