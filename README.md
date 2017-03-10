@@ -22,7 +22,6 @@ This api application visualizes the national budget of the Republic of Georgia.
 
 ## Run the budget uploader
 
-1. Empty the database: `docker-compose run api rake db:reset`
 1. Sync the local budget files repo with master: `docker-compose run api rake budget_data:sync_with_repo`
 1. Run the uploader (takes a long time): `docker-compose run api rake budget_data:upload`
 
