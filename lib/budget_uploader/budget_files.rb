@@ -54,6 +54,7 @@ class BudgetFiles
     save_other_time_period_spent_finances
     save_priority_finances
     destroy_non_duplicate_pairs
+    export_csvs
 
     print_end_messages
   end
@@ -258,6 +259,12 @@ class BudgetFiles
 
   def destroy_non_duplicate_pairs
     WrongDuplicateDestroyer.new.destroy_non_duplicate_pairs(PossibleDuplicatePair.all)
+  end
+
+  def export_csvs
+    Csv::SuspiciousItems.new(
+      directory_path: Rails.root.join('tmp', 'suspicious_items')
+    ).export
   end
 
   def print_start_messages
