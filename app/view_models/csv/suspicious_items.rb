@@ -14,6 +14,10 @@ module Csv
       Csv::OnlyMonthlyOrQuarterlyFinancesExporter
       .new(directory_path: directory_path)
       .export
+
+      Csv::NoPriorityConnectionsExporter
+      .new(directory_path: directory_path)
+      .export
     end
 
     private
