@@ -23,9 +23,9 @@
 ///////  Load dependencies here  ///////
 
 // require twitter/bootstrap/transition
-// require twitter/bootstrap/alert
+//= require twitter/bootstrap/alert
 // require twitter/bootstrap/modal
-// require twitter/bootstrap/dropdown
+//= require twitter/bootstrap/dropdown
 // require twitter/bootstrap/scrollspy
 // require twitter/bootstrap/tab
 // require twitter/bootstrap/tooltip
