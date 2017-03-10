@@ -7,6 +7,8 @@ module Csv
     end
 
     def export
+      puts "\nExporting suspicious items to directory #{directory_path}"
+
       Csv::OnlyYearlyFinancesExporter
       .new(directory_path: directory_path)
       .export
@@ -18,6 +20,8 @@ module Csv
       Csv::NoPriorityConnectionsExporter
       .new(directory_path: directory_path)
       .export
+
+      puts "\nFinished exporting suspicious items to directory #{directory_path}"
     end
 
     private

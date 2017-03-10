@@ -7,7 +7,7 @@ module Csv
     end
 
     def export
-      puts "Exporting CSV to #{csv_file_path}"
+      puts "\nExporting CSV to #{csv_file_path}"
 
       require 'fileutils'
       require 'csv'

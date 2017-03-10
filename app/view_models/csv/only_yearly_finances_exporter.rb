@@ -7,6 +7,8 @@ module Csv
     end
 
     def export
+      puts "\nExporting CSV to #{csv_file_path}"
+
       require 'fileutils'
       require 'csv'
 
@@ -16,6 +18,8 @@ module Csv
           rows.each { |row| csv << row }
         end
       end
+
+      puts "Finished exporting CSV to #{csv_file_path}"
     end
 
     private
