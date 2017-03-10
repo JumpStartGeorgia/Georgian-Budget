@@ -45,6 +45,7 @@ class BudgetFiles
   def upload
     print_start_messages
 
+    
     upload_monthly_sheets if monthly_sheets.present?
     upload_yearly_sheets if yearly_sheets.present?
     save_priorities_list if priorities_list.present?

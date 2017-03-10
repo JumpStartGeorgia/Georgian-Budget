@@ -1,7 +1,9 @@
 # Deletes all items from database. Removes items with foreign key constraints
 # first, so that Postgres does not prevent deletion.
 class Deleter
-  def self.delete_all
+  def self.delete_all_budget_data
+    Name.find_by_sql('DELETE FROM name_translations')
+    
     [
       SpentFinance,
       PlannedFinance,
@@ -15,6 +17,5 @@ class Deleter
       Priority,
       Total
     ].each(&:delete_all)
-    ApplicationRecord.subclasses.select { |c| !c.abstract_class? }.each(&:delete_all)
   end
 end
