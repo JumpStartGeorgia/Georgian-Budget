@@ -161,13 +161,18 @@ RSpec.describe 'BudgetFiles' do
       end
 
       it 'makes correct number of direct connections to defense priority in 2015' do
+        # The number of indirectly connected items listed for the defense
+        # priority in the 2015 Priority PDF is actually 21. However,
+        # three of these items do not appear in the yearly or monthly
+        # spreadsheets, so the defense priority is only indirectly connected
+        # to 18 items in 2015.
         expect(
           defense_priority
           .connections
           .direct
           .with_time_period(Year.new(2015))
           .length
-        ).to eq(21)
+        ).to eq(18)
       end
 
       it 'makes correct number of direct connections to culture priority in 2016' do
