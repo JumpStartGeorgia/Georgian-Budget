@@ -187,6 +187,9 @@ gem 'highcharts-rails', '~> 4.2', '>= 4.2.5'
 # Provide API access from other origins
 gem 'rack-cors', '~> 0.4.0'
 
+# wysiwyg editor
+gem 'ckeditor', '~> 4.1', '>= 4.1.6'
+
 group :test do
   # Test the number of SQL queries are created by a model call
   gem 'rspec-query-limit', '~> 0.1.2'
