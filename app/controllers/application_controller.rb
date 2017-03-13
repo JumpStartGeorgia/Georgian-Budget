@@ -5,7 +5,6 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   before_action :set_locale
-  before_action :set_gon_api_path
 
   ##############################################
   # Actions #
@@ -14,10 +13,6 @@ class ApplicationController < ActionController::Base
     I18n.locale = params[:locale] || I18n.default_locale
   end
   private :set_locale
-
-  def set_gon_api_path
-    gon.api_path = api_path(version: 'v1')
-  end
 
   ##############################################
 

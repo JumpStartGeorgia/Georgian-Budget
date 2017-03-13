@@ -3,9 +3,6 @@ class RootController < ApplicationController
   def index
   end
 
-  def explore
-  end
-
   def list
     @total = Total.first
     @programs = Program.all.with_most_recent_names

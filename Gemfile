@@ -169,9 +169,6 @@ end
 #####################################################################
 ########################## Project Gems #############################
 
-# Provides integration for using react in rails
-gem 'react-rails', '~> 1.8.2'
-
 # Converts API request and response keys to snake_case or camelCase
 gem 'olive_branch', '~> 1.2.0'
 

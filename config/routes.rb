@@ -25,16 +25,17 @@ Rails.application.routes.draw do
         as: 'nameable'
 
     root 'root#index'
-    get '/explore' => 'root#explore'
     get '/about' => 'root#about'
     get '/list' => 'root#list'
     get '/csv/complete_primary_finances' => 'csv#complete_primary_finances'
 
-    get '/:version' => 'api#main',
-        version: /v(\d+)/,
-        as: 'api',
-        controller: 'api',
-        constraints: { format: :json }
+    scope module: :api do
+      namespace :v1 do
+        resources :page_contents, only: :show, constraints: { format: :json }
+
+        root 'budget_items#main', constraints: { format: :json }
+      end
+    end
 
     # handles /en/fake/path/whatever
     get '*path', to: redirect("/#{I18n.default_locale}")

@@ -1,15 +1,15 @@
 require('rails_helper')
 
 RSpec.describe 'API' do
-  context 'when version is not v1' do
-    it 'responds with version error' do
-      get '/en/v2'
+  context 'when requesting about page content' do
+    let!(:about_page_content) do
+      create(:page_content, name: 'about')
+    end
+
+    it 'returns about page content' do
+      get '/en/v1/page_contents/about'
 
       json = JSON.parse(response.body)
-      error = json['errors'][0]
-
-      expect(response.status).to eq(400)
-      expect(error['text']).to eq('API version "v2" does not exist')
     end
   end
 
