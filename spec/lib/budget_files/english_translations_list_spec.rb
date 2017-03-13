@@ -11,13 +11,6 @@ RSpec.describe 'BudgetFiles' do
       before :context do
         start_date_2015_jan_1 = Date.new(2015, 1, 1)
 
-        @priority = FactoryGirl.create(
-          :priority
-        ).add_name(
-          text_ka: 'უკატეგორიო',
-          start_date: start_date_2015_jan_1
-        )
-
         @spending_agency = FactoryGirl.create(
           :spending_agency
         ).add_code(
@@ -52,10 +45,6 @@ RSpec.describe 'BudgetFiles' do
 
       after :context do
         Deleter.delete_all_budget_data
-      end
-
-      it 'saves English translation of priority' do
-        expect(@priority.name_en).to eq('Uncategorized')
       end
 
       it 'saves English translation of spending agency' do
