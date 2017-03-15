@@ -12,7 +12,8 @@ class BudgetFiles
               :priority_associations_list,
               :start_time,
               :time_prettifier,
-              :duplicate_pairs_list
+              :duplicate_pairs_list,
+              :delete_all_budget_data
 
   def self.monthly_spreadsheet_dir
     budget_files_from_government.join('monthly_spreadsheets')
@@ -51,22 +52,31 @@ class BudgetFiles
   end
 
   def initialize(args = {})
+    options = default_options.merge(args)
+
     @start_time = Time.now
     @num_monthly_sheets_processed = 0
     @end_messages = []
     @time_prettifier = TimePrettifier.new
-    @budget_item_translations = get_budget_item_translations(args)
-    @monthly_sheets = get_monthly_sheets(args)
-    @yearly_sheets = get_yearly_sheets(args)
-    @priorities_list = get_priorities_list(args)
-    @priority_associations_list = get_priority_associations_list(args)
-    @duplicate_pairs_list = get_duplicate_pairs_list(args)
+    @budget_item_translations = get_budget_item_translations(options)
+    @monthly_sheets = get_monthly_sheets(options)
+    @yearly_sheets = get_yearly_sheets(options)
+    @priorities_list = get_priorities_list(options)
+    @priority_associations_list = get_priority_associations_list(options)
+    @duplicate_pairs_list = get_duplicate_pairs_list(options)
+    @delete_all_budget_data = options[:delete_all_budget_data]
+  end
+
+  def default_options
+    {
+      delete_all_budget_data: false
+    }
   end
 
   def upload
     print_start_messages
 
-    Deleter.delete_all_budget_data
+    Deleter.delete_all_budget_data if delete_all_budget_data
 
     upload_monthly_sheets if monthly_sheets.present?
     upload_yearly_sheets if yearly_sheets.present?
@@ -77,7 +87,7 @@ class BudgetFiles
     save_other_time_period_spent_finances
     save_priority_finances
     destroy_non_duplicate_pairs
-    export_csvs
+    export_csvs unless ENV['RAILS_ENV'] == 'test'
 
     print_end_messages
   end

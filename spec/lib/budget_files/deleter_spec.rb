@@ -5,7 +5,7 @@ RSpec.describe 'Deleter in Budget Uploader' do
   it 'destroys previously existing programs' do
     create_list(:priority, 2)
 
-    BudgetFiles.new.upload
+    BudgetFiles.new(delete_all_budget_data: true).upload
 
     expect(Priority.count).to eq(0)
   end

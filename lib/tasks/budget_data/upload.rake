@@ -9,7 +9,8 @@ namespace :budget_data do
       priorities_list: BudgetFiles.priorities_list,
       priority_associations_list: BudgetFiles.priority_associations_list,
       budget_item_translations: BudgetFiles.english_translations_file,
-      duplicate_pairs_file: BudgetFiles.duplicate_pairs_file
+      duplicate_pairs_file: BudgetFiles.duplicate_pairs_file,
+      delete_all_budget_data: true
     ).upload
   end
 
