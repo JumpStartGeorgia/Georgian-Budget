@@ -5,6 +5,15 @@ require_relative 'duplicate_pairs_list'
 require_relative 'priority_associations/list'
 
 class BudgetFiles
+  attr_reader :monthly_sheets,
+              :yearly_sheets,
+              :budget_item_translations,
+              :priorities_list,
+              :priority_associations_list,
+              :start_time,
+              :time_prettifier,
+              :duplicate_pairs_list
+
   def self.monthly_spreadsheet_dir
     budget_files_from_government.join('monthly_spreadsheets')
   end
@@ -29,6 +38,18 @@ class BudgetFiles
     budget_files_not_from_government.join('duplicate_pairs.csv').to_s
   end
 
+  def self.budget_files_from_government
+    budget_files_repo_dir.join('files_from_government')
+  end
+
+  def self.budget_files_not_from_government
+    budget_files_repo_dir.join('files_not_from_government')
+  end
+
+  def self.budget_files_repo_dir
+    Rails.root.join('budget_files', 'repo')
+  end
+
   def initialize(args = {})
     @start_time = Time.now
     @num_monthly_sheets_processed = 0
@@ -46,7 +67,7 @@ class BudgetFiles
     print_start_messages
 
     Deleter.delete_all_budget_data
-    
+
     upload_monthly_sheets if monthly_sheets.present?
     upload_yearly_sheets if yearly_sheets.present?
     save_priorities_list if priorities_list.present?
@@ -61,31 +82,10 @@ class BudgetFiles
     print_end_messages
   end
 
-  def self.budget_files_from_government
-    budget_files_repo_dir.join('files_from_government')
-  end
-
-  def self.budget_files_not_from_government
-    budget_files_repo_dir.join('files_not_from_government')
-  end
-
-  def self.budget_files_repo_dir
-    Rails.root.join('budget_files', 'repo')
-  end
+  private
 
   attr_accessor :num_monthly_sheets_processed,
                 :end_messages
-
-  attr_reader :monthly_sheets,
-              :yearly_sheets,
-              :budget_item_translations,
-              :priorities_list,
-              :priority_associations_list,
-              :start_time,
-              :time_prettifier,
-              :duplicate_pairs_list
-
-  private
 
   def get_priority_associations_list(args)
     return nil unless args[:priority_associations_list].present?
