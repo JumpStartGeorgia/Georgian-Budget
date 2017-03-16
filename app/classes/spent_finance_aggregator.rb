@@ -33,6 +33,8 @@ class SpentFinanceAggregator
     .for_dates(
       budget_item
       .spent_finances
+      .monthly
+      .official
       .pluck(:start_date)
     )
   end

@@ -273,6 +273,31 @@ RSpec.describe SpentFinanceAggregator do
         end
       end
     end
+
+    context 'when there are official monthly and yearly expenses' do
+      let(:financeable1) { FactoryGirl.create(:program) }
+
+      before :example do
+        financeable1
+        .add_spent_finance(attributes_for(:spent_finance,
+          time_period_obj: Month.for_date(Date.new(2012, 1, 1)),
+          official: true
+        ))
+        .add_spent_finance(attributes_for(:spent_finance,
+          time_period_obj: Year.new(2013),
+          official: true
+        ))
+      end
+
+      it 'only creates quarterly finances based on monthly finance' do
+        SpentFinanceAggregator.new.create_from_monthly(Quarter)
+
+        expect(financeable1.spent_finances.quarterly.map(&:time_period_obj))
+        .to contain_exactly(
+          Quarter.for_date(Date.new(2012, 1, 1))
+        )
+      end
+    end
   end
 
   describe '#create_from_monthly(Year)' do
