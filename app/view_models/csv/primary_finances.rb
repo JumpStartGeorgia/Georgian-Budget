@@ -18,11 +18,16 @@ module Csv
       FileUtils.mkdir_p(csv_dir)
 
       require 'csv'
+
+      puts "Exporting new file: #{csv_file_path}"
+
       I18n.with_locale locale do
         CSV.open(csv_file_path, 'wb') do |csv|
           rows.each { |row| csv << row }
         end
       end
+
+      puts "Finished exporting file."
 
       return csv_file_path
     end

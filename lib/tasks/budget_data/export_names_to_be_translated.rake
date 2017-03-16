@@ -10,11 +10,17 @@ namespace :budget_data do
       puts "There are #{names.count} names left to translate into English"
     end
 
-    CSV.open(Rails.root.join('tmp', 'georgian_budget_names_to_be_translated.csv'), 'wb') do |csv|
+    path = Rails.root.join('tmp', 'georgian_budget_names_to_be_translated.csv')
+
+    puts "Exporting file: #{path}"
+
+    CSV.open(path, 'wb') do |csv|
       csv << ["Budget Item Code", "Georgian Name", "Budget Item Type", "English Translation"]
       names.each do |name|
         csv << [name.nameable.code, name.text_ka, name.nameable_type, name.text_en]
       end
     end
+
+    puts "Finished exporting file: #{path}"
   end
 end

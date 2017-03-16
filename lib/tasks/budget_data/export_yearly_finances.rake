@@ -12,6 +12,8 @@ namespace :budget_data do
 
     budget_items = totals + spending_agencies + programs
 
+    puts "Exporting new file: #{csv_file_path}"
+
     require 'csv'
     CSV.open(csv_file_path, 'wb') do |csv|
       csv << [
@@ -58,6 +60,8 @@ namespace :budget_data do
         ]
       end
     end
+
+    puts 'Exported new file'
   end
 
   def year_columns(official, monthly_sum)

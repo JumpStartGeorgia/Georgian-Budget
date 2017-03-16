@@ -8,6 +8,8 @@ namespace :budget_data do
 
     pairs = PossibleDuplicatePair.all.with_items.sort_by { |pair| pair.item1.code }
 
+    puts "Exporting file: #{csv_file_path}"
+
     require 'csv'
     CSV.open(csv_file_path, 'wb') do |csv|
       csv << [
@@ -48,8 +50,7 @@ namespace :budget_data do
       end
     end
 
-    puts "Finished exporting CSV of possible duplicate pairs"
-    puts "File path: #{csv_file_path}"
+    puts "Finished exporting file"
     puts "Number of Possible Duplicate Pairs: #{pairs.count}"
   end
 

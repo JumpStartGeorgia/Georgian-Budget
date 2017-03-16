@@ -21,7 +21,7 @@ module Csv
       .new(directory_path: directory_path)
       .export
 
-      puts "\nFinished exporting suspicious items to directory #{directory_path}"
+      puts "\nFinished exporting suspicious items"
     end
 
     private

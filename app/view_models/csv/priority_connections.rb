@@ -9,6 +9,8 @@ module Csv
     def export
       require 'csv'
 
+      puts "Exporting file: #{csv_file_path}"
+
       I18n.with_locale locale do
         CSV.open(file_path, 'wb') do |csv|
           csv << headers
@@ -17,6 +19,8 @@ module Csv
           end
         end
       end
+
+      puts 'Finished exporting file'
     end
 
     private

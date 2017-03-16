@@ -33,11 +33,15 @@ module Csv
 
       File.delete(zip_filepath) if File.exists?(zip_filepath)
 
+      puts "Creating zip file: #{zip_filepath}"
+
       Zip::File.open(zip_filepath, Zip::File::CREATE) do |zipfile|
         input_filepaths.each do |filepath|
           zipfile.add(File.basename(filepath), filepath)
         end
       end
+
+      puts "Finished creating zip file"
     end
 
     def input_filepaths
