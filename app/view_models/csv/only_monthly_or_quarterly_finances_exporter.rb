@@ -34,6 +34,7 @@ module Csv
         'type',
         'name',
         'code',
+        'exists in spreadsheets',
         '# yearly spent',
         '# quarterly spent',
         '# monthly spent'
@@ -57,6 +58,7 @@ module Csv
           item.class.to_s,
           item.name,
           item.code,
+          TimePeriods::SpreadsheetsContainingItem.call(item).map(&:to_s).join(','),
           item.spent_finances.yearly.official.count,
           item.spent_finances.quarterly.official.count,
           item.spent_finances.monthly.official.count

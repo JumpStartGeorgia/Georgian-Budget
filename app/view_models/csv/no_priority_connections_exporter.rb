@@ -33,7 +33,8 @@ module Csv
         'perma_id',
         'type',
         'name',
-        'code'
+        'code',
+        'exists in spreadsheets'
       ]
     end
 
@@ -49,7 +50,8 @@ module Csv
           item.perma_id,
           item.class,
           item.name,
-          item.code
+          item.code,
+          TimePeriods::SpreadsheetsContainingItem.call(item).map(&:to_s).join(',')
         ]
       end
     end
