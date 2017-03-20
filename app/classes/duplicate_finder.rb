@@ -32,15 +32,11 @@ class DuplicateFinder
   end
 
   def find_possible_duplicates
-    possible_duplicates = []
-
-    item_with_same_code = most_recent_item_with_same_code
-    possible_duplicates << item_with_same_code if item_with_same_code.present?
-
-    item_with_same_name = most_recent_item_with_same_name
-    possible_duplicates << item_with_same_name if item_with_same_name.present?
-
-    possible_duplicates
+    items_with_same_code
+    .order(start_date: :desc)
+    .select do |possible_item|
+      is_possible_duplicate?(possible_item)
+    end
   end
 
   def is_possible_duplicate?(other_item)
@@ -54,26 +50,10 @@ class DuplicateFinder
 
   private
 
-  def most_recent_item_with_same_code
-    items_with_same_code
-    .order(start_date: :desc)
-    .find do |possible_item|
-      is_possible_duplicate?(possible_item)
-    end
-  end
-
   def items_with_same_code
     @items_with_same_code ||= source_item.class
     .with_code_in_history(source_item.code)
     .where.not(id: source_item)
-  end
-
-  def most_recent_item_with_same_name
-    items_with_same_name
-    .order(start_date: :desc)
-    .find do |possible_item|
-      is_possible_duplicate?(possible_item)
-    end
   end
 
   def items_with_same_name

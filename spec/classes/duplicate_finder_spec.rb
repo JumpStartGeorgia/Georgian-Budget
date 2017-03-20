@@ -202,7 +202,10 @@ RSpec.describe do DuplicateFinder
 
         possible_duplicates = DuplicateFinder.new(source_item).find_possible_duplicates
 
-        expect(possible_duplicates).to eq([previously_saved_item])
+        expect(possible_duplicates).to contain_exactly(
+          previously_saved_item,
+          previously_saved_item2
+        )
       end
     end
 
@@ -277,44 +280,6 @@ RSpec.describe do DuplicateFinder
             possible_duplicates = DuplicateFinder.new(source_item).find_possible_duplicates
 
             expect(possible_duplicates).to_not include(previously_saved_item)
-          end
-        end
-      end
-    end
-
-    context 'when there is an item with the same name' do
-      before :example do
-        previously_saved_item.add_name(FactoryGirl.attributes_for(
-          :name,
-          text: source_item_name_attr[:text],
-          start_date: source_item_name_attr[:start_date] - 1
-        ))
-      end
-
-      context 'and a different code' do
-        before :example do
-          previously_saved_item.add_code(FactoryGirl.attributes_for(
-            :code,
-            number: "#{source_item_code_attr[:number]}1",
-            start_date: source_item_code_attr[:start_date] - 2
-          ))
-        end
-
-        context 'and the items are programs' do
-          context 'and they have different number of code parts' do
-            before :example do
-              previously_saved_item.add_code(FactoryGirl.attributes_for(
-                :code,
-                number: "#{source_item_code_attr[:number]} 1",
-                start_date: source_item_code_attr[:start_date] - 1
-              ))
-            end
-
-            it 'returns the item in possible duplicates' do
-              possible_duplicates = DuplicateFinder.new(source_item).find_possible_duplicates
-
-              expect(possible_duplicates).to include(previously_saved_item)
-            end
           end
         end
       end
