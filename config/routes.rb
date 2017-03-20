@@ -32,6 +32,7 @@ Rails.application.routes.draw do
     scope module: :api do
       namespace :v1 do
         resources :page_contents, only: :show, constraints: { format: :json }
+        get '/last_updated_date' => 'last_updated_date#index'
 
         root 'budget_items#main', constraints: { format: :json }
       end
