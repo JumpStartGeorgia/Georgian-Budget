@@ -1,18 +1,6 @@
 require('rails_helper')
 
-RSpec.describe 'API' do
-  context 'when requesting about page content' do
-    let!(:about_page_content) do
-      create(:page_content, name: 'about')
-    end
-
-    it 'returns about page content' do
-      get '/en/v1/page_contents/about'
-
-      json = JSON.parse(response.body)
-    end
-  end
-
+RSpec.describe 'Budget Items API V1' do
   context 'when requesting program info and yearly finances' do
     let!(:program1) do
       FactoryGirl.create(:program)
@@ -43,7 +31,6 @@ RSpec.describe 'API' do
       .add_name(FactoryGirl.attributes_for(:name))
       .save_perma_id
     end
-
 
     let!(:program3) do
       FactoryGirl.create(:program)
