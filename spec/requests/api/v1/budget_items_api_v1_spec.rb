@@ -84,9 +84,7 @@ RSpec.describe 'Budget Items API V1' do
         get '/en/v1/programs',
             params: {
               budgetItemFields: 'id,name,code,type,spentFinances,plannedFinances',
-              filters: {
-                timePeriodType: 'year'
-              }
+              timePeriodType: 'year'
             },
             headers: { 'X-Key-Inflection': 'camel' }
       end

@@ -1,15 +1,9 @@
 class API::V1::Response
-  def initialize(budget_type_class, params)
+  def initialize(budget_type_class, params = {})
     @budget_type_class = budget_type_class
     @errors = []
-
-    filters = params['filters']
-
-    if filters.present?
-      @time_period_type = API::V1::TimePeriodTypeValidator.call(filters['time_period_type']) if filters['time_period_type'].present?
-    end
-
-    @budget_item_fields = API::V1::BudgetItemFields.validate(params['budget_item_fields']) if params['budget_item_fields'].present?
+    @time_period_type = params[:time_period_type]
+    @budget_item_fields = params[:fields]
   end
 
   def to_hash
