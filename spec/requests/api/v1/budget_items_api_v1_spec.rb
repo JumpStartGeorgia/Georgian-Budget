@@ -1,7 +1,7 @@
 require('rails_helper')
 
 RSpec.describe 'Budget Items API V1' do
-  describe 'GET /budget_items' do
+  describe 'GET /programs' do
     context 'when requesting program info and yearly finances' do
       let!(:program1) do
         FactoryGirl.create(:program)
@@ -81,11 +81,10 @@ RSpec.describe 'Budget Items API V1' do
         FactoryGirl.create(:spending_agency)
 
         # exercise
-        get '/en/v1',
+        get '/en/v1/programs',
             params: {
               budgetItemFields: 'id,name,code,type,spentFinances,plannedFinances',
               filters: {
-                budgetItemType: 'program',
                 timePeriodType: 'year'
               }
             },

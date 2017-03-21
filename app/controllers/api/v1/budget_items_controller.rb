@@ -16,8 +16,8 @@ module Api
         end
       end
 
-      def main
-        response = API::V1::Response.new(api_params)
+      def programs
+        response = API::V1::Response.new(Program, api_params)
         status = 200
 
         render json: response.to_hash,
@@ -35,7 +35,6 @@ module Api
           :filters,
           filters: [
             :finance_type,
-            :budget_item_type,
             :time_period_type
           ]
         )

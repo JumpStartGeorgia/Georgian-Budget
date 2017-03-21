@@ -1,12 +1,12 @@
 class API::V1::Response
-  def initialize(params)
+  def initialize(budget_type_class, params)
+    @budget_type_class = budget_type_class
     @errors = []
     @params = params
 
     filters = params['filters']
 
     if filters.present?
-      @budget_item_type = filters['budget_item_type'] if filters['budget_item_type'].present?
       @time_period_type = validate_time_period_type(filters['time_period_type']) if filters['time_period_type'].present?
     end
 
@@ -18,19 +18,11 @@ class API::V1::Response
     response[:errors] = errors
 
     unless budget_item_fields.present?
-      raise API::V1::InvalidQueryError,
-            'budgetItemFields must be supplied in query'
+      self.budget_item_fields = 'id,code,name'
     end
 
-    if budget_item_type.present?
-      response[:budget_items] = []
-      response[:budget_items] = get_budget_items_by_type
-      return response
-    end
-
-    raise API::V1::InvalidQueryError, 'budgetItemId or budgetItemType filter must be supplied in query'
-  rescue API::V1::InvalidQueryError => e
-    add_error("Failed to process the request: #{e.message}")
+    response[:budget_items] = []
+    response[:budget_items] = get_budget_items_by_type
     return response
   end
 
@@ -44,9 +36,9 @@ class API::V1::Response
 
   attr_accessor :errors
 
-  attr_reader :time_period_type,
+  attr_reader :budget_type_class,
+              :time_period_type,
               :budget_item_fields,
-              :budget_item_type,
               :params
 
   def budget_items
@@ -106,52 +98,5 @@ class API::V1::Response
       'quarter',
       'month'
     ]
-  end
-
-  def validate_budget_item_fields(fields)
-    return nil unless fields.present? && fields.is_a?(String)
-    validated = fields.split(',').select do |field|
-      valid = budget_item_permitted_fields.include? field
-      unless valid
-        raise API::V1::InvalidQueryError, "Budget item field \"#{field}\" not permitted. Allowed values: #{budget_item_permitted_fields.join(',')}"
-      end
-      valid
-    end
-
-    validated.map(&:underscore)
-  end
-
-  def budget_item_permitted_fields
-    add_camel_case_fields(item_fields_snake_case)
-  end
-
-  def item_fields_snake_case
-    [
-      'id',
-      'code',
-      'type',
-      'name',
-      'spent_finances',
-      'planned_finances',
-      'related_budget_items',
-    ]
-  end
-
-  def add_camel_case_fields(fields)
-    (fields + fields.map { |field| field.camelize(:lower) }).uniq
-  end
-
-  def budget_type_class
-    camelized = budget_item_type.camelize
-
-    unless allowed_budget_item_types.include? camelized
-      raise API::V1::InvalidQueryError, "Budget item type #{budget_item_type} is not available"
-    end
-
-    Object.const_get(camelized)
-  end
-
-  def allowed_budget_item_types
-    ['Program', 'SpendingAgency', 'Priority', 'Total']
   end
 end
