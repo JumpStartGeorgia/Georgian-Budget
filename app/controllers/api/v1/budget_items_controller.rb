@@ -46,7 +46,7 @@ module Api
       private
 
       def validated_budget_item_fields
-        API::V1::BudgetItemFields.validate(api_params[:budget_item_fields])
+        API::V1::BudgetItemFieldsValidator.call(api_params[:budget_item_fields])
       end
 
       def validated_time_period_type

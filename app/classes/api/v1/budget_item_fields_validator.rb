@@ -1,7 +1,7 @@
 # UNTESTED
 
-class API::V1::BudgetItemFields
-  def self.validate(fields)
+class API::V1::BudgetItemFieldsValidator
+  def self.call(fields)
     return nil unless fields.present? && fields.is_a?(String)
     validated = fields.split(',').select do |field|
       valid = budget_item_permitted_fields.include? field
