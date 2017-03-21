@@ -2,7 +2,6 @@ class API::V1::Response
   def initialize(budget_type_class, params)
     @budget_type_class = budget_type_class
     @errors = []
-    @params = params
 
     filters = params['filters']
 
@@ -18,7 +17,7 @@ class API::V1::Response
     response[:errors] = errors
 
     unless budget_item_fields.present?
-      self.budget_item_fields = 'id,code,name'
+      self.budget_item_fields = 'id,code,name,type'
     end
 
     response[:budget_items] = []
@@ -34,12 +33,11 @@ class API::V1::Response
 
   private
 
-  attr_accessor :errors
+  attr_accessor :errors,
+                :budget_item_fields
 
   attr_reader :budget_type_class,
-              :time_period_type,
-              :budget_item_fields,
-              :params
+              :time_period_type
 
   def budget_items
     @budget_items ||= get_budget_items

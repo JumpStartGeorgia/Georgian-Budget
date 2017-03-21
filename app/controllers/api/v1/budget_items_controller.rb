@@ -17,11 +17,18 @@ module Api
       end
 
       def programs
-        response = API::V1::Response.new(Program, api_params)
-        status = 200
+        render json: API::V1::Response.new(Program, api_params).to_hash,
+               status: 200
+      end
 
-        render json: response.to_hash,
-               status: status
+      def spending_agencies
+        render json: API::V1::Response.new(SpendingAgency, api_params).to_hash,
+               status: 200
+      end
+
+      def priorities
+        render json: API::V1::Response.new(Priority, api_params).to_hash,
+               status: 200
       end
 
       private

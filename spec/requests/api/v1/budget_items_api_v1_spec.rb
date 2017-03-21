@@ -141,6 +141,33 @@ RSpec.describe 'Budget Items API V1' do
     end
   end
 
+  describe 'GET /spending_agencies' do
+    let!(:agency1) { create(:spending_agency).add_name(attributes_for(:name)) }
+    let!(:agency2) { create(:spending_agency).add_name(attributes_for(:name)) }
+    let!(:agency3) { create(:spending_agency).add_name(attributes_for(:name)) }
+    let!(:program) { create(:program) }
+
+    let(:budget_items) do
+      JSON.parse(response.body)['budgetItems']
+    end
+
+    before do
+      get '/en/v1/spending_agencies',
+          params: {
+            budgetItemFields: 'id,name,code,type',
+          },
+          headers: { 'X-Key-Inflection': 'camel' }
+    end
+
+    it 'has OK status' do
+      expect(response.status).to eq(200)
+    end
+
+    it 'returns correct number of budget items' do
+      expect(budget_items.length).to eq(3)
+    end
+  end
+
   describe 'GET /budget_items/:id' do
     context 'when requesting details for an agency' do
       let!(:overall_budget) do
