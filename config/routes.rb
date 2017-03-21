@@ -34,6 +34,7 @@ Rails.application.routes.draw do
         resources :page_contents, only: :show, constraints: { format: :json }
         get '/last_updated_date' => 'last_updated_date#index'
 
+        resources :budget_items, only: :show, constraints: { format: :json }
         root 'budget_items#main', constraints: { format: :json }
       end
     end

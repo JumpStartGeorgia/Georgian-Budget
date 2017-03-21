@@ -10,8 +10,7 @@ class API::V1::Response
       @time_period_type = validate_time_period_type(filters['time_period_type']) if filters['time_period_type'].present?
     end
 
-    @budget_item_fields = validate_budget_item_fields(params['budget_item_fields']) if params['budget_item_fields'].present?
-    @budget_item_id = params['budget_item_id'] if params['budget_item_id'].present?
+    @budget_item_fields = API::V1::BudgetItemFields.validate(params['budget_item_fields']) if params['budget_item_fields'].present?
   end
 
   def to_hash
@@ -21,11 +20,6 @@ class API::V1::Response
     unless budget_item_fields.present?
       raise API::V1::InvalidQueryError,
             'budgetItemFields must be supplied in query'
-    end
-
-    if budget_item_id.present?
-      response[:budget_item] = get_budget_item_by_id
-      return response
     end
 
     if budget_item_type.present?
@@ -50,8 +44,7 @@ class API::V1::Response
 
   attr_accessor :errors
 
-  attr_reader :budget_item_id,
-              :time_period_type,
+  attr_reader :time_period_type,
               :budget_item_fields,
               :budget_item_type,
               :params
@@ -76,15 +69,6 @@ class API::V1::Response
     else
       return budget_items.includes(:planned_finances)
     end
-  end
-
-  def get_budget_item_by_id
-    budget_item = BudgetItem.find_by_perma_id(budget_item_id)
-
-    return budget_item_hash(budget_item) if budget_item.present?
-
-    raise API::V1::InvalidQueryError,
-          "budget item with id #{budget_item_id} does not exist"
   end
 
   def get_budget_items_by_type
