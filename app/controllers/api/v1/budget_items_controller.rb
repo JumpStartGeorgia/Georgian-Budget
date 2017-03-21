@@ -41,7 +41,6 @@ module Api
           :budget_item_fields,
           :filters,
           filters: [
-            :finance_type,
             :time_period_type
           ]
         )
