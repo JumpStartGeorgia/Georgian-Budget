@@ -6,7 +6,7 @@ class API::V1::Response
     filters = params['filters']
 
     if filters.present?
-      @time_period_type = validate_time_period_type(filters['time_period_type']) if filters['time_period_type'].present?
+      @time_period_type = API::V1::TimePeriodTypeValidator.call(filters['time_period_type']) if filters['time_period_type'].present?
     end
 
     @budget_item_fields = API::V1::BudgetItemFields.validate(params['budget_item_fields']) if params['budget_item_fields'].present?
@@ -78,23 +78,5 @@ class API::V1::Response
       fields: budget_item_fields,
       time_period_type: time_period_type
     ).to_hash
-  end
-
-  def validate_time_period_type(time_period_type)
-    return nil unless time_period_type.present? && time_period_type.is_a?(String)
-
-    unless time_period_type_permitted_fields.include? time_period_type
-      raise API::V1::InvalidQueryError, "Time period type \"#{time_period_type}\" not permitted. Allowed values: #{time_period_type_permitted_fields.join(',')}"
-    end
-
-    time_period_type
-  end
-
-  def time_period_type_permitted_fields
-    [
-      'year',
-      'quarter',
-      'month'
-    ]
   end
 end
