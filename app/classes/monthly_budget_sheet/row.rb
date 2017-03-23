@@ -13,7 +13,7 @@ module MonthlyBudgetSheet
       return false unless contains_data?
       return false if spent_finance.present?
       return false if planned_finance.present?
-
+      return false unless only_code_and_name_present?
       true
     end
 
@@ -132,6 +132,13 @@ module MonthlyBudgetSheet
       return value unless value.is_a? String
 
       value.strip().gsub(/\s+/, ' ')
+    end
+
+    def only_code_and_name_present?
+      cell_values[0].present? && cell_values[1].present? &&
+        (cell_values.select do |value|
+          value.present?
+        end).length == 2
     end
   end
 end
