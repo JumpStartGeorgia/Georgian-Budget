@@ -2,7 +2,6 @@
 en:
   application:
     navbar_header:
-      about: About Project
       account:
         edit_profile: Edit Profile
         logout: Logout

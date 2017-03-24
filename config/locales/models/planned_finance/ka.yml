@@ -1,7 +1,0 @@
-# ---
-ka:
-  activerecord:
-    models:
-      planned_finance:
-        one: დაგეგმილი ფინანსი
-        other: დაგეგმილი ფინანსები

@@ -1,7 +1,0 @@
-# ---
-en:
-  activerecord:
-    models:
-      planned_finance:
-        one: Planned Finance
-        other: Planned Finance

@@ -2,7 +2,7 @@
 
 ---
 en:
-  date:
+#   date:
 #     abbr_day_names:
 #     - Sun
 #     - Mon
@@ -37,20 +37,20 @@ en:
 #      long: "%B %d, %Y"
 #       short: "%b %d"
 #      full: "%A, %b %e, %Y"
-    month_names:
-    -
-    - January
-    - February
-    - March
-    - April
-    - May
-    - June
-    - July
-    - August
-    - September
-    - October
-    - November
-    - December
+    # month_names:
+    # -
+    # - January
+    # - February
+    # - March
+    # - April
+    # - May
+    # - June
+    # - July
+    # - August
+    # - September
+    # - October
+    # - November
+    # - December
 #     order:
 #     - :year
 #     - :month

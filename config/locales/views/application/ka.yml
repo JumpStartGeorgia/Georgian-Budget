@@ -2,7 +2,6 @@
 ka:
   application:
     navbar_header:
-      about: "პროექტის შესახებ"
       account:
         edit_profile: პროფილის შეცვლა
         logout: გასვლა
