@@ -1,5 +1,9 @@
 require 'i18n/tasks'
 
+# Note: Unless people start using the content management system
+# of this Rails application, the translation tests do not particularly
+# matter.
+
 describe 'I18n' do
   let(:i18n) { I18n::Tasks::BaseTask.new }
   let(:missing_keys) { i18n.missing_keys }
