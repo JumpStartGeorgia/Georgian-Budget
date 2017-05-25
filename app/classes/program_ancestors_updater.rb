@@ -30,7 +30,8 @@ class ProgramAncestorsUpdater
   def parent_program_code
     return nil if parent_program_code_number.nil?
 
-    Code.find_by_number(parent_program_code_number)
+    # Code.find_by_number(parent_program_code_number)
+    Code.where(number: parent_program_code_number).order('start_date desc').first
   end
 
   def parent_program_code_number
@@ -40,7 +41,8 @@ class ProgramAncestorsUpdater
   end
 
   def agency_code
-    Code.find_by_number(agency_code_number)
+    # Code.find_by_number(agency_code_number)
+    Code.where(number: agency_code_number).order('start_date desc').first
   end
 
   def agency_code_number
