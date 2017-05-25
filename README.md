@@ -70,7 +70,7 @@ NOTE: The below commands will only work if the container you are setting up to d
 
 ## Transfer Postgres database
 
-1. Dump the database: `pg_dump -Fc -U postgres -O budget_staging_dev > tmp/budget_dev.sql`
+1. Dump the database: `docker-compose exec db bash` and `pg_dump -Fc -U postgres -O budget_staging_dev > tmp/budget_dev.sql`
 2. Copy out of db container: `docker cp {container-id}:tmp/budget_dev.sql tmp/`
 3. Copy to server: `scp tmp/budget_dev.sql {user_name}@{server_name}:tmp/`
 4. Restore: `pg_restore --clean --no-owner -d "budget-staging" -U "budget-staging" tmp/budget_dev.sql`
